@@ -24,7 +24,7 @@ jobs:
           cache: 'maven'
 
       - name: Compile and run tests with Maven
-        run: mvn clean test
+        run: mvn -f xbook-api/pom.xml clean test
         
   javascript-ci-checks:
       name: Automated Javascript CI checks
@@ -46,13 +46,13 @@ jobs:
                ${{ runner.os }}-build-
                ${{ runner.os }}-
   
-        - name: Setup Node.js 16.8.0
+        - name: Setup Node.js 20.12.0
           uses: actions/setup-node@v3
           with:
-            node-version: 16.8.0
+            node-version: 20.12.0
   
         - name: Install dependencies
-          run: npm install --prefix frontend
+          run: npm install --prefix xBook-FrontEnd
   
         - name: Run build
-          run: npm run build --prefix frontend
+          run: npm run build --prefix xBook-FrontEnd
