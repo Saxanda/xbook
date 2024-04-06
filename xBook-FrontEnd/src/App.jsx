@@ -3,12 +3,14 @@ import './App.css'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+import LoginPage from './Pages/LoginPage';
+
 function App() {
 
   return (
     <Router>
       <Routes>
-        <Route></Route>
+        <Route path='/' element={<LoginPage/>}/>
         <Route></Route>
         <Route></Route>
       </Routes>
