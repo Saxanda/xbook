@@ -1,9 +1,8 @@
 .postComponent{
     max-width: 628px;
     margin: 0 auto;
-    background: rgb(237, 248, 251);
-    padding: 10px;
     border-radius: 10px;
+    background: rgb(237, 248, 251);
     border: 4px solid rgb(221, 245, 251);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -13,4 +12,19 @@
 }
 .postComponent_header_btns button{
     margin: 5px;
+}
+
+.postComponent_footer_activiti{
+    &_info{
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+    }
+    &_btns{
+        display: flex;
+        justify-content: space-around;
+        & button{
+            min-width: 30%;
+        }
+    }
 }

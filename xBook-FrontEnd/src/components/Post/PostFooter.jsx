@@ -1,28 +1,34 @@
 import PropTypes from 'prop-types';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
 
 export default function PostFooter({ likes, comments }) {
     return (
-        <div className="postComponent_footer">
-            <div className="postComponent_footer_activiti">
-                <div className="postComponent_footer_activiti_info">
-                    <p>Likes: {likes}</p>
-                    <p>Коментарі: {comments.length}</p>
+            <Paper >
+            <div className="postComponent_footer">
+                <div className="postComponent_footer_activiti">
+                <div className='postComponent_footer_activiti_info'>
+                    <Typography variant="body1">Likes: {likes}</Typography>
+                    <Typography variant="body1">Comments: {comments.length}</Typography>
                 </div>
                 <div className="postComponent_footer_activiti_btns">
-                    <button>Like</button>
-                    <button>Comment</button>
+                    <Button variant="contained">Like</Button>
+                    <Button variant="contained">Comment</Button>
+                    <Button variant="contained">Repost</Button>
                 </div>
-            </div>
-            <div className="postComponent_footer_comments">
+                </div>
+                <div className="postComponent_footer_comments">
                 {comments.map((comment, index) => (
-                    <div key={index} className="comment">
-                        <p>By: {comment.user.fullName}</p>
-                        <p>{comment.text}</p>
+                    <div key={index} >
+                    <Typography variant="body1">By: {comment.user.fullName}</Typography>
+                    <Typography variant="body1">{comment.text}</Typography>
                     </div>
                 ))}
+                </div>
             </div>
-        </div>
-    );
+            </Paper>
+        );
 }
 
 PostFooter.propTypes = {
