@@ -1,0 +1,19 @@
+import PropTypes from 'prop-types';
+import Typography from '@mui/material/Typography';
+import PostMediaGrid from './PostMediaGrid';
+
+export default function PostBody({ text, media }) { 
+    return (
+        <div className="postComponent_body">
+            <Typography variant="body1" gutterBottom>
+                {text}
+            </Typography>
+            <PostMediaGrid media={media} />
+        </div>
+    );
+}
+
+PostBody.propTypes = {
+    text: PropTypes.string.isRequired,
+    media: PropTypes.arrayOf(PropTypes.string).isRequired
+};
