@@ -18,7 +18,8 @@ export default function Post({ postData }){
             </PostBody>
             <PostFooter
                 likes={postData.likes} 
-                comments={postData.comments}
+                comments={postData.commentsCount}
+                reposts={postData.reposts}
             >  
             </PostFooter>
         </div>
@@ -31,7 +32,6 @@ Post.propTypes = {
         text: PropTypes.string.isRequired,
         media: PropTypes.shape({
             images: PropTypes.arrayOf(PropTypes.string).isRequired,
-            videos: PropTypes.arrayOf(PropTypes.string)
         }).isRequired,
         likes: PropTypes.number.isRequired,
         comments: PropTypes.arrayOf(
@@ -40,7 +40,9 @@ Post.propTypes = {
                 text: PropTypes.string.isRequired
             })
         ).isRequired,
-        date: PropTypes.string.isRequired
+        date: PropTypes.string.isRequired,
+        commentsCount : PropTypes.number.isRequired,
+        reposts : PropTypes.number.isRequired,
     }).isRequired
 };
 

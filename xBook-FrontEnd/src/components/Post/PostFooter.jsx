@@ -3,14 +3,17 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 
-export default function PostFooter({ likes, comments }) {
+export default function PostFooter({ likes, comments, reposts }) {
     return (
             <Paper >
             <div className="postComponent_footer">
                 <div className="postComponent_footer_activiti">
                 <div className='postComponent_footer_activiti_info'>
-                    <Typography variant="body1">Likes: {likes}</Typography>
-                    <Typography variant="body1">Comments: {comments.length}</Typography>
+                    <Typography variant="body1">Likes {likes}</Typography>
+                    <div style={{ display: 'flex' , gap : "10px" }}>
+                        <Typography variant="body1">{comments} Comments </Typography>
+                        <Typography variant="body1">Reposts {reposts}</Typography>
+                    </div>
                 </div>
                 <div className="postComponent_footer_activiti_btns">
                     <Button variant="contained">Like</Button>
@@ -18,14 +21,14 @@ export default function PostFooter({ likes, comments }) {
                     <Button variant="contained">Repost</Button>
                 </div>
                 </div>
-                <div className="postComponent_footer_comments">
+                {/* <div className="postComponent_footer_comments">
                 {comments.map((comment, index) => (
                     <div key={index} >
                     <Typography variant="body1">By: {comment.user.fullName}</Typography>
                     <Typography variant="body1">{comment.text}</Typography>
                     </div>
                 ))}
-                </div>
+                </div> */}
             </div>
             </Paper>
         );
@@ -33,6 +36,7 @@ export default function PostFooter({ likes, comments }) {
 
 PostFooter.propTypes = {
     likes: PropTypes.number.isRequired,
+    reposts : PropTypes.number.isRequired,
     comments: PropTypes.arrayOf(
         PropTypes.shape({
             user: PropTypes.shape({
@@ -40,7 +44,7 @@ PostFooter.propTypes = {
                 avatar: PropTypes.string.isRequired,
                 fullName: PropTypes.string.isRequired
             }).isRequired,
-            text: PropTypes.string.isRequired
+            text: PropTypes.string.isRequired,
         })
     ).isRequired
 };
