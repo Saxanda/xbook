@@ -1,4 +1,4 @@
-package app.security;
+package app.security.jpa;
 
 
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package app.security;
+package app.security.jpa;
 
 
 public class UserException extends RuntimeException {
