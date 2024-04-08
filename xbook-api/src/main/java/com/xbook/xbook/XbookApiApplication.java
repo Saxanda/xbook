@@ -5,9 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class XbookApiApplication {
-
-	public static void main(String[] args) {
-		SpringApplication.run(XbookApiApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(XbookApiApplication.class, args);
+    }
 }
