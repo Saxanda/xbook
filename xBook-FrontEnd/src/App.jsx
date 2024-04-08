@@ -2,15 +2,15 @@
 import './App.scss'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header/Header';
+
+import ForgotPage from './Pages/ForgotPage';
 
 function App() {
 
   return (
     <Router>
-      <Header></Header>
       <Routes>
-        <Route></Route>
+      <Route path='/' element={<ForgotPage/>}/>
         <Route></Route>
         <Route></Route>
       </Routes>
