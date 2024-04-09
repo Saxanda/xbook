@@ -2,27 +2,29 @@ import PropTypes from 'prop-types';
 import PostBody from "./PostBody"
 import PostFooter from "./PostFooter"
 import PostHeader from "./PostHeader"
+import Paper from '@mui/material/Paper';
 
 export default function Post({ postData }){
-
+    if (!postData) {
+        return null;
+    }
     return(
-        <div className="postComponent">
+        <Paper elevation={3} className='postComponent'>
             <PostHeader 
                 userData={postData.user}
                 date={postData.date}
-            >
-            </PostHeader>
+            />
             <PostBody   
                 text={postData.text}    
-                media={postData.media}>
-            </PostBody>
+                media={postData.media}
+            />
             <PostFooter
                 likes={postData.likes} 
                 comments={postData.commentsCount}
                 reposts={postData.reposts}
-            >  
-            </PostFooter>
-        </div>
+                postId={postData.postId}
+            />
+        </Paper>
     )
 }
 
@@ -43,6 +45,7 @@ Post.propTypes = {
         date: PropTypes.string.isRequired,
         commentsCount : PropTypes.number.isRequired,
         reposts : PropTypes.number.isRequired,
-    }).isRequired
+        postId : PropTypes.number.isRequired,
+    })
 };
 

@@ -5,7 +5,7 @@ import PostMediaGrid from './PostMediaGrid';
 export default function PostBody({ text, media }) { 
     return (
         <div className="postComponent_body">
-            <Typography variant="body1" gutterBottom>
+            <Typography variant="body1" gutterBottom className='postComponent_body_text' style={{ paddingLeft: '5px' }}>
                 {text}
             </Typography>
             <PostMediaGrid media={media} />

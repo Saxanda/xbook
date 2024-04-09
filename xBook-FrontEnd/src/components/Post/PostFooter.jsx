@@ -1,9 +1,21 @@
 import PropTypes from 'prop-types';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import RepeatIcon from '@mui/icons-material/Repeat';
+import CommentIcon from '@mui/icons-material/Comment';
+import { useNavigate } from 'react-router-dom';
 
-export default function PostFooter({ likes, comments, reposts }) {
+export default function PostFooter({ likes, comments, reposts, postId }) {
+
+    const navigate = useNavigate();
+
+    const handleCommentButtonClick = () => {
+        navigate(`/post/${postId}`);
+    };
+
     return (
             <Paper >
             <div className="postComponent_footer">
@@ -16,19 +28,20 @@ export default function PostFooter({ likes, comments, reposts }) {
                     </div>
                 </div>
                 <div className="postComponent_footer_activiti_btns">
-                    <Button variant="contained">Like</Button>
-                    <Button variant="contained">Comment</Button>
-                    <Button variant="contained">Repost</Button>
+                    <IconButton variant="contained" aria-label="like">
+                        <ThumbUpIcon />
+                    </IconButton>
+                    <IconButton variant="contained" aria-label="favorite">
+                        <FavoriteIcon />
+                    </IconButton>
+                    <IconButton variant="contained" aria-label="repost">
+                        <RepeatIcon />
+                    </IconButton>
+                    <IconButton variant="contained" aria-label="comment" onClick={handleCommentButtonClick}>
+                        <CommentIcon />
+                    </IconButton>
                 </div>
                 </div>
-                {/* <div className="postComponent_footer_comments">
-                {comments.map((comment, index) => (
-                    <div key={index} >
-                    <Typography variant="body1">By: {comment.user.fullName}</Typography>
-                    <Typography variant="body1">{comment.text}</Typography>
-                    </div>
-                ))}
-                </div> */}
             </div>
             </Paper>
         );
@@ -37,6 +50,7 @@ export default function PostFooter({ likes, comments, reposts }) {
 PostFooter.propTypes = {
     likes: PropTypes.number.isRequired,
     reposts : PropTypes.number.isRequired,
+    postId : PropTypes.number.isRequired,
     comments: PropTypes.arrayOf(
         PropTypes.shape({
             user: PropTypes.shape({
