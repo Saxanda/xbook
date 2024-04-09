@@ -15,6 +15,7 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
     public void registerUser(UserRegistrationRequest request) {
         // 1. Validate user input
         if (!isValidRegistrationRequest(request)) {

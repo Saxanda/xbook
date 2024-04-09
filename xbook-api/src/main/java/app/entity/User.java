@@ -17,7 +17,7 @@ public class User extends AbstractEntity {
     private String username;
     private String password;
     private String roles;
-   // @Column(unique = true, nullable = false, length = 50)
+    // @Column(unique = true, nullable = false, length = 50)
     private String email;
     private String name;
     private String surname;

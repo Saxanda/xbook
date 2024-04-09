@@ -26,32 +26,33 @@ import java.util.List;
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class XbookSecurityConfig {
 
-  private final UserRepository repo;
-  private final PasswordEncoder enc;
+    private final UserRepository repo;
+    private final PasswordEncoder enc;
 
-  public XbookSecurityConfig(UserRepository repo, PasswordEncoder enc) {
-    this.repo = repo;
-    this.enc = enc;
+    public XbookSecurityConfig(UserRepository repo, PasswordEncoder enc) {
+        this.repo = repo;
+        this.enc = enc;
 
-    repo.saveAll(List.of(
-            new User("sax", enc.encode("123"), "ADMIN"),
+        repo.saveAll(List.of(
+                new User("sax", enc.encode("123"), "ADMIN"),
 
-            new User("mika", enc.encode("123"), "USER")
-    ));
-  }
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                new User("mika", enc.encode("123"), "USER")
+        ));
+    }
 
-    http.csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
-                    authorizationManagerRequestMatcherRegistry.requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
-                            .requestMatchers("/admin/**").hasAnyRole("ADMIN")
-                            .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-                            .requestMatchers("/login/**").permitAll()
-                            .anyRequest().authenticated())
-            .httpBasic(Customizer.withDefaults())
-            .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-    return http.build();
-  }
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
+                        authorizationManagerRequestMatcherRegistry.requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
+                                .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                                .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                                .requestMatchers("/login/**").permitAll()
+                                .anyRequest().authenticated())
+                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        return http.build();
+    }
 }

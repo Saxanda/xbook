@@ -25,7 +25,7 @@ public class UserRegistrationRequest {
 //    private String password;
 
     @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z]).{8,}", message = "The password must be at least 8 characters long " +
-        "and contain at least 1 uppercase and 1 lowercase letter")
+            "and contain at least 1 uppercase and 1 lowercase letter")
     private String password;
     // Getters and setters
 }

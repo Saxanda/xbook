@@ -12,23 +12,23 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 @RequiredArgsConstructor
 public class UsersDetailsServiceJPA implements UserDetailsService {
 
-  private final UserRepository repo;
+    private final UserRepository repo;
 
-  private UserDetails remapper(User u) {
-    return org.springframework.security.core.userdetails.User
-      .withUsername(u.getUsername())
-      .password(u.getPassword())
-      .roles(u.getRoles())
-      .build();
-  }
+    private UserDetails remapper(User u) {
+        return org.springframework.security.core.userdetails.User
+                .withUsername(u.getUsername())
+                .password(u.getPassword())
+                .roles(u.getRoles())
+                .build();
+    }
 
-  @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return repo.findDbUserByUsername(username)
-      .map(this::remapper)
-      .orElseThrow(() -> new UsernameNotFoundException(
-        String.format("user %s not found", username)
-      ));
-  }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return repo.findDbUserByUsername(username)
+                .map(this::remapper)
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        String.format("user %s not found", username)
+                ));
+    }
 
 }

@@ -18,10 +18,12 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+
     @GetMapping("/{username}")
     public User getUserByUsername(@PathVariable String username) {
         return userService.findByUsername(username);
     }
+
     @GetMapping("/{email}")
     public User getUserByEmail(@PathVariable String email) {
         return userService.findByEmail(email);
