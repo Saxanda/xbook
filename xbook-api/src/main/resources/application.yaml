@@ -12,6 +12,6 @@ spring:
       path: /h2
 
   datasource:
-    url: jdbc:h2:file:xbook
+    url: jdbc:h2:/src/main/resources/xbook.db
     username: sax
     password: 123
