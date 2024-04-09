@@ -4,12 +4,12 @@ import PostFooter from "./PostFooter"
 import PostHeader from "./PostHeader"
 import Paper from '@mui/material/Paper';
 
-export default function Post({ postData }){
+export default function Post({ postData, postComments }){
     if (!postData) {
         return null;
     }
     return(
-        <Paper elevation={3} className='postComponent'>
+        <Paper elevation={3} className='postComponent' >
             <PostHeader 
                 userData={postData.user}
                 date={postData.date}
@@ -24,7 +24,9 @@ export default function Post({ postData }){
                 reposts={postData.reposts}
                 postId={postData.postId}
             />
+            {postComments}
         </Paper>
+        
     )
 }
 
@@ -46,6 +48,7 @@ Post.propTypes = {
         commentsCount : PropTypes.number.isRequired,
         reposts : PropTypes.number.isRequired,
         postId : PropTypes.number.isRequired,
-    })
+    }),
+    postComments: PropTypes.node
 };
 

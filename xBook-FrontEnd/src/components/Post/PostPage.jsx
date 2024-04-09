@@ -9,12 +9,12 @@ export default function PostPage({postData}) {
     const post = postData.find(post => post.postId === parseInt(postId));
 
     return (
-        <div>
-            {post && (
-            <>
-                <Post postData={post} />
-                <PostComments comments={post.comments} />
-            </>
+        <div className='postPage'>
+        {post && (
+            <Post
+                postData={post} 
+                postComments={<PostComments comments={post.comments} />} 
+            />
         )}
         </div>
     );
