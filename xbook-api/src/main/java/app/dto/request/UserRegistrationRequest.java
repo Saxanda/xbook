@@ -1,4 +1,4 @@
-package app.security.jpa;
+package app.dto.request;
 
 
 import lombok.Data;

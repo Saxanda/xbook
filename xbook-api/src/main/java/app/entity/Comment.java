@@ -1,6 +1,5 @@
 package app.entity;
 
-import app.security.jpa.User;
 import jakarta.persistence.*;
 
 @Entity

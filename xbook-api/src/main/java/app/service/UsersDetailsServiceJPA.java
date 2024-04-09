@@ -1,7 +1,7 @@
-package app.security.jpa;
+package app.service;
 
-import app.security.jpa.User;
-import app.security.jpa.UserRepository;
+import app.repository.UserRepository;
+import app.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetails;

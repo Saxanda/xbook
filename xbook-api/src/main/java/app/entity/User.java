@@ -1,14 +1,9 @@
-package app.security.jpa;
+package app.entity;
 
-import app.entity.AbstractEntity;
-import app.entity.Comment;
-
-import app.entity.Post;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.ConnectionBuilder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;

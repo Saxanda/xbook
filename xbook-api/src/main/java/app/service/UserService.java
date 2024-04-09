@@ -1,6 +1,9 @@
-package app.security.jpa;
+package app.service;
 
 
+import app.dto.request.UserRegistrationRequest;
+import app.repository.UserRepository;
+import app.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

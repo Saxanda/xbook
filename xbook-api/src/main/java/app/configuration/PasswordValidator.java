@@ -1,4 +1,4 @@
-package app.security;
+package app.configuration;
 
 
 import javax.validation.Constraint;

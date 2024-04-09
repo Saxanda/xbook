@@ -1,8 +1,8 @@
-package app.security;
+package app.configuration;
 
 
-import app.security.jpa.User;
-import app.security.jpa.UserRepository;
+import app.entity.User;
+import app.repository.UserRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
