@@ -29,3 +29,26 @@
         }
     }
 }
+
+.post-comments{
+    max-width: 628px;
+    margin: 0 auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.comment{
+    display: flex;
+    
+    &-body{
+        background-color: rgb(171, 202, 220, 0.5);
+        padding: 10px;
+        border-radius: 10px;
+    }
+}
+
+.comment-list{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}

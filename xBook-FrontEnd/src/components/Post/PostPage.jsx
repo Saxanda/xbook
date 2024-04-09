@@ -1,16 +1,21 @@
 import PropTypes from 'prop-types';
 import Post from "./Post";
 import { useParams } from 'react-router-dom';
+import PostComments from './PostComments';
 
 export default function PostPage({postData}) {
     
     let { postId } = useParams();
     const post = postData.find(post => post.postId === parseInt(postId));
 
-
     return (
         <div>
-            {post && <Post postData={post} />}
+            {post && (
+            <>
+                <Post postData={post} />
+                <PostComments comments={post.comments} />
+            </>
+        )}
         </div>
     );
 }

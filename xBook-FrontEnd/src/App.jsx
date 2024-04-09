@@ -15,7 +15,6 @@ function App() {
       .then(response => response.json())
       .then(data => {
         setPostData(data);
-        console.log(data); 
       })
       .catch(error => console.error('Error fetching data:', error));
   }, []);
