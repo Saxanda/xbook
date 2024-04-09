@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+spring:
+  jpa:
+    generate-ddl: true
+    show-sql: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2
+
+  datasource:
+    url: jdbc:h2:/src/main/resources/xbook.db
+    username: sax
+    password: 123
