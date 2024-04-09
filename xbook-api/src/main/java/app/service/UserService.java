@@ -32,13 +32,12 @@ public class UserService {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
 
-        // 4. Encode the password
-//        String encodedPassword = passwordEncoder.encode(request.getPassword());
-//        user.setPassword(encodedPassword);
+        // 4. Encode the password for future needs
+        //String encodedPassword = passwordEncoder.encode(request.getPassword());
+        //user.setPassword(encodedPassword);
 
         // 5. Save the user entity to the database
         userRepository.save(user);
-
 
     }
 

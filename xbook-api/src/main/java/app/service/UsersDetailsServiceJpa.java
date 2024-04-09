@@ -10,15 +10,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Configuration
 @RequiredArgsConstructor
-public class UsersDetailsServiceJPA implements UserDetailsService {
+public class UsersDetailsServiceJpa implements UserDetailsService {
 
     private final UserRepository repo;
 
-    private UserDetails remapper(User u) {
+    private UserDetails remapper(User user) {
         return org.springframework.security.core.userdetails.User
-                .withUsername(u.getUsername())
-                .password(u.getPassword())
-                .roles(u.getRoles())
+                .withUsername(user.getUsername())
+                .password(user.getPassword())
+                .roles(user.getRoles())
                 .build();
     }
 

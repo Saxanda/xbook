@@ -1,6 +1,10 @@
 package app.entity;
 
-import jakarta.persistence.*;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,14 +29,13 @@ public class User extends AbstractEntity {
     private String avatar;
     private String address;
     private Date dob; // Date of Birth
+    private static final String DELIMITER = ":";
 
-    private final static String DELIMITER = ":";
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
-
 
     public User(String username, String password, String... roles) {
         this.username = username;
@@ -40,15 +43,6 @@ public class User extends AbstractEntity {
         setRoles(roles);
         this.setCreatedDate(LocalDateTime.now()); // Set default value
     }
-
-    public static User withUsername(String username) {
-        User builder = new User();
-        builder.username = username;
-        return builder;
-    }
-//   public User(String user, String encode, String role) {
-//        super();
-//    }
 
     public String[] getRoles() {
         return roles.split(":");
@@ -58,7 +52,4 @@ public class User extends AbstractEntity {
         this.roles = String.join(DELIMITER, roles);
     }
 
-//    public void setEmail(String email) {
-//        this.email = email;
-//    }
 }
