@@ -8,10 +8,9 @@ import jakarta.persistence.FetchType;
 
 @Entity
 @Table(name = "comments")
-public class Comment extends AbstractEntity{
+public class Comment extends AbstractEntity {
 
     // Other fields and mappings...
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
