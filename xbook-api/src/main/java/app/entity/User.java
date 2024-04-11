@@ -30,6 +30,7 @@ public class User extends AbstractEntity {
     private String avatar;
     private String address;
     private Date dob; // Date of Birth
+    private String confirmationToken;
     private static final String DELIMITER = ":";
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

@@ -1,7 +1,5 @@
 package app.controller;
-import app.dto.request.UserRegistrationRequest;
 import app.entity.User;
-import app.service.EmailService;
 
 import app.service.UserService;
 
@@ -9,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.UUID;
 
 @RestController
@@ -27,8 +24,8 @@ public class RegistrationController {
 
         // Save user to database without confirmation_email column
         User user = new User();
-        user.setUsername(registrationRequest.getUsername());
-        user.setEmail(registrationRequest.getEmail());
+        user.setUsername(registrationRequest.getRegisterUsername());
+        user.setEmail(registrationRequest.getRegisterEmail());
         // Set other user details
 
         // Save user to database
@@ -49,7 +46,7 @@ public class RegistrationController {
         }
 
         // Mark user's email as confirmed
-        user.setEmailConfirmed(true);
+        //user.setEmailConfirmed(true);
         userService.saveUser(user);
 
         return ResponseEntity.ok("Email confirmed successfully.");
@@ -64,6 +61,6 @@ public class RegistrationController {
     // Method to send confirmation email
     private void sendConfirmationEmail(String email, String confirmationToken) {
         // Send email containing confirmation link with token
-        // Example: "https://example.com/confirm-email?token=xyz123"
+        // Example: "https://xbook.com/confirm-email?token=xyz123"
     }
 }
