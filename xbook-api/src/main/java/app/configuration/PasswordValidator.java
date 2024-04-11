@@ -30,28 +30,15 @@ public @interface PasswordValidator {
             // Initialization, if needed
         }
 
+        // Password must be at least 8 characters
+        // Password must contain at least 1 uppercase letter
         @Override
         public boolean isValid(String password, ConstraintValidatorContext context) {
-            if (password == null) {
+            if (password == null || password.length() < 8 || !containsUppercase(password)) {
                 return false;
             }
-
-            // Password must be at least 8 characters
-            if (password.length() < 8) {
-                return false;
-            }
-
-            // Password must contain at least 1 uppercase letter
-            if (!containsUppercase(password)) {
-                return false;
-            }
-
             // Password must contain at least 1 lowercase letter
-            if (!containsLowercase(password)) {
-                return false;
-            }
-
-            return true;
+            return containsLowercase(password);
         }
 
         private boolean containsUppercase(String password) {
