@@ -2,6 +2,7 @@ package app.configuration;
 
 
 import app.entity.User;
+import app.filter.JwtFilter;
 import app.repository.UserRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.List;
 
@@ -23,18 +25,18 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class XbookSecurityConfig {
-
-    private final UserRepository repo;
+    private final JwtFilter jwtFilter;
+    private final UserRepository userRepo;
     private final PasswordEncoder enc;
 
-    public XbookSecurityConfig(UserRepository repo, PasswordEncoder enc) {
-        this.repo = repo;
+    public XbookSecurityConfig(UserRepository userRepo, PasswordEncoder enc, JwtFilter jwtFilter) {
+        this.userRepo = userRepo;
         this.enc = enc;
+        this.jwtFilter = jwtFilter;
 
-        repo.saveAll(List.of(
-                new User("sax", enc.encode("123"), "ADMIN"),
-
-                new User("mika", enc.encode("123"), "USER")
+        userRepo.saveAll(List.of(
+                new User("Roma", enc.encode("123"), "roma22@gmail.com", "USER"),
+                new User("Sasha", enc.encode("456"), "sasha_kuss@gmail.com", "USER")
         ));
     }
 
@@ -45,12 +47,17 @@ public class XbookSecurityConfig {
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry.requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
                                 .requestMatchers("/admin/**").hasAnyRole("ADMIN")
-                                .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-                                .requestMatchers("/login/**").permitAll()
+//                                .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                                .requestMatchers("/user/register").permitAll()
+                                .requestMatchers("/user/login").permitAll()
+                                .requestMatchers("/user/calc/**").authenticated()
+                                .requestMatchers("/user/hello").permitAll()
                                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
