@@ -37,11 +37,12 @@ public class User extends AbstractEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
-    public User(String username, String password, String... roles) {
+    public User(String username, String password, String email, String... roles) {
         this.username = username;
         this.password = password;
+        this.email = email;
         setRoles(roles);
-        this.setCreatedDate(LocalDateTime.now()); // Set default value
+        this.setCreatedDate(LocalDateTime.now());
     }
 
     public String[] getRoles() {
