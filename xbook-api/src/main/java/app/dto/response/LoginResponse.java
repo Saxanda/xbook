@@ -9,10 +9,12 @@ public class LoginResponse {
     private boolean status;
     private String error;
     private String token;
-    public static LoginResponse Ok(String token) {
+
+    public static LoginResponse ok(String token) {
         return new LoginResponse(true, null, token);
     }
-    public static LoginResponse Error(String msg) {
+
+    public static LoginResponse error(String msg) {
         return new LoginResponse(false, msg, null);
     }
 }

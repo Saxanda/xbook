@@ -8,7 +8,6 @@ import app.repository.UserRepository;
 import app.service.JwtTokenService;
 import app.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,12 +56,12 @@ public class UserController {
         return dbUserRepository.findDbUserByEmail(rq.getEmail())
                 .filter(user -> encoder.matches(rq.getPassword(), user.getPassword()))
                 .map(user -> tokenService.generateToken(user.getId()))
-                .map(LoginResponse::Ok)
+                .map(LoginResponse::ok)
                 .map(ResponseEntity::ok)
                 .orElse(
                         ResponseEntity
                                 .status(HttpStatus.valueOf(403))
-                                .body(LoginResponse.Error("wrong email/password combination"))
+                                .body(LoginResponse.error("wrong email/password combination"))
                 );
     }
 }

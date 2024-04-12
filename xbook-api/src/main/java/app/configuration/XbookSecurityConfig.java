@@ -56,8 +56,7 @@ public class XbookSecurityConfig {
                                 AntPathRequestMatcher.antMatcher("/user/register"),
                                 AntPathRequestMatcher.antMatcher("/user/login")
                         ).permitAll()
-                        .anyRequest().authenticated()
-                );
+                        .anyRequest().authenticated());
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

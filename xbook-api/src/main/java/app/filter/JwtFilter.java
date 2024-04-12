@@ -29,6 +29,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private static final String BEARER = "Bearer ";
     private static final String AUTH_HEADER = HttpHeaders.AUTHORIZATION;
     private final JwtTokenService tokenService;
+
     private Optional<String> extractTokenFromRequest(HttpServletRequest rq) {
         return Optional.ofNullable(rq.getHeader(AUTH_HEADER))
                 .filter(h -> h.startsWith(BEARER))
