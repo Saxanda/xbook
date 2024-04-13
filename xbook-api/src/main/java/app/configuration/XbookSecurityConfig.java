@@ -1,43 +1,30 @@
 package app.configuration;
 
 
-import app.entity.User;
 import app.repository.UserRepository;
+import app.security.JwtFilter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import java.util.List;
 
-@Log4j2
 @Configuration
+@RequiredArgsConstructor
+@Log4j2
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class XbookSecurityConfig {
 
-    private final UserRepository repo;
-    private final PasswordEncoder enc;
-
-    public XbookSecurityConfig(UserRepository repo, PasswordEncoder enc) {
-        this.repo = repo;
-        this.enc = enc;
-
-        repo.saveAll(List.of(
-                new User("sax", enc.encode("123"), "ADMIN"),
-
-                new User("mika", enc.encode("123"), "USER")
-        ));
-    }
+    private final UserRepository userRepository;
+    private final JwtFilter jwtFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -50,9 +37,15 @@ public class XbookSecurityConfig {
                         .requestMatchers(
                                 AntPathRequestMatcher.antMatcher("/"),
                                 AntPathRequestMatcher.antMatcher("/h2-console/**"),
-                                AntPathRequestMatcher.antMatcher("/swagger*/**")
-                        ).permitAll());
+                                AntPathRequestMatcher.antMatcher("/swagger-ui/**"),
+                                AntPathRequestMatcher.antMatcher("/v3/api-docs/**"),
+                                AntPathRequestMatcher.antMatcher("/api/v1/auth/**")
+                        ).permitAll()
+                        .anyRequest().authenticated());
+
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 }
