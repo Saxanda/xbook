@@ -1,4 +1,5 @@
 package app.controller;
+import app.dto.request.UserRegistrationRequest;
 import app.entity.User;
 
 import app.service.UserService;
@@ -11,12 +12,10 @@ import java.util.UUID;
 
 @RestController
 public class RegistrationController {
-
-    @Autowired
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<String> registerUser(@RequestBody UserRegistrationRequest registrationRequest) {
         // Validate registration request
 
         // Generate confirmation token
@@ -24,8 +23,8 @@ public class RegistrationController {
 
         // Save user to database without confirmation_email column
         User user = new User();
-        user.setUsername(registrationRequest.getRegisterUsername());
-        user.setEmail(registrationRequest.getRegisterEmail());
+        user.setName(registrationRequest.getName());
+        user.setEmail(registrationRequest.getEmail());
         // Set other user details
 
         // Save user to database

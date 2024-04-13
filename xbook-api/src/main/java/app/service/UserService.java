@@ -41,5 +41,25 @@ public class UserService {
     public boolean isEmailExisting(String email){
         return userRepository.existsUserByEmail(email);
     }
+    public User getUserByConfirmationToken(String confirmationToken) {
+        return userRepository.findByConfirmationToken(confirmationToken);
+    }
 
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
+    public User findByConfirmationToken(String confirmationToken) {
+        // Implement logic to find user by confirmation token
+        return userRepository.findByConfirmationToken(confirmationToken);
+    }
+    public User processEmailConfirmation(String confirmationToken) {
+        User user = findByConfirmationToken(confirmationToken);
+        if (user != null) {
+            // Mark the email as confirmed
+            //user.setEmailConfirmed(true);
+            // Save the user to update the email confirmation status
+            saveUser(user);
+        }
+        return user;
+    }
 }
