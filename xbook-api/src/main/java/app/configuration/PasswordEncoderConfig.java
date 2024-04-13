@@ -11,12 +11,9 @@ import java.util.Map;
 
 @Configuration
 public class PasswordEncoderConfig {
-
     @Bean
     public PasswordEncoder passwordEncoder() {
-        String idForEncode = "bcrypt";
-        Map<String, PasswordEncoder> encoders = new HashMap<>(15);
-        encoders.put(idForEncode, new BCryptPasswordEncoder());
-        return new DelegatingPasswordEncoder(idForEncode, encoders);
+        return new BCryptPasswordEncoder();
     }
+
 }

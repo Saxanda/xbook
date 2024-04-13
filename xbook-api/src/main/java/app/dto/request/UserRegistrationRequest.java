@@ -1,10 +1,16 @@
-package app.dto.user;
+package app.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Data
@@ -25,4 +31,6 @@ public class UserRegistrationRequest {
     @Past(message = "Date of birth must be in the past")
     @NotNull
     private LocalDate dob;
+    @NotEmpty
+    private String gender;
 }

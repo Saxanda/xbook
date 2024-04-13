@@ -1,55 +1,31 @@
 package app.entity;
 
-
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
 
-@Data
 @Entity
 @Table(name = "users")
+@Data
 @NoArgsConstructor
 public class User extends AbstractEntity {
-    private String username;
-    private String password;
-    private String roles;
-    // @Column(unique = true, nullable = false, length = 50)
-    private String email;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String surname;
+    @Column(unique = true, nullable = false)
+    private String email;
+    @Column(nullable = false)
+    private String password;
+    @Column(name = "date_of_birth")
+    private LocalDate dob;
+    private String gender;
+    private String role;
     private String photo;
     private String avatar;
     private String address;
-    private Date dob; // Date of Birth
-    private static final String DELIMITER = ":";
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Post> posts = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Comment> comments = new ArrayList<>();
-
-    public User(String username, String password, String... roles) {
-        this.username = username;
-        this.password = password;
-        setRoles(roles);
-        this.setCreatedDate(LocalDateTime.now()); // Set default value
-    }
-
-    public String[] getRoles() {
-        return roles.split(":");
-    }
-
-    public void setRoles(String[] roles) {
-        this.roles = String.join(DELIMITER, roles);
-    }
-
 }
