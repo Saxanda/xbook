@@ -29,6 +29,11 @@ public class UserService {
         }
     }
 
+    public Optional<User> findById(Integer id) {
+        return Optional.ofNullable(userRepository.findUserById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found User with id = " + id)));
+    }
+
     public Optional<User> findByEmail(String email) {
         return Optional.ofNullable(userRepository.findUserByEmail(email))
                 .orElseThrow(() -> new ResourceNotFoundException("Not found User with email = " + email));
