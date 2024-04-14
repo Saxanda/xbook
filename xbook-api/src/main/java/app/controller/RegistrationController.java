@@ -45,7 +45,7 @@ public class RegistrationController {
         }
 
         // Mark user's email as confirmed
-        //user.setEmailConfirmed(true);
+        user.setConfirmationToken(true);
         userService.saveUser(user);
 
         return ResponseEntity.ok("Email confirmed successfully.");
