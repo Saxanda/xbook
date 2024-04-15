@@ -1,20 +1,53 @@
 import * as React from "react";
 import { useState } from "react";
-import Switch from "react-switch";
 
-import {CssBaseline, Box} from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
+import Box from "@mui/material/Box";
 
 import SignInForm from "../components/SignIn/SignInForm";
 import LoginForm from "../components/Login/LoginForm";
-
+import SwitchSelector from "react-switch-selector";
 
 
 export default function LoginPage() {
-  
   const [checked, setChecked] = useState(false);
-  const handleChange = (nextChecked) => {
-    setChecked(nextChecked);
+  const handleChange = () => {
+    setChecked((prevState)=>!prevState);
+  
   };
+
+
+
+  // const switchOptions = {
+  //   OPTION1: "Log in",
+  //   OPTION2: "Sign in",
+  // };
+
+  // const [activeOption, setActiveOption] = useState(switchOptions.OPTION1);
+
+  // const handleSwitchClick = (switchOptions) => {
+  //   setActiveOption(switchOptions);
+  // };
+
+  const options = [
+    {
+        label: "Log in",
+        value: {
+             logIn: true
+        },
+
+    },
+    {
+        label: "Sign in",
+        value: "signIn",
+        
+    }
+ ];
+ 
+ 
+ const initialSelectedIndex = options.findIndex(({value}) => value === "logIn");
+ 
+
 
   return (
     <>
@@ -28,27 +61,20 @@ export default function LoginPage() {
             Possibilities
           </p>
         </Box>
-        <Box className="form-login">
-          <Box className="title-log-sign">
-            <h3>Sign in</h3>
-            <h3>Log in</h3>
-          </Box>
-          <Switch
-            onChange={handleChange}
-            checked={checked}
-            className="react-switch"
-            onColor="#86d3ff"
-            onHandleColor="#2693e6"
-            handleDiameter={30}
-            uncheckedIcon={false}
-            checkedIcon={false}
-            boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
-            activeBoxShadow="10px rgba(0, 0, 0, 0.2)"
-            height={20}
-            width={48}
-          />
+        <Box className="form-registration">
+       <div className="switch-selector-container" style={{width: 300, height: 40}}>
+         <SwitchSelector
+             onChange={handleChange}
+             options={options}
+             initialSelectedIndex={initialSelectedIndex}
+             backgroundColor={"#cfd1d9"}
+             selectedBackgroundColor={"#0075e8"}
+             fontSize={20}
+             selectedColor={"white"}
+         />
+     </div> 
 
-          {checked ? <SignInForm /> :<LoginForm /> }
+          { checked? <SignInForm /> : <LoginForm />}
         </Box>
       </Box>
     </>

@@ -1,28 +1,26 @@
 import React from "react";
 import { useState } from "react";
-import { useFormik } from "formik";
+import { Field, useFormik } from "formik";
 import * as yup from "yup";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
+import { Button } from "@mui/material";
+import { TextField } from "@mui/material";
+import PasswordInput from "../Form/PasswordInput";
+import EmailInput from "../Form/EmailInput";
 import "../Login/Login.scss";
-
-import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
+import { Paper } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { FormHelperText } from "@mui/material";
 import Box from "@mui/material/Box";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import IconButton from "@mui/material/IconButton";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 export default function SignInForm() {
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
   const validationSchema = yup.object({
     email: yup
       .string("Enter your email")
@@ -32,94 +30,126 @@ export default function SignInForm() {
       .string("Enter your password")
       .min(8, "Password should be of minimum 8 characters length")
       .required("Password is required"),
-    repeatPassword: yup
-      .string()
-      .oneOf([yup.ref("password"), null], "Passwords must match")
-      .required("Password is required"),
+    firstName: yup.string().required("First name is required"),
+    lastName: yup.string().required("Last name is required"),
+    gender: yup.string().required("Gender is required"),
   });
 
   const formik = useFormik({
     initialValues: {
+      firstName: "",
+      lastName: "",
+      date: new Date(),
       email: "",
       password: "",
-      repeatPassword: "",
+      gender: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      console.log(JSON.stringify(values, null, 2));
     },
   });
 
   return (
-    <div className="login-form" >
-      <form onSubmit={formik.handleSubmit}>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <AlternateEmailIcon sx={{ color: "action.active", mr: 1, my: 0.5 }} />
-          <TextField
-            fullWidth
-            id="email"
-            name="email"
-            label="Email"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.email && Boolean(formik.errors.email)}
-            helperText={formik.touched.email && formik.errors.email}
-          />
-        </Box>
+    <form onSubmit={formik.handleSubmit} className="form">
+      <Box className="flex">
+        <TextField
+          fullWidth
+          id="firstName"
+          name="firstName"
+          label="First name"
+          value={formik.values.firstName}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+          helperText={formik.touched.firstName && formik.errors.firstName}
+        />
+        <TextField
+          fullWidth
+          id="lastName"
+          name="lastName"
+          label="Last name"
+          value={formik.values.lastName}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+          helperText={formik.touched.lastName && formik.errors.lastName}
+        />
+      </Box>
 
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconButton
-            aria-label="toggle password visibility"
-            onClick={handleClickShowPassword}
-            edge="end"
-          >
-            {showPassword ? <VisibilityOff /> : <Visibility />}
-          </IconButton>
-          <TextField
-            fullWidth
-            id="password"
-            name="password"
-            label="Password"
-            type={showPassword ? "text" : "password"}
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.password && Boolean(formik.errors.password)}
-            helperText={formik.touched.password && formik.errors.password}
-          />
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconButton
-            aria-label="toggle password visibility"
-            onClick={handleClickShowPassword}
-            edge="end"
-          >
-            {showPassword ? <VisibilityOff /> : <Visibility />}
-          </IconButton>
-          <TextField
-            fullWidth
-            id="repeatPassword"
-            name="repeatPassword"
-            label="Repeat password"
-            type="password"
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched.repeatPassword &&
-              Boolean(formik.errors.repeatPassword)
-            }
-            helperText={
-              formik.touched.repeatPassword && formik.errors.repeatPassword
-            }
-          />
-        </Box>
+      <Box className="flex">
 
-        <Button color="primary" variant="contained" fullWidth type="submit">
-          Submit
-        </Button>
-      </form>
-    </div>
+      {/* <Field name="date" label="Date of birth" >
+      
+      </Field> */}
+      
+      
+      
+      
+      
+
+    
+         {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DemoContainer components={['DatePicker']}> 
+          <DatePicker
+            id="date"
+            label="Date of birth"
+            name="date"
+         value={formik.values.date}
+
+         onChange={console.log(formik.values.date)}
+      onChange={date=>formik.setFieldValue("date",date)}
+            slotProps={{ textField: { variant: 'outlined' } }}
+            slotPropst={(params) => <TextField {...params} />}
+          />
+          </DemoContainer>
+        </LocalizationProvider>  */}
+
+        <FormControl
+          sx={{
+            minWidth: 100,
+          }}
+        >
+          <InputLabel id="demo-simple-select-label">Gender</InputLabel>
+          <Select
+            name="gender"
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={formik.values.gender}
+            label="Gender"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.gender && Boolean(formik.errors.gender)}
+            // helperText={formik.touched.gender && formik.errors.gender}
+          >
+            <MenuItem value={"man"}>Men</MenuItem>
+            <MenuItem value={"woman"}>Woman</MenuItem>
+          </Select>
+
+          <FormHelperText>
+            {formik.touched.gender && formik.errors.gender}
+          </FormHelperText>
+        </FormControl>
+      </Box>
+      <EmailInput
+        email={formik.values.email}
+        handleEmail={formik.handleChange}
+        onBlur={formik.handleBlur}
+        error={formik.touched.email && Boolean(formik.errors.email)}
+        helperText={formik.touched.email && formik.errors.email}
+      />
+
+      <PasswordInput
+        password={formik.values.password}
+        handlePassword={formik.handleChange}
+        onBlur={formik.handleBlur}
+        error={formik.touched.password && Boolean(formik.errors.password)}
+        helperText={formik.touched.password && formik.errors.password}
+      />
+
+      <Button color="primary" variant="contained" fullWidth type="submit">
+        Submit
+      </Button>
+    </form>
   );
 }

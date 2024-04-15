@@ -1,14 +1,11 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import {Button, Checkbox, FormControlLabel} from "@mui/material";
+import { Button, Checkbox, FormControlLabel, Box, Paper } from "@mui/material";
 
 import PasswordInput from "../Form/PasswordInput";
-import EmailInput from "../Form/EmailInpur";
+import EmailInput from "../Form/EmailInput";
 import "./Login.scss";
-
-
-
 
 export default function LoginForm() {
   const validationSchema = yup.object({
@@ -29,39 +26,37 @@ export default function LoginForm() {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      console.log(JSON.stringify(values, null, 2));
     },
   });
 
   return (
-    <div className="login-form">
-      <form onSubmit={formik.handleSubmit}>
-        <EmailInput
-          email={formik.values.email}
-          handleEmail={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.email && Boolean(formik.errors.email)}
-          helperText={formik.touched.email && formik.errors.email}
-        />
+    <form onSubmit={formik.handleSubmit} className="form">
+      <EmailInput
+        email={formik.values.email}
+        handleEmail={formik.handleChange}
+        onBlur={formik.handleBlur}
+        error={formik.touched.email && Boolean(formik.errors.email)}
+        helperText={formik.touched.email && formik.errors.email}
+      />
 
-        <PasswordInput
-          password={formik.values.password}
-          handlePassword={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
-        />
+      <PasswordInput
+        password={formik.values.password}
+        handlePassword={formik.handleChange}
+        onBlur={formik.handleBlur}
+        error={formik.touched.password && Boolean(formik.errors.password)}
+        helperText={formik.touched.password && formik.errors.password}
+      />
 
-        <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
-          label="Remember me"
-        />
-        <Button color="primary" variant="contained" fullWidth type="submit">
-          Submit
-        </Button>
+      <FormControlLabel
+        control={<Checkbox value="remember" color="primary" />}
+        label="Remember me"
+      />
+      <Button color="primary" variant="contained" fullWidth type="submit">
+        Submit
+      </Button>
 
-        <a className="link-forgot">Forgot your password?</a>
-      </form>
-    </div>
+      <a className="link-forgot">Forgot your password?</a>
+    </form>
   );
 }

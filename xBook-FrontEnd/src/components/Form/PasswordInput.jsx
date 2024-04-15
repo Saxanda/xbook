@@ -18,7 +18,6 @@ export default function PasswordInput ({ password, handlePassword, onBlur, error
       label="Password"
       value={password}
       onChange={handlePassword}
-      required={true}
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
