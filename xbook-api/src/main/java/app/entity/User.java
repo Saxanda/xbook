@@ -28,5 +28,5 @@ public class User extends AbstractEntity {
     private String photo;
     private String avatar;
     private String address;
-    boolean confirmationToken;// New User confirmation by email
+    private String confirmationToken;// New User confirmation by email
 }

@@ -27,5 +27,6 @@ public class ConfirmationController {
         // Providing feedback to the user
         return ResponseEntity.ok("Email confirmed successfully");
     }
+
 }
 

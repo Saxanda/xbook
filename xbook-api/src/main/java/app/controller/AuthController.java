@@ -8,6 +8,7 @@ import app.dto.response.LoginResponse;
 import app.dto.response.UserRegistrationResponse;
 import app.entity.User;
 import app.security.JwtTokenService;
+import app.service.EmailConfirmationService;
 import app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,10 +40,14 @@ public class AuthController {
             User user = userMapper.userRegistrationRequestToUser(userRegistrationRequest);
             User createdUser = userService.createUser(user);
             UserRegistrationResponse userRegistrationResponse = userMapper.userToUserRegistrationResponse(createdUser);
+
+            // Trigger email confirmation process using EmailConfirmationService class
+            String confirmationToken = EmailConfirmationService.generateConfirmationToken();
+            EmailConfirmationService.sendConfirmationEmail(createdUser.getEmail(), confirmationToken);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(userRegistrationResponse);
         }
     }
-
     @PostMapping("login")
     public ResponseEntity<LoginResponse> handleLogin(@RequestBody LoginRequest rq) {
         return userService.findByEmail(rq.getEmail()).filter(user -> encoder.matches(rq.getPassword(), user.getPassword()))
