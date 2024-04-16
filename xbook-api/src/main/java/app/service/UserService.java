@@ -53,8 +53,9 @@ public class UserService {
         User user = findByConfirmationToken(confirmationToken);
         if (user != null) {
             // Mark the email as confirmed
-            user.setConfirmationToken(confirmationToken);
+            user.setConfirmationToken(null);
             // Update confirmation status
+            user.setActivated(true);
             saveUser(user);
         }
         return user;
