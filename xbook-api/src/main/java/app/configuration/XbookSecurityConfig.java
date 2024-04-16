@@ -2,6 +2,7 @@ package app.configuration;
 
 
 import app.repository.UserRepository;
+import app.security.JwtAuthenticationEntryPoint;
 import app.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -25,6 +26,7 @@ public class XbookSecurityConfig {
 
     private final UserRepository userRepository;
     private final JwtFilter jwtFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -33,6 +35,8 @@ public class XbookSecurityConfig {
                 .headers(headers -> headers.frameOptions().disable());
 
         http
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
                 .authorizeRequests(authorize -> authorize
                         .requestMatchers(
                                 AntPathRequestMatcher.antMatcher("/"),

@@ -45,7 +45,7 @@ public class JwtTokenService {
         try {
             return Optional.of(Integer.parseInt(raw));
         } catch (NumberFormatException ex) {
-            log.error("User Id parse Error ", ex.getMessage());
+            log.error("User Id parse Error {}", ex.getMessage());
             return Optional.empty();
         }
     }

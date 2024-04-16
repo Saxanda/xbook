@@ -48,7 +48,7 @@ public class AuthController {
         return userService.findByEmail(rq.getEmail()).filter(user -> encoder.matches(rq.getPassword(), user.getPassword()))
                 .map(user -> tokenService.generateToken(Math.toIntExact(user.getId())))
                 .map(LoginResponse::ok).map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.valueOf(403))
+                .orElse(ResponseEntity.status(HttpStatus.valueOf(401))
                         .body(LoginResponse.error("wrong email/password combination")));
     }
 
