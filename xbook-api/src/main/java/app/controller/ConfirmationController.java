@@ -1,11 +1,10 @@
 package app.controller;
 
-import app.entity.User;
 import app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -19,8 +18,8 @@ public class ConfirmationController {
         this.userService = userService;
     }
 
-    @GetMapping("/confirm-email/{token}")
-    public ResponseEntity<String> confirmEmail(@PathVariable("token") String confirmationToken) {
+    @GetMapping("/confirm-email")
+    public ResponseEntity<String> confirmEmail(@RequestParam("token") String confirmationToken) {
         try {
             boolean isConfirmed = userService.processEmailConfirmation(confirmationToken).isActivated();
             if (isConfirmed) {

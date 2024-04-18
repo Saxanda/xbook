@@ -37,7 +37,7 @@ public class EmailConfirmationService {
 
         // Email content
         String subject = "Email Confirmation Required ";
-        String confirmationLink = "https://localhost:8080/confirm-email?token=" + confirmationToken;
+        String confirmationLink = "http://localhost:8080/confirm-email?token=" + confirmationToken;
         String body = "Click the following link to confirm your email: " + confirmationLink;
 
         // Set up JavaMail properties
