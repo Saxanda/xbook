@@ -1,26 +1,17 @@
 import React from "react";
-import { useState } from "react";
-import { Field, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as yup from "yup";
-import { Button } from "@mui/material";
-import { TextField } from "@mui/material";
+import { Button, TextField, Box, InputLabel, MenuItem, FormControl, Select, FormHelperText} from "@mui/material";
+
 import PasswordInput from "../Form/PasswordInput";
 import EmailInput from "../Form/EmailInput";
-import "../Login/Login.scss";
-import { Paper } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { FormHelperText } from "@mui/material";
-import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
+import "../Login/Login.scss";
 
 export default function SignInForm() {
+
+  
   const validationSchema = yup.object({
     email: yup
       .string("Enter your email")
@@ -33,6 +24,10 @@ export default function SignInForm() {
     firstName: yup.string().required("First name is required"),
     lastName: yup.string().required("Last name is required"),
     gender: yup.string().required("Gender is required"),
+    date: yup
+      .date()
+      .max(new Date(Date.now() - 567648000000), "You must be at least 18 years")
+      .required("Required"),
   });
 
   const formik = useFormik({
@@ -78,32 +73,17 @@ export default function SignInForm() {
       </Box>
 
       <Box className="flex">
-
-      {/* <Field name="date" label="Date of birth" >
-      
-      </Field> */}
-      
-      
-      
-      
-      
-
-    
-         {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DemoContainer components={['DatePicker']}> 
-          <DatePicker
+        <div>
+          <TextField
             id="date"
-            label="Date of birth"
-            name="date"
-         value={formik.values.date}
-
-         onChange={console.log(formik.values.date)}
-      onChange={date=>formik.setFieldValue("date",date)}
-            slotProps={{ textField: { variant: 'outlined' } }}
-            slotPropst={(params) => <TextField {...params} />}
+            label="Date"
+            type="date"
+            {...formik.getFieldProps("date")}
+            error={formik.touched.date && Boolean(formik.errors.date)}
+            helperText={formik.touched.date && formik.errors.date}
           />
-          </DemoContainer>
-        </LocalizationProvider>  */}
+        </div>
+      
 
         <FormControl
           sx={{
@@ -120,13 +100,14 @@ export default function SignInForm() {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.gender && Boolean(formik.errors.gender)}
-            // helperText={formik.touched.gender && formik.errors.gender}
           >
             <MenuItem value={"man"}>Men</MenuItem>
             <MenuItem value={"woman"}>Woman</MenuItem>
+            <MenuItem value={"other"}>Other</MenuItem>
+
           </Select>
 
-          <FormHelperText>
+          <FormHelperText style={{color: 'red'}}>
             {formik.touched.gender && formik.errors.gender}
           </FormHelperText>
         </FormControl>

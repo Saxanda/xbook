@@ -10,24 +10,12 @@ import SwitchSelector from "react-switch-selector";
 
 
 export default function LoginPage() {
+  
   const [checked, setChecked] = useState(false);
   const handleChange = () => {
     setChecked((prevState)=>!prevState);
   
   };
-
-
-
-  // const switchOptions = {
-  //   OPTION1: "Log in",
-  //   OPTION2: "Sign in",
-  // };
-
-  // const [activeOption, setActiveOption] = useState(switchOptions.OPTION1);
-
-  // const handleSwitchClick = (switchOptions) => {
-  //   setActiveOption(switchOptions);
-  // };
 
   const options = [
     {
