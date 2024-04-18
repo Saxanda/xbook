@@ -8,34 +8,32 @@ import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Properties;
 import java.util.UUID;
 
-@Component
+
 @Service
 public class EmailConfirmationService {
 
-    @Value(value = "${spring.mail.username")
+    @Value("${spring.mail.host}")
+    private String host;
+    @Value("${spring.mail.port}")
+    private int port;
+    @Value("${spring.mail.username}")
     private String emailUsername;
-
     @Value(value = "${spring.mail.password}")
     private String emailPassword;
+
     public String generateConfirmationToken() {
         return UUID.randomUUID().toString();
     }
 
     public void sendConfirmationEmail(String email, String confirmationToken) {
         // Email properties
-        String host = System.getenv("spring.mail.host");
-        int port = Integer.parseInt(System.getenv("spring.mail.port"));
         String fromEmail = emailUsername;
-
 
         // Email content
         String subject = "Email Confirmation Required ";
@@ -44,11 +42,14 @@ public class EmailConfirmationService {
 
         // Set up JavaMail properties
         Properties properties = new Properties();
+
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.transport.protocol", "smtp");
         properties.put("mail.smtp.host", host);
         properties.put("mail.smtp.port", port);
         // Create a session with authentication
+
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -74,6 +75,7 @@ public class EmailConfirmationService {
 
             // Send message
             Transport.send(message);
+
             System.out.println("Confirmation email sent successfully.");
         } catch (MessagingException mex) {
             mex.printStackTrace();

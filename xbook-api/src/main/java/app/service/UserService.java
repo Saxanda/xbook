@@ -23,6 +23,7 @@ public class UserService {
         try {
             user.setPassword(encoder.encode(user.getPassword()));
             user.setRole("USER");
+            System.out.println("Save user to database :" +user);
             return userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("This user already exists.");
