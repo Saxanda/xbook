@@ -2,6 +2,7 @@ package app.controller;
 
 import app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,9 +24,9 @@ public class ConfirmationController {
         try {
             boolean isConfirmed = userService.processEmailConfirmation(confirmationToken).isActivated();
             if (isConfirmed) {
-                //TODO Frontend needs to apply the page
-                return ResponseEntity.ok("Email confirmed successfully.");
-                //response.sendRedirect("https://localhost:8080/confirmation-success");
+
+                return ResponseEntity.status(HttpStatus.FOUND).
+                        header("Location", "http://localhost:5173/login").build();
             } else {
                 return ResponseEntity.badRequest().body("Invalid or expired confirmation token.");
             }
