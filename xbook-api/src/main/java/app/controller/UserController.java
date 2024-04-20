@@ -36,7 +36,7 @@ public class UserController {
     }
     // Get a single user by ID
     @GetMapping("/{id}")
-    public ResponseEntity<UserDetailsResponse> getUserById(@PathVariable Integer id) {
+    public ResponseEntity<UserDetailsResponse> getUserById(@PathVariable Long id) {
         return userService.findById(id)
                 .map(userMapper::userDetailsResponse)
                 .map(ResponseEntity::ok)
@@ -44,7 +44,7 @@ public class UserController {
     }
     // Update user details by ID
     @PutMapping("/{id}")
-    public ResponseEntity<UserDetailsResponse> updateUserById(@PathVariable Integer id, @RequestBody UpdateUserRequest request) {
+    public ResponseEntity<UserDetailsResponse> updateUserById(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
         User updatedUser = userService.updateUser(id, request);
         if (updatedUser == null) {
             return ResponseEntity.notFound().build();
@@ -55,7 +55,7 @@ public class UserController {
     @GetMapping("/search")
     public List<UserDetailsResponse> searchUsers(@RequestParam(required = false) String name) {
         return userService.searchUsersByName(name).stream()
-                .map(userMapper::toUserDetailsResponse)
+                .map(userMapper::userDetailsResponse)
                 .collect(Collectors.toList());
     }
 }

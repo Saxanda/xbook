@@ -24,14 +24,14 @@ public class UserService {
         try {
             user.setPassword(encoder.encode(user.getPassword()));
             user.setRole("USER");
-            System.out.println("Save user to database :" +user);
+            System.out.println("Save user to database :" + user);
             return userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("This user already exists.");
         }
     }
 
-    public Optional<User> findById(Integer id) {
+    public Optional<User> findById(Long id) {
         return Optional.ofNullable(userRepository.findUserById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found User with id = " + id)));
     }
@@ -45,17 +45,19 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public boolean isEmailExisting(String email){
+    public boolean isEmailExisting(String email) {
         return userRepository.existsUserByEmail(email);
     }
 
     public void saveUser(User user) {
         userRepository.save(user);
     }
+
     public User findByConfirmationToken(String confirmationToken) {
 
         return userRepository.findByConfirmationToken(confirmationToken);
     }
+
     public User processEmailConfirmation(String confirmationToken) {
         User user = findByConfirmationToken(confirmationToken);
         if (user != null) {
@@ -68,7 +70,25 @@ public class UserService {
         return user;
     }
 
-    public User updateUser(Integer id, UpdateUserRequest request) {
-        return null;
+    public User updateUser(Long id, UpdateUserRequest request) {
+
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        if (optionalUser.isPresent()) {
+            //Update the user fields
+            User user = optionalUser.get();
+            user.setName(request.getName()); // user name update
+            user.setSurname(request.getSurname()); // user surname update
+            user.setEmail(request.getEmail()); // user email update
+
+            return userRepository.save(user);
+        } else {
+            // Handle the case where the user with the given id does not exist
+            throw new ResourceNotFoundException("User not found with id: " + id);
+        }
+    }
+
+    public List<User> searchUsersByName(String name) {
+        return userRepository.findByNameContaining(name);
     }
 }
