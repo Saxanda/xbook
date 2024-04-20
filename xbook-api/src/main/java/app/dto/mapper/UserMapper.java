@@ -1,6 +1,7 @@
 package app.dto.mapper;
 
 import app.dto.request.UserRegistrationRequest;
+import app.dto.response.UserDetailsResponse;
 import app.dto.response.UserRegistrationResponse;
 import app.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -20,4 +21,7 @@ public class UserMapper {
         return modelMapper.map(user, UserRegistrationResponse.class);
     }
 
+    public UserDetailsResponse userDetailsResponse(User user) {
+        return modelMapper.map(user, UserDetailsResponse.class);
+    }
 }

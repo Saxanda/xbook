@@ -1,6 +1,7 @@
 package app.service;
 
 
+import app.dto.request.UpdateUserRequest;
 import app.entity.User;
 import app.exception.ResourceNotFoundException;
 import app.repository.UserRepository;
@@ -65,5 +66,9 @@ public class UserService {
             saveUser(user);
         }
         return user;
+    }
+
+    public User updateUser(Integer id, UpdateUserRequest request) {
+        return null;
     }
 }
