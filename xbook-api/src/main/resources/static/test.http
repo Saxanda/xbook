@@ -1,0 +1,55 @@
+### Swagger interface
+POST http://localhost:8080/swagger-ui/index.html
+
+### registration with non-unique email
+POST http://localhost:8080/api/v1/auth/registration
+Content-Type: application/json
+
+{
+  "name": "Mykola",
+  "surname": "Heroi",
+  "email": "john.doe@example.com",
+  "password": "Password123",
+  "dob": "1995-11-21",
+  "gender": "male"
+}
+### registration with unique email
+POST http://localhost:8080/api/v1/auth/registration
+Content-Type: application/json
+
+{
+  "name": "Mykola",
+  "surname": "Heroi",
+  "email": "mykola.heroi@example.com",
+  "password": "Password123",
+  "dob": "1995-11-21",
+  "gender": "male"
+}
+### login via email and fail
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "mykola.heroi@example.com",
+  "password": "Password123"
+}
+### login via email and pass
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com",
+  "password": "pass111"
+}
+### registration with my email
+POST http://localhost:8080/api/v1/auth/registration
+Content-Type: application/json
+
+{
+  "name": "Ruslan",
+  "surname": "Sakhanda",
+  "email": "saxanda@gmail.com",
+  "password": "Password123",
+  "dob": "1995-11-21",
+  "gender": "male"
+}
