@@ -1,5 +1,6 @@
 package app.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -14,14 +15,15 @@ import lombok.Data;
 @Table(name = "comments")
 public class Comment extends AbstractEntity {
 
-    // Other fields and mappings...
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
     @Lob
     @Column(name = "content", columnDefinition = "CLOB")
     private String content;
 
-
+    @Column(name = "post_id")
+    private Long postID;
 
 }
