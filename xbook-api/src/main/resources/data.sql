@@ -1,3 +1,5 @@
+
+
 INSERT INTO users (name, surname, email, password, date_of_birth, gender, role, photo, avatar, address)
 VALUES ('John', 'Doe', 'john.doe@example.com', '$2a$10$iwRji5mPlwatlHuKkof20Ot/pQfuUIqrpEviIRk4gMGdeH1XWaavm', '1990-01-01', 'male', 'USER', 'photo.jpg', 'avatar.jpg', '123 Main Street');
 

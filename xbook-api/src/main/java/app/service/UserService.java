@@ -25,6 +25,7 @@ public class UserService {
         try {
             user.setPassword(encoder.encode(user.getPassword()));
             user.setRole("USER");
+            System.out.println("Save user to database :" +user);
             return userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("This user already exists.");
@@ -49,9 +50,30 @@ public class UserService {
         return userRepository.existsUserByEmail(email);
     }
 
+
     // Returns specific User based on a JWT token in request
     public User getAuthUser() {
         JwtUserDetails principal = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return principal.getUser();
+    }
+
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
+    public User findByConfirmationToken(String confirmationToken) {
+
+        return userRepository.findByConfirmationToken(confirmationToken);
+    }
+    public User processEmailConfirmation(String confirmationToken) {
+        User user = findByConfirmationToken(confirmationToken);
+        if (user != null) {
+            // Mark the email as confirmed
+            user.setConfirmationToken(null);
+            // Update confirmation status
+            user.setActivated(true);
+            saveUser(user);
+        }
+        return user;
+
     }
 }
