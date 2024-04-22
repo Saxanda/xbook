@@ -25,5 +25,11 @@ public class GlobalExceptionHandler {
         log.warn("DataIntegrityViolationException: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<String> handleGeneralException(Exception ex) {
+        // In case server error during email confirmation process
+        return ResponseEntity.internalServerError().body("An internal server error occurred.");
+    }
 
 }
