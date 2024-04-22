@@ -1,7 +1,10 @@
 package app.dto.request;
 
-public class CommentRequest {
-    private String text;
+import lombok.Data;
 
-    // Getters and setters...
+@Data
+public class CommentRequest {
+    private String content;
+    private Long userID;
+    private Long postID;
 }
