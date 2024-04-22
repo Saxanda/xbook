@@ -1,6 +1,6 @@
 .form{
     display: flex;
-	  flex-direction: column;
+	flex-direction: column;
     gap: 20px; 
     background-color: #fff;
     border: none;
@@ -68,3 +68,15 @@ p{
 font-size: 20px;
 }
 
+.modal-box{
+position: absolute;
+width: 600px;
+height: 200px;
+top: 50%;
+left:50%;
+transform: translate(-50%, -50%);
+background-color: rgb(255, 255, 255);;
+box-shadow:rgba(149, 141, 141, 0.319) 0px 11px 15px -7px, rgba(230, 215, 215, 0.232) 0px 24px 38px 3px, rgba(246, 231, 231, 0.306) 0px 9px 46px 8px;
+border: none;
+padding: 20px;
+}

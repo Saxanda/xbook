@@ -1,15 +1,24 @@
 import React from "react";
+import { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { Button, TextField, Box, InputLabel, MenuItem, FormControl, Select, FormHelperText} from "@mui/material";
 
 import PasswordInput from "../Form/PasswordInput";
 import EmailInput from "../Form/EmailInput";
+import Modal from "../Modal/ModalLogin"
+
+
+import useAxios from "../../helpers/UseAxios";
+
 
 
 import "../Login/Login.scss";
-
 export default function SignInForm() {
+
+    const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   
   const validationSchema = yup.object({
@@ -21,10 +30,10 @@ export default function SignInForm() {
       .string("Enter your password")
       .min(8, "Password should be of minimum 8 characters length")
       .required("Password is required"),
-    firstName: yup.string().required("First name is required"),
-    lastName: yup.string().required("Last name is required"),
+    name: yup.string().required("First name is required"),
+    surname: yup.string().required("Last name is required"),
     gender: yup.string().required("Gender is required"),
-    date: yup
+    dob: yup
       .date()
       .max(new Date(Date.now() - 567648000000), "You must be at least 18 years")
       .required("Required"),
@@ -32,55 +41,61 @@ export default function SignInForm() {
 
   const formik = useFormik({
     initialValues: {
-      firstName: "",
-      lastName: "",
-      date: new Date(),
+      name: "",
+      surname: "",
+      dob: new Date(),
       email: "",
       password: "",
       gender: "",
     },
     validationSchema: validationSchema,
+
+    // onSubmit: (values)=>{
+    //   console.log(values);
+    // }
+
     onSubmit: (values) => {
-      console.log(JSON.stringify(values, null, 2));
-    },
-  });
+      useAxios('http://localhost:8080/api/v1/auth/registration', values)
+    }
+  
+  })
 
   return (
     <form onSubmit={formik.handleSubmit} className="form">
       <Box className="flex">
         <TextField
           fullWidth
-          id="firstName"
-          name="firstName"
+          id="name"
+          name="name"
           label="First name"
-          value={formik.values.firstName}
+          value={formik.values.name}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-          helperText={formik.touched.firstName && formik.errors.firstName}
+          error={formik.touched.name && Boolean(formik.errors.name)}
+          helperText={formik.touched.name && formik.errors.name}
         />
         <TextField
           fullWidth
-          id="lastName"
-          name="lastName"
+          id="surname"
+          name="surname"
           label="Last name"
-          value={formik.values.lastName}
+          value={formik.values.surname}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-          helperText={formik.touched.lastName && formik.errors.lastName}
+          error={formik.touched.surname && Boolean(formik.errors.surname)}
+          helperText={formik.touched.surname && formik.errors.surname}
         />
       </Box>
 
       <Box className="flex">
         <div>
           <TextField
-            id="date"
+            id="dob"
             label="Date"
             type="date"
-            {...formik.getFieldProps("date")}
-            error={formik.touched.date && Boolean(formik.errors.date)}
-            helperText={formik.touched.date && formik.errors.date}
+            {...formik.getFieldProps("dob")}
+            error={formik.touched.dob && Boolean(formik.errors.dob)}
+            helperText={formik.touched.dob && formik.errors.dob}
           />
         </div>
       
@@ -128,9 +143,18 @@ export default function SignInForm() {
         helperText={formik.touched.password && formik.errors.password}
       />
 
-      <Button color="primary" variant="contained" fullWidth type="submit">
+      <Button color="primary" variant="contained" fullWidth type="submit" 
+      onClick={handleOpen}
+      >
         Submit
       </Button>
+
+      <Modal
+      handleClose={handleClose}
+      open={open}
+      title={'Registration was successful'}
+      text={`To complete the registration, go to the mail ${formik.values.email} for confirmation`}
+      />
     </form>
   );
 }

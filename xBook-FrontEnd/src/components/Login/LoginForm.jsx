@@ -1,13 +1,21 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { Button, Checkbox, FormControlLabel, Box, Paper } from "@mui/material";
+import { Button, Checkbox, FormControlLabel, Link} from "@mui/material";
 
 import PasswordInput from "../Form/PasswordInput";
 import EmailInput from "../Form/EmailInput";
+
+
+
 import "./Login.scss";
+import useAxios from "../../helpers/UseAxios";
 
 export default function LoginForm() {
+  const navigate = useNavigate();
+
+
   const validationSchema = yup.object({
     email: yup
       .string("Enter your email")
@@ -25,10 +33,19 @@ export default function LoginForm() {
       password: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      console.log(JSON.stringify(values, null, 2));
-    },
-  });
+    onSubmit: 
+    // (values)=>{
+    //   console.log(values);
+    // }
+    
+    
+    
+    (values) => {
+      useAxios('http://localhost:8080/api/v1/auth/login', values)
+    }
+  })
+    
+  
 
   return (
     <form onSubmit={formik.handleSubmit} className="form">
@@ -55,8 +72,10 @@ export default function LoginForm() {
       <Button color="primary" variant="contained" fullWidth type="submit">
         Submit
       </Button>
-
-      <a className="link-forgot">Forgot your password?</a>
+      <Link href="" underline="hover" onClick={() => {navigate('/forgot-page')}}>
+        Forgot your password?
+      </Link>
+      
     </form>
   );
 }
