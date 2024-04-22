@@ -31,6 +31,6 @@ public class Comment extends AbstractEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id", referencedColumnName = "id")  // refers to Post's primary key
-    private Post post;
+    private Post post; // every comment must be associated with a post
 
 }
