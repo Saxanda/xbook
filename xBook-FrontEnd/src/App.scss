@@ -1,1 +1,139 @@
+.App {
+    display: flex;
+    font-family: Arial, sans-serif;
+    user-select: none;
+    background-color: #f3f3f3;
+    
+  }
 
+.title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sattings{
+    width: 28px;
+    height: 28px;
+    cursor: pointer; 
+  }
+
+.savedObject{
+    display: flex;
+    align-items: center;
+    
+    cursor: pointer;
+    padding: 2px;
+    background-color: #f3f3f3;
+    border-radius: 8px;
+}
+
+  .objImg{
+    width: 28px;
+    height: 28px; 
+   padding-right: 4px;
+  }
+
+  .sidebar {
+    width: 320px;
+    height: 100vh;
+    padding: 20px;
+    background-color: #ffffff;
+    border-right: 1px solid rgba(0, 0, 0, 0.153);
+    box-shadow: 0 0px 0px rgba(0, 0, 0, .1), 0 2px 4px rgba(0, 0, 0, .1);  
+  }
+
+.collections{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f3f3f3;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+  .plus{
+    width: 28px;
+    height: 28px;
+    padding: 8px;
+  }
+  
+  .sidebar h2 {
+    font-size: 25px;
+  }
+  
+  .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    flex-grow: 1;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.153);
+    border-top: 1px solid rgba(0, 0, 0, 0.153);
+  }
+  
+  .sidebar li {
+    margin-top: 10px;
+    cursor: pointer;
+    list-style: none;  
+  }
+
+  .sidebar li:hover {
+    color: #7f7f7f; 
+  }
+
+.collectionsNew{
+    padding-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+  .delete-btn{
+    border-radius: 8px;
+  }
+  
+  .bookmark-list {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 20px;
+    
+  }
+  
+  .bookmark-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100vh;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    
+  }
+  
+  .bookmark-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+  }
+  
+  .bookmark-card div {
+    padding: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    .bookmark-card {
+      width: calc(50% - 20px);
+      
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .bookmark-card {
+      width: 100%;
+      
+    }
+  }
+  
