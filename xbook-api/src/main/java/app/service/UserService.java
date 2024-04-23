@@ -4,8 +4,10 @@ package app.service;
 import app.entity.User;
 import app.exception.ResourceNotFoundException;
 import app.repository.UserRepository;
+import app.security.JwtUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +50,13 @@ public class UserService {
         return userRepository.existsUserByEmail(email);
     }
 
+
+    // Returns specific User based on a JWT token in request
+    public User getAuthUser() {
+        JwtUserDetails principal = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return principal.getUser();
+    }
+
     public void saveUser(User user) {
         userRepository.save(user);
     }
@@ -65,5 +74,6 @@ public class UserService {
             saveUser(user);
         }
         return user;
+
     }
 }
