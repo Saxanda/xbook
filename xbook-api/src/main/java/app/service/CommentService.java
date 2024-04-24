@@ -25,7 +25,7 @@ public class CommentService {
     private final CommentMapper commentMapper;
 
     public CommentResponse createComment(CommentRequest commentRequest) {
-        Comment comment = commentMapper.toComment(commentRequest);
+        Comment comment = commentMapper.toCommentRequest(commentRequest);
         comment.setUser(userRepository.findById(commentRequest.getUserID())
                 .orElseThrow(() -> new IllegalArgumentException("User not found")));
         comment.setPost(postRepository.findById(commentRequest.getPostID())
@@ -51,7 +51,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("Comment not found"));
         comment.setContent(commentRequest.getContent());
-        // Optionally update other fields if applicable
+        // Other optionals to add ...
         commentRepository.save(comment);
         return commentMapper.toCommentResponse(comment);
     }

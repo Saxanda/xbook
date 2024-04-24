@@ -13,7 +13,7 @@ public class CommentMapper {
         this.modelMapper = modelMapper;
     }
 
-    public Comment toComment(CommentRequest request) {
+    public Comment toCommentRequest(CommentRequest request) {
         return modelMapper.map(request, Comment.class);
     }
 
