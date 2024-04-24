@@ -101,4 +101,26 @@ public class UserService {
     public List<User> searchUsersByName(String name) {
         return userRepository.findByNameContaining(name);
     }
+
+    public User updateUser(Long id, UpdateUserRequest request) {
+
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        if (optionalUser.isPresent()) {
+            //Update the user fields
+            User user = optionalUser.get();
+            user.setName(request.getName()); // user name update
+            user.setSurname(request.getSurname()); // user surname update
+            user.setEmail(request.getEmail()); // user email update
+
+            return userRepository.save(user);
+        } else {
+            // Handle the case where the user with the given id does not exist
+            throw new ResourceNotFoundException("User not found with id: " + id);
+        }
+    }
+
+    public List<User> searchUsersByName(String name) {
+        return userRepository.findByNameContaining(name);
+    }
 }
