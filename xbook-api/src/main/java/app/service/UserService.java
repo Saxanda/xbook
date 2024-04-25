@@ -7,11 +7,10 @@ import app.repository.UserRepository;
 import app.security.JwtUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -46,24 +45,6 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-
-    public Optional<User> getAuthUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            Object principal = authentication.getPrincipal();
-            if (principal instanceof UserDetails) {
-                String email= ((UserDetails) principal).getUsername();
-                // Method to find a user by username (email) in your UserRepository
-                return userRepository.findUserByEmail(email);
-            }
-        }
-        return null; // In case throw an exception
-    }
-
-    public boolean isEmailExisting(String email) {
-        return userRepository.existsUserByEmail(email);
-    }
-
 
     // Returns specific User based on a JWT token in request
     public User getAuthUser() {
@@ -114,46 +95,4 @@ public class UserService {
         return userRepository.findByNameContaining(name);
     }
 
-    public User updateUser(Long id, UpdateUserRequest request) {
-
-        Optional<User> optionalUser = userRepository.findById(id);
-
-        if (optionalUser.isPresent()) {
-            //Update the user fields
-            User user = optionalUser.get();
-            user.setName(request.getName()); // user name update
-            user.setSurname(request.getSurname()); // user surname update
-            user.setEmail(request.getEmail()); // user email update
-
-            return userRepository.save(user);
-        } else {
-            // Handle the case where the user with the given id does not exist
-            throw new ResourceNotFoundException("User not found with id: " + id);
-        }
-    }
-
-    public List<User> searchUsersByName(String name) {
-        return userRepository.findByNameContaining(name);
-    }
-
-    public List<User> searchUsersByName(String name) {
-        return userRepository.findByNameContaining(name);
-    }
-
-    public User updateUser(Long id, UpdateUserRequest request) {
-        Optional<User> optionalUser = userRepository.findById(id);
-
-        if (optionalUser.isPresent()) {
-            //Update the user fields
-            User user = optionalUser.get();
-            user.setName(request.getName()); // user name update
-            user.setSurname(request.getSurname()); // user surname update
-            user.setEmail(request.getEmail()); // user email update
-
-            return userRepository.save(user);
-        } else {
-            // Handle the case where the user with the given id does not exist
-            throw new ResourceNotFoundException("User not found with id: " + id);
-        }
-    }
 }

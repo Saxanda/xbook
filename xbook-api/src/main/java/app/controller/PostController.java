@@ -36,7 +36,7 @@ public class PostController {
     public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest postRequest,
                                                    @RequestParam(required = false) Long originalPostId) {
 
-        Optional<User> authUserOptional = userService.getAuthUser();
+        Optional<User> authUserOptional = Optional.ofNullable(userService.getAuthUser());
         if (authUserOptional.isEmpty()) {
             // Unauthorized access
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
