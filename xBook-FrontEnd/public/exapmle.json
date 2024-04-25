@@ -1,0 +1,82 @@
+{
+    "messages": [
+      {
+        "type": "output",
+        "text": "EXAPMLE",
+        "time": "13:12:00",
+        "date": "12.02.2022"
+      },
+      {
+        "type": "output",
+        "text": "EXAPMLE",
+        "time": "15:19:00",
+        "date": "24.04.2023"
+      },
+      {
+        "type": "input",
+        "text": "EXAPMLE",
+        "time": "15:20:00",
+        "date": "24.04.2024"
+      },
+      {
+        "type": "input",
+        "text": "EXAPMLE",
+        "time": "15:23:00",
+        "date": "24.04.2024"
+      },
+      {
+        "type": "input",
+        "text": "EXAPMLE",
+        "time": "15:24:00",
+        "date": "24.04.2024"
+      },
+      {
+        "type": "output",
+        "text": "EXAPMLE",
+        "time": "15:25:00",
+        "date": "24.04.2024"
+      },
+      {
+        "type": "output",
+        "text": "EXAPMLE",
+        "time": "15:29:00",
+        "date": "24.04.2024"
+      },
+      {
+        "type": "input",
+        "text": "EXAPMLE",
+        "time": "15:30:00",
+        "date": "25.04.2024"
+      },
+      {
+        "type": "input",
+        "text": "EXAPMLE",
+        "time": "15:31:00",
+        "date": "25.04.2024"
+      },
+      {
+        "type": "input",
+        "text": "EXAPMLE",
+        "time": "15:32:00",
+        "date": "25.04.2024"
+      },
+      {
+        "type": "output",
+        "text": "EXAPMLE",
+        "time": "15:33:00",
+        "date": "25.04.2024"
+      },
+      {
+        "type": "output",
+        "text": "EXAPMLE",
+        "time": "15:34:00",
+        "date": "25.04.2024"
+      },
+      {
+        "type": "input",
+        "text": "example last message",
+        "time": "15:47:00",
+        "date": "26.04.2024"
+      }
+    ]
+}

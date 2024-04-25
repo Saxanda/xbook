@@ -1,0 +1,58 @@
+{
+    "messages": [
+      {
+        "type": "output",
+        "text": "example message 1",
+        "time": "6:23:00",
+        "date": "21.10.2020"
+      },
+      {
+        "type": "output",
+        "text": "example message 2",
+        "time": "8:52:00",
+        "date": "29.07.2021"
+      },
+      {
+        "type": "output",
+        "text": "example message 3",
+        "time": "4:00:00",
+        "date": "22.06.2022"
+      },
+      {
+        "type": "input",
+        "text": "example message 4",
+        "time": "15:20:00",
+        "date": "25.04.2023"
+      },
+      {
+        "type": "input",
+        "text": "example message 5",
+        "time": "15:21:00",
+        "date": "25.04.2024"
+      },
+      {
+        "type": "input",
+        "text": "example message 6",
+        "time": "17:34:00",
+        "date": "26.04.2024"
+      },
+      {
+        "type": "output",
+        "text": "example message 7",
+        "time": "15:25:00",
+        "date": "24.04.2024"
+      },
+      {
+        "type": "output",
+        "text": "example message 8",
+        "time": "15:29:00",
+        "date": "24.04.2024"
+      },
+      {
+        "type": "input",
+        "text": "example message 9",
+        "time": "15:30:00",
+        "date": "25.04.2024"
+      }
+    ]
+}

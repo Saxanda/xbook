@@ -1,0 +1,14 @@
+{
+    "users": [
+        {
+            "name": "Daria",
+            "image": "./image/exampleImage.jpg",
+            "jsonUrl": "../../../../public/exapmle.json"
+        },
+        {
+            "name": "Not a Daria",
+            "image": "./image/exampleImage2.jpg",
+            "jsonUrl": "../../../../public/secondexample.json"
+        }
+    ]
+}
