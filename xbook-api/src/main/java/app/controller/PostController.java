@@ -3,6 +3,7 @@ package app.controller;
 
 import app.dto.request.PostRequest;
 import app.dto.response.PostResponse;
+
 import app.entity.User;
 import app.service.PostService;
 import app.service.UserService;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/api/v1/posts")

@@ -24,7 +24,7 @@ public class Comment extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
-
+  
     @Lob
     @Column(name = "content", columnDefinition = "CLOB")
     private String content;
