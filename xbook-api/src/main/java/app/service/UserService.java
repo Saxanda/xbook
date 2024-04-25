@@ -42,6 +42,10 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found User with email = " + email));
     }
 
+    public boolean isEmailExisting(String email) {
+        return userRepository.existsUserByEmail(email);
+    }
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
