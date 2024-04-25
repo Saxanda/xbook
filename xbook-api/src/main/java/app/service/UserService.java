@@ -1,6 +1,5 @@
 package app.service;
 
-
 import app.dto.request.UpdateUserRequest;
 import app.entity.User;
 import app.exception.ResourceNotFoundException;
@@ -47,6 +46,7 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
     public Optional<User> getAuthUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
@@ -59,6 +59,7 @@ public class UserService {
         }
         return null; // In case throw an exception
     }
+
     public boolean isEmailExisting(String email) {
         return userRepository.existsUserByEmail(email);
     }
@@ -68,7 +69,6 @@ public class UserService {
     }
 
     public User findByConfirmationToken(String confirmationToken) {
-
         return userRepository.findByConfirmationToken(confirmationToken);
     }
 
@@ -84,8 +84,11 @@ public class UserService {
         return user;
     }
 
-    public User updateUser(Long id, UpdateUserRequest request) {
+    public List<User> searchUsersByName(String name) {
+        return userRepository.findByNameContaining(name);
+    }
 
+    public User updateUser(Long id, UpdateUserRequest request) {
         Optional<User> optionalUser = userRepository.findById(id);
 
         if (optionalUser.isPresent()) {
@@ -100,9 +103,5 @@ public class UserService {
             // Handle the case where the user with the given id does not exist
             throw new ResourceNotFoundException("User not found with id: " + id);
         }
-    }
-
-    public List<User> searchUsersByName(String name) {
-        return userRepository.findByNameContaining(name);
     }
 }
