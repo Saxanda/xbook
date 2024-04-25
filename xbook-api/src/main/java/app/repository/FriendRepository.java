@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 @Repository
 public interface FriendRepository extends JpaRepository<Friend, Long> {
-   Optional<Friend> findByUser_IdAndFriend_Id(Long userId, Long friendId);
-   boolean existsByUser_IdAndFriend_Id(Long userId, Long friendId);
+   Optional<Friend> findByUserIdAndFriendId(Long userId, Long friendId);
+   boolean existsByUserIdAndFriendId(Long userId, Long friendId);
 }

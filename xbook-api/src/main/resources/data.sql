@@ -7,6 +7,8 @@ VALUES ('Alice', 'Smith', 'alice.smith@example.com', '$2a$10$7nnuayAu1EP9DnxjSYz
 INSERT INTO users (name, surname, email, password, date_of_birth, gender, role, photo, avatar, address, is_activated)
 VALUES ('Bob', 'Johnson', 'bob.johnson@example.com', '$2a$10$YyQEGCym7XcBy.qlR.vAXu7KL4EyriKFeiyE3x/f43zvT5z/FXS0S', '1978-10-30', 'male', 'USER', 'bob.jpg', 'avatar.jpg', '789 Oak Avenue', TRUE);
 
-INSERT INTO friends (user_id, friend_id, status) VALUES (1, 2, 'PENDING');
 INSERT INTO friends (user_id, friend_id, status) VALUES (1, 3, 'PENDING');
+INSERT INTO friends (user_id, friend_id, status) VALUES (2, 3, 'PENDING');
+INSERT INTO friends (user_id, friend_id, status) VALUES (1, 2, 'ACCEPTED');
+INSERT INTO friends (user_id, friend_id, status) VALUES (2, 1, 'ACCEPTED');
 

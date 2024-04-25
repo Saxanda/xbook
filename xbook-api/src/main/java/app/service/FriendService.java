@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FriendService {
@@ -25,7 +27,7 @@ public class FriendService {
     }
 
     public Friend getFriend(Long userId, Long friendId) {
-        return friendRepository.findByUser_IdAndFriend_Id(userId, friendId)
+        return friendRepository.findByUserIdAndFriendId(userId, friendId)
                 .orElseThrow(() -> new ResourceNotFoundException("This friend was not found."));
     }
 
@@ -44,7 +46,7 @@ public class FriendService {
     }
 
     boolean existFriend(Long userId, Long friendId){
-        return friendRepository.existsByUser_IdAndFriend_Id(userId, friendId);
+        return friendRepository.existsByUserIdAndFriendId(userId, friendId);
     }
 
     public Friend sendFriendRequest(Long userId, Long friendId) {
@@ -77,6 +79,14 @@ public class FriendService {
     public void terminateFriendship(Long userId, Long friendId){
         deleteFriend(getFriend(userId, friendId));
         deleteFriend(getFriend(friendId, userId));
+    }
+
+    public List<User> getAllFriends(Long userId){
+        return userRepository.findFriendsByUserId(userId);
+    }
+
+    public List<User> getAllFriendRequests(Long userId){
+        return userRepository.findFriendRequestsByUserId(userId);
     }
 
 }
