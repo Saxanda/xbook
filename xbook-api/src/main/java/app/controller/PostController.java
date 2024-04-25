@@ -4,19 +4,21 @@ package app.controller;
 import app.dto.request.PostRequest;
 import app.dto.response.PostResponse;
 import app.entity.User;
-import app.repository.UserRepository;
 import app.service.PostService;
+import app.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,38 +27,27 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PostController {
 
-    private final UserDetailsService userDetailsService;
     private final PostService postService;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @PostMapping("/posts")
     public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest postRequest,
                                                    @RequestParam(required = false) Long originalPostId) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        Long userId = getUserIdFromAuthentication(userDetails);
-        if (userId == null) {
-            // Handle user ID not found
+
+        Optional<User> authUserOptional = userService.getAuthUser();
+        if (authUserOptional.isEmpty()) {
+            // Unauthorized access
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        // User authorized
+        User authUser = authUserOptional.get();
+        Long userId = authUser.getId();
+
         PostResponse createdPost = postService.createPost(postRequest, userId, originalPostId);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 
-    private Long getUserIdFromAuthentication(UserDetails userDetails) {
-        // Logic to extract user ID from UserDetails
-        if (userDetails instanceof org.springframework.security.core.userdetails.User) {
-            String email = ((org.springframework.security.core.userdetails.User) userDetails).getUsername();
-            // Use username to retrieve user ID from your database or user service
-            Optional<User> userOptional = userRepository.findUserByEmail(email);
-            if (userOptional.isPresent()) {
-                User user = userOptional.get();
-                return user.getId();
-            }
-        }
-        return null;
-    }
-
-   @GetMapping
+    @GetMapping
     public ResponseEntity<List<PostResponse>> getAllPosts() {
         List<PostResponse> allPosts = postService.getAllPosts();
         return ResponseEntity.ok(allPosts);

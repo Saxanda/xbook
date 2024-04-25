@@ -7,6 +7,9 @@ import app.exception.ResourceNotFoundException;
 import app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +47,18 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-
+    public Optional<User> getAuthUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof UserDetails) {
+                String email= ((UserDetails) principal).getUsername();
+                // Method to find a user by username (email) in your UserRepository
+                return userRepository.findUserByEmail(email);
+            }
+        }
+        return null; // In case throw an exception
+    }
     public boolean isEmailExisting(String email) {
         return userRepository.existsUserByEmail(email);
     }

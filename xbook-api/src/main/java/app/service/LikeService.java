@@ -1,13 +1,19 @@
 package app.service;
 
+import app.dto.mapper.LikeMapper;
+import app.dto.request.LikeRequest;
+import app.dto.response.LikeResponse;
 import app.entity.Like;
 import app.entity.Post;
 import app.entity.User;
 import app.repository.LikeRepository;
 import app.repository.UserRepository;
 import app.repository.PostRepository;
+import jakarta.persistence.EntityNotFoundException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -19,11 +25,11 @@ public class LikeService {
     private final PostRepository postRepository;
     private final LikeMapper likeMapper;
 
-    public LikeResponse createLike(Long userId, Long postId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("Post not found with id: " + postId));
+    public LikeResponse createLike(LikeRequest likeRequest) {
+        User user = userRepository.findById(likeRequest.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + likeRequest.getUserId()));
+        Post post = postRepository.findById(likeRequest.getPostId())
+                .orElseThrow(() -> new EntityNotFoundException("Post not found with id: " + likeRequest.getPostId()));
 
         Like like = new Like();
         like.setUser(user);

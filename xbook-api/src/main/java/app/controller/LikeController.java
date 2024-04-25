@@ -1,5 +1,7 @@
 package app.controller;
 
+import app.dto.request.LikeRequest;
+import app.dto.response.LikeResponse;
 import app.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +21,7 @@ public class LikeController {
 
     private final LikeService likeService;
 
-    @PostMapping
+    @PostMapping("/likes")
     public ResponseEntity<LikeResponse> createLike(@RequestBody LikeRequest likeRequest) {
         LikeResponse createdLike = likeService.createLike(likeRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdLike);
