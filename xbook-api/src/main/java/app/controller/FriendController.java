@@ -2,16 +2,13 @@ package app.controller;
 
 import app.entity.Friend;
 import app.entity.User;
-import app.exception.ResourceNotFoundException;
 import app.service.FriendService;
 import app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -41,7 +38,7 @@ public class FriendController {
     @DeleteMapping("/reject-friend")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void rejectFriendRequest(@RequestParam Long friendId) {
-            friendService.rejectFriendRequest(userService.getCurrentUserId(), friendId);
+        friendService.rejectFriendRequest(userService.getCurrentUserId(), friendId);
     }
 
     @DeleteMapping("/delete-friend")
@@ -51,17 +48,17 @@ public class FriendController {
     }
 
     @GetMapping("/my-friends")
-    public List<User> getAllFriends(){
+    public List<User> getAllFriends() {
         return friendService.getAllFriends(userService.getCurrentUserId());
     }
 
     @GetMapping("/my-friend-requests")
-    public List<User> getAllFriendRequests(){
+    public List<User> getAllFriendRequests() {
         return friendService.getAllFriendRequests(userService.getCurrentUserId());
     }
 
     @GetMapping("/search-friend")
-    public List<User> searchFriend(@RequestParam String input){
+    public List<User> searchFriend(@RequestParam String input) {
         return friendService.searchFriend(userService.getCurrentUserId(), input);
     }
 }

@@ -31,7 +31,7 @@ public class FriendService {
                 .orElseThrow(() -> new ResourceNotFoundException("This friend was not found."));
     }
 
-    public Friend updateFriend(Friend friend){
+    public Friend updateFriend(Friend friend) {
         friend.setStatus(FriendshipStatus.ACCEPTED);
         return friendRepository.save(friend);
     }
@@ -45,7 +45,7 @@ public class FriendService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
     }
 
-    boolean existFriend(Long userId, Long friendId){
+    boolean existFriend(Long userId, Long friendId) {
         return friendRepository.existsByUserIdAndFriendId(userId, friendId);
     }
 
@@ -72,24 +72,24 @@ public class FriendService {
         }
     }
 
-    public void rejectFriendRequest(Long userId, Long friendId){
+    public void rejectFriendRequest(Long userId, Long friendId) {
         deleteFriend(getFriend(friendId, userId));
     }
 
-    public void terminateFriendship(Long userId, Long friendId){
+    public void terminateFriendship(Long userId, Long friendId) {
         deleteFriend(getFriend(userId, friendId));
         deleteFriend(getFriend(friendId, userId));
     }
 
-    public List<User> getAllFriends(Long userId){
+    public List<User> getAllFriends(Long userId) {
         return userRepository.findFriendsByUserId(userId);
     }
 
-    public List<User> getAllFriendRequests(Long userId){
+    public List<User> getAllFriendRequests(Long userId) {
         return userRepository.findFriendRequestsByUserId(userId);
     }
 
-    public List<User> searchFriend(Long userId, String input){
+    public List<User> searchFriend(Long userId, String input) {
         return userRepository.searchFriend(userId, input);
     }
 

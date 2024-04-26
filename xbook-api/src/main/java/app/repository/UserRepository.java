@@ -12,9 +12,13 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserById(Integer id);
+
     Optional<User> findUserByEmail(String email);
+
     boolean existsUserByEmail(String email);
+
     boolean existsUserById(Long id);
+
     User findByConfirmationToken(String confirmationToken);
 
     @Query(value = "SELECT u.* FROM users u " +
@@ -39,8 +43,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "OR (LOWER(REPLACE(CONCAT(surname, ' ', name), ' ', '')) LIKE LOWER(CONCAT('%', REPLACE(:input, ' ', ''), '%'))));",
             nativeQuery = true)
     List<User> searchFriend(Long userId, String input);
-
-
 
 
 }
