@@ -60,4 +60,8 @@ public class FriendController {
         return friendService.getAllFriendRequests(userService.getCurrentUserId());
     }
 
+    @GetMapping("/search-friend")
+    public List<User> searchFriend(@RequestParam String input){
+        return friendService.searchFriend(userService.getCurrentUserId(), input);
+    }
 }

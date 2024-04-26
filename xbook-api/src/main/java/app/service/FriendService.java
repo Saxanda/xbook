@@ -89,4 +89,8 @@ public class FriendService {
         return userRepository.findFriendRequestsByUserId(userId);
     }
 
+    public List<User> searchFriend(Long userId, String input){
+        return userRepository.searchFriend(userId, input);
+    }
+
 }
