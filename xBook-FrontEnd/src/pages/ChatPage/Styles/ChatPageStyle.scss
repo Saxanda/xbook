@@ -9,6 +9,7 @@ input{
 }
 
 .buttonUser{
+    width: 100%;
     background-color: inherit;
     border: none;
     cursor: pointer;
@@ -191,7 +192,9 @@ ul{
     width: 20px;
 }
 .chat__message_input{
-    width: 1800%;
+    width: 90%;
+    margin-left: 2%;
+    color: white;
 }
 //////////////////////////////////////// USER DETAILS
 .chat__user_details{

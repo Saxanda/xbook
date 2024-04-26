@@ -1,37 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import UsersItem from "../UserItem/UserItem";
-import exampleImage from "../../../../public/image/exampleImage.jpg";
-import exampleImage2 from "../../../../public/image/exampleImage2.jpg";
-import jsonData from "../../../../public/users.json";
+import axios from 'axios';
 
-export default function Users({ onClicked }) {
+export default function Users({ onClicked, messages, currentId, trigger }) {
     const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true); // Состояние загрузки данных
     const [lastActiveUser, setLastActiveUser] = useState(0);
 
+    const [token, setToken] = useState('eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE0MTI2NjE0LCJleHAiOjE3MTQ3MzE0MTR9.JwarHBhMYVirjg-khlOKMe_5CLG8iy8n0a4He3MJOjQ');
+
     useEffect(() => {
-        setUsers(jsonData.users);
+        const headers = { 
+            'Access-Control-Allow-Origin': '*',
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            accept: "*/*",
+        };
+        const fetchChats = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/chats', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setUsers(response.data);
+                setLoading(false); // Устанавливаем состояние загрузки в false после получения данных
+            } catch (error) {
+                console.error('Error fetching chats:', error);
+                setLoading(false); // В случае ошибки также устанавливаем состояние загрузки в false
+            }
+        };
+
+        fetchChats();
+    }, [token, messages]);
+
+    useEffect(() => {
+        // Проверяем, есть ли сохраненное значение в localStorage
+        const savedLastActiveUser = localStorage.getItem('lastActiveUser');
+        if (savedLastActiveUser !== null) {
+            setLastActiveUser(parseInt(savedLastActiveUser));
+        }
     }, []);
 
-    const handleUserClick = (index, jsonUrl) => { //переключение чата
+    useEffect(() => {
+        setLastActiveUser(0);
+    }, [trigger])
+
+    const handleUserClick = (index, id) => {
         setLastActiveUser(index);
-        onClicked(jsonUrl);
+        onClicked(id);
+        // Сохраняем индекс активного пользователя в localStorage
+        localStorage.setItem('lastActiveUser', index);
     };
 
-    const GetLastMessage = (jsonUrl) => { //функция выдающая последнее сообщение пользователя
-        const jsonData = fetch(jsonUrl)
-          .then((response) => response.json())
-          .catch((error) => console.error("Ошибка загрузки JSON:", error));
-      
-        return jsonData.then((data) => {
-          const messages = data.messages;
-      
-          if (messages.length > 0) {
-            return messages[messages.length - 1].text;
-          } else {
-            return "В JSON-файле нет сообщений.";
-          }
-        });
-      };
+    // Ожидание загрузки данных
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="chat__users_container">
@@ -39,14 +64,14 @@ export default function Users({ onClicked }) {
                 <ul className="chat__users-list">
                     {users.map((user, index) => (
                         <li className={`chat__users-list_item item-${index + 1} ${lastActiveUser === index ? 'active' : ''}`} key={index}>
-                            <button 
+                            <button
                                 className="buttonUser"
-                                onClick={() => handleUserClick(index, user.jsonUrl)}
+                                onClick={() => handleUserClick(index, user.id)}
                             >
-                                <UsersItem 
-                                    image={index === 0 ? exampleImage : exampleImage2} 
-                                    name={user.name} 
-                                    lastMessage={GetLastMessage(user.jsonUrl)}
+                                <UsersItem
+                                    image={user.chatParticipant.avatar} 
+                                    name={`${user.chatParticipant.name} ${user.chatParticipant.surname}`} 
+                                    lastMessage={user.lastMessage.content} 
                                 />
                             </button>
                         </li>

@@ -47,4 +47,59 @@ public class UserService {
         return userRepository.existsUserByEmail(email);
     }
 
+ Updated upstream;
+
+
+    // Returns specific User based on a JWT token in request
+    public User getAuthUser() {
+        JwtUserDetails principal = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return principal.getUser();
+    }
+
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
+
+    public User findByConfirmationToken(String confirmationToken) {
+
+        return userRepository.findByConfirmationToken(confirmationToken);
+    }
+
+    public User processEmailConfirmation(String confirmationToken) {
+        User user = findByConfirmationToken(confirmationToken);
+        if (user != null) {
+            // Mark the email as confirmed
+            user.setConfirmationToken(null);
+            // Update confirmation status
+            user.setActivated(true);
+            saveUser(user);
+        }
+        return user;
+
+    }
+
+    public User updateUser(Long id, UpdateUserRequest request) {
+
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        if (optionalUser.isPresent()) {
+            //Update the user fields
+            User user = optionalUser.get();
+            user.setName(request.getName()); // user name update
+            user.setSurname(request.getSurname()); // user surname update
+            user.setEmail(request.getEmail()); // user email update
+
+            return userRepository.save(user);
+        } else {
+            // Handle the case where the user with the given id does not exist
+            throw new ResourceNotFoundException("User not found with id: " + id);
+        }
+    }
+
+    public List<User> searchUsersByName(String name) {
+        return userRepository.findByNameContaining(name);
+    }
+
+
+Stashed changes
 }

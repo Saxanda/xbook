@@ -3,9 +3,12 @@ import React, { useState, useEffect } from 'react';
 export default function UsersItem({ image, name, lastMessage }) {
   const [resolvedLastMessage, setResolvedLastMessage] = useState('');
 
-  useEffect(() => { //установка последнего сообщения
-    lastMessage.then((message) => setResolvedLastMessage(message))
-              .catch((error) => console.error("Error fetching last message:", error));
+  useEffect(() => {
+    if (lastMessage.length > 10) {
+      setResolvedLastMessage(`${lastMessage.slice(0, 10)}...`);
+    } else {
+      setResolvedLastMessage(lastMessage);
+    }
   }, [lastMessage]);
 
   return (
@@ -24,7 +27,7 @@ export default function UsersItem({ image, name, lastMessage }) {
               </li>
               <li>
                 <p className="chat__item-last-message">
-                  {resolvedLastMessage.length > 0 ? resolvedLastMessage : 'No messages yet'}
+                {resolvedLastMessage || 'No messages yet'}
                 </p>
               </li>
             </ul>

@@ -4,23 +4,23 @@ import axios from 'axios';
 
 const currentYear = 2024;
 
-export default function Window({ jsonData }) {
+export default function Window({ data }) {
     const [messages, setMessages] = useState([]);
-
-    const chatWindowRef = useRef(null); //реф для прокрутки
+    const [initialized, setInitialized] = useState(false);
+    const chatWindowRef = useRef(null);
+    
 
     useEffect(() => {
-        if (jsonData) {
-            setMessages(jsonData.messages);
+        if (data) {
+            setMessages(data); // Устанавливаем данные только если они доступны
+            setInitialized(true); // Помечаем компонент как инициализированный
         }
-    }, [jsonData]);
-
-    const groupedMessages = groupMessagesByTypeAndDate(messages); //группировка сообщений по типу
-
+    }, [data]);
+    const groupedMessages = initialized ? groupMessagesByTypeAndDate(messages) : [];
     let prevDate = null;
 
-    useEffect(() => { //скрол вниз при прогрузке чата
-        chatWindowRef.current?.scrollTo({ top: chatWindowRef.current.scrollHeight });
+    useEffect(() => {
+            chatWindowRef.current?.scrollTo({ top: chatWindowRef.current.scrollHeight });
     }, [messages]); 
 
     return (
@@ -29,14 +29,15 @@ export default function Window({ jsonData }) {
                 {groupedMessages.map((group, index) => (
                     <div key={index} className={`chat__message-block ${group.type}`}>
                         {group.messages.map((message, idx) => {
-                            const formattedDate = formatDate(group.date);
-                            const shouldDisplayDate = message.date !== prevDate;
-                            prevDate = message.date;
+                            const formattedDate = formatDate(message.createdDate);
+                            
+                            const shouldDisplayDate = formatDate(message.createdDate) !== prevDate;
+                            prevDate = formatDate(message.createdDate);
 
                             return (
                                 <React.Fragment key={idx}>
                                     {shouldDisplayDate && <p className='chat__message-date'>{formattedDate}</p>}
-                                    <WindowMessage text={message.text} state={message.type} time={formatTime(message.time)} />
+                                    <WindowMessage text={message.content} state={typeChecker(message)} time={formatTime(message.createdDate)} />
                                 </React.Fragment>
                             );
                         })}
@@ -47,42 +48,57 @@ export default function Window({ jsonData }) {
     );
 }
 
-function groupMessagesByTypeAndDate(messages) { //функция группировки сообщений по типу
+function typeChecker(message) {
+    let type = 'none';
+    if(message.chat.chatParticipant.name !== message.sender.name) type = "input";
+    else type = "output";
+    return type;
+}
+
+function groupMessagesByTypeAndDate(messages) {
     const groups = [];
     let currentGroup = null;
 
     messages.forEach(message => {
-        if (!currentGroup || currentGroup.type !== message.type || currentGroup.date !== message.date) {
+        const messageType = typeChecker(message);
+        //console.log(message.id)
+        if (!currentGroup || currentGroup.type !== messageType || formatDate(currentGroup.date) !== formatDate(message.createdDate)) {
             currentGroup = {
-                type: message.type,
-                date: message.date,
+                type: messageType,
+                date: message.createdDate,
                 messages: [message]
             };
+            if(currentGroup.type !== messageType) console.log(currentGroup.type + messageType)
+            if(currentGroup.date !== message.createdDate) console.log(currentGroup.date + message.createdDate)
+            if(!currentGroup) console.log("wow")
             groups.push(currentGroup);
         } else {
             currentGroup.messages.push(message);
         }
+        //console.log(currentGroup);
+        //console.log(groups);
     });
 
     return groups;
 }
 
-function formatTime(fullTime) { //возвращения из полного времени в только часы:минуты
-    const [hours, minutes] = fullTime.split(':').slice(0, 2);
-    return `${hours}:${minutes}`;
+
+
+function formatTime(fullTime) {
+    const date = new Date(fullTime);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    return `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
 }
 
-function formatDate(date) { //преоразования даты
-    const [day, month, year] = date.split('.');
-    const months = [
-        'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
-        'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
-    ];
-    const formattedMonth = months[parseInt(month, 10) - 1];
+function formatDate(date) {
+    const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+    const dateObj = new Date(date);
+    const day = dateObj.getDate();
+    const month = months[dateObj.getMonth()];
+    const year = dateObj.getFullYear();
 
-    if (parseInt(year, 10) === currentYear) {
-        return `${day} ${formattedMonth}`;
-    } else {
-        return `${day} ${formattedMonth} ${year}`;
-    }
+    return `${day} ${month} ${year}`;
 }
+
+
