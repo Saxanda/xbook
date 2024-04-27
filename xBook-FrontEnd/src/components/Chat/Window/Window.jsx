@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const currentYear = 2024;
 
-export default function Window({ data }) {
+export default function Window({ data, token, trigger, redactButton }) {
     const [messages, setMessages] = useState([]);
     const [initialized, setInitialized] = useState(false);
     const chatWindowRef = useRef(null);
@@ -12,8 +12,8 @@ export default function Window({ data }) {
 
     useEffect(() => {
         if (data) {
-            setMessages(data); // Устанавливаем данные только если они доступны
-            setInitialized(true); // Помечаем компонент как инициализированный
+            setMessages(data); 
+            setInitialized(true);
         }
     }, [data]);
     const groupedMessages = initialized ? groupMessagesByTypeAndDate(messages) : [];
@@ -22,6 +22,19 @@ export default function Window({ data }) {
     useEffect(() => {
             chatWindowRef.current?.scrollTo({ top: chatWindowRef.current.scrollHeight });
     }, [messages]); 
+
+    const deleteMessage = (id) =>{
+        try {
+            const response =  axios.delete(`http://localhost:8080/api/messages/delete/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+        } catch (error) {
+            console.error('Error deleting message:', error);
+        }
+        trigger();
+    }
 
     return (
         <div className="chat__window_container">
@@ -37,7 +50,14 @@ export default function Window({ data }) {
                             return (
                                 <React.Fragment key={idx}>
                                     {shouldDisplayDate && <p className='chat__message-date'>{formattedDate}</p>}
-                                    <WindowMessage text={message.content} state={typeChecker(message)} time={formatTime(message.createdDate)} />
+                                    <WindowMessage 
+                                    text={message.content} 
+                                    state={typeChecker(message)} 
+                                    time={formatTime(message.createdDate)}
+                                    id={message.id}
+                                    deleteButton={deleteMessage} 
+                                    redactButton={redactButton}
+                                    />
                                 </React.Fragment>
                             );
                         })}

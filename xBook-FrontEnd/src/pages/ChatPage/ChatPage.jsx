@@ -11,12 +11,17 @@ import testImage from '../../../public/image/send_image_black.png';
 export default function ChatPage() {
     const [loading, setLoading] = useState(true);
     const [inputText, setInputText] = useState('');
+    const [isRedact, setIsRedact] = useState(false);
+    const [messageId, setMessageId] = useState(0);
     const [id, setID] = useState(() => {
         const savedChatID = localStorage.getItem('lastActiveChatID');
-        return savedChatID !== null ? parseInt(savedChatID) : 2; // По умолчанию ID чата равен 2
+        return savedChatID !== null ? parseInt(savedChatID) : 2;
     });
     const [messages, setMessages] = useState([]);
     const [trigger, setTrigger] = useState(false);
+
+    const [deleteTrigger, setDeleteTrigger] = useState(false);
+
     const [token, setToken] = useState('eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE0MTI2NjE0LCJleHAiOjE3MTQ3MzE0MTR9.JwarHBhMYVirjg-khlOKMe_5CLG8iy8n0a4He3MJOjQ');
 
     useEffect(() => {
@@ -35,15 +40,42 @@ export default function ChatPage() {
         };
 
         fetchMessages();
-    }, [token, id, trigger]);
+    }, [token, id, trigger, deleteTrigger]);
 
     const handleIdChange = (index) => {
         setID(index);
-        localStorage.setItem('lastActiveChatID', index); // Сохраняем ID активного чата в localStorage
+        localStorage.setItem('lastActiveChatID', index); 
     };
 
     const handleMessageSend = async () => {
-        if (inputText !== "") {
+        if(isRedact)
+        {
+            if (inputText !== "") {
+                try {
+                    const response = await axios.post(
+                        `http://localhost:8080/api/messages/update/${messageId}`,
+                        {
+                            content: inputText,
+                        },
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
+                    console.log('Message edit sent:', response.data);
+                    triggerChange();
+                    setInputText('');
+                    //localStorage.setItem('lastActiveUser', 0);
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                }
+            }
+            setIsRedact(false)
+        }
+        else
+        {
+            if (inputText !== "") {
             try {
                 const response = await axios.post(
                     'http://localhost:8080/api/messages/send',
@@ -61,15 +93,28 @@ export default function ChatPage() {
                 console.log('Message sent:', response.data);
                 triggerChange();
                 setInputText('');
-                // Очищаем поле ввода после отправки сообщения
+                localStorage.setItem('lastActiveUser', 0);
             } catch (error) {
                 console.error('Error sending message:', error);
             }
         }
+        }
     };
+
+    const changeMessage = (id, text) => {
+        setInputText(text);
+        setIsRedact(true);
+        setMessageId(id);
+    }
 
     const triggerChange = () => {
         setTrigger(prevTrigger => !prevTrigger);
+    };
+
+    const deleteTriggerChange = () => {
+        console.log(trigger)
+        setDeleteTrigger(prevTrigger => !prevTrigger);
+        console.log("changed")
     };
 
     const handleKeyDown = (event) => {
@@ -96,7 +141,12 @@ export default function ChatPage() {
 
                 {messages && (
                     <li className="chat__window">
-                        <Window data={messages} />
+                        <Window 
+                        data={messages} 
+                        token={token} 
+                        trigger={deleteTriggerChange}
+                        redactButton={changeMessage} 
+                        />
                         <div className="chat__container_message-input">
                             <input
                                 type="text"

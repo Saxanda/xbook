@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export default function Users({ onClicked, messages, currentId, trigger }) {
     const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true); // Состояние загрузки данных
+    const [loading, setLoading] = useState(true);
     const [lastActiveUser, setLastActiveUser] = useState(0);
 
     const [token, setToken] = useState('eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE0MTI2NjE0LCJleHAiOjE3MTQ3MzE0MTR9.JwarHBhMYVirjg-khlOKMe_5CLG8iy8n0a4He3MJOjQ');
@@ -24,10 +24,10 @@ export default function Users({ onClicked, messages, currentId, trigger }) {
                     },
                 });
                 setUsers(response.data);
-                setLoading(false); // Устанавливаем состояние загрузки в false после получения данных
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching chats:', error);
-                setLoading(false); // В случае ошибки также устанавливаем состояние загрузки в false
+                setLoading(false);
             }
         };
 
@@ -35,25 +35,26 @@ export default function Users({ onClicked, messages, currentId, trigger }) {
     }, [token, messages]);
 
     useEffect(() => {
-        // Проверяем, есть ли сохраненное значение в localStorage
         const savedLastActiveUser = localStorage.getItem('lastActiveUser');
         if (savedLastActiveUser !== null) {
             setLastActiveUser(parseInt(savedLastActiveUser));
         }
     }, []);
 
+    const [isFirstLoad, setIsFirstLoad] = useState(true);
     useEffect(() => {
-        setLastActiveUser(0);
-    }, [trigger])
+        if (!isFirstLoad) {
+            setLastActiveUser(0);
+        }
+        setIsFirstLoad(false);
+    }, [trigger]);
 
     const handleUserClick = (index, id) => {
         setLastActiveUser(index);
         onClicked(id);
-        // Сохраняем индекс активного пользователя в localStorage
         localStorage.setItem('lastActiveUser', index);
     };
 
-    // Ожидание загрузки данных
     if (loading) {
         return <div>Loading...</div>;
     }

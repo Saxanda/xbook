@@ -163,12 +163,15 @@ ul{
     background-color: rgb(45, 74, 110);
 }
 
+
 .chat__message-text{
     max-width: 50%;
     border-radius: 30px;
-    padding: 20px;
+    padding: 10px 15px 10px 10px;
     margin: 0px;
     margin-top: 5px;
+    display: flex;
+    align-items: flex-end;
 }
 
 .chat__message-date{
@@ -195,6 +198,21 @@ ul{
     width: 90%;
     margin-left: 2%;
     color: white;
+}
+.chat__message-icons{
+    display: flex;
+    width: 100%;
+    justify-content: end;
+}
+.chat__message-icon{
+    width: 15px;
+}
+
+.chat__message-list{
+    display: flex;
+}
+.chat_message-list-time{
+    text-align: end;
 }
 //////////////////////////////////////// USER DETAILS
 .chat__user_details{
