@@ -1,20 +1,18 @@
 import React from "react";
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { Button, Checkbox, FormControlLabel, Link} from "@mui/material";
+import { Button, Checkbox, FormControlLabel, Link, Box } from "@mui/material";
 
 import PasswordInput from "../Form/PasswordInput";
 import EmailInput from "../Form/EmailInput";
-
-
-
+import axios from "axios";
 import "./Login.scss";
-import useAxios from "../../helpers/UseAxios";
 
 export default function LoginForm() {
   const navigate = useNavigate();
-
+  const [error, setError] = useState(null);
 
   const validationSchema = yup.object({
     email: yup
@@ -31,21 +29,61 @@ export default function LoginForm() {
     initialValues: {
       email: "",
       password: "",
+      rememberMe: false,
     },
     validationSchema: validationSchema,
-    onSubmit: 
-    // (values)=>{
-    //   console.log(values);
-    // }
-    
-    
-    
-    (values) => {
-      useAxios('http://localhost:8080/api/v1/auth/login', values)
+
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post(
+          "http://localhost:8080/api/v1/auth/login",
+          {
+            email: values.email,
+            password: values.password,
+          },
+          {
+            "Content-Type": "application/json",
+            accept: "*/*",
+          }
+        );
+        const { token } = response.data;
+        if (token) {
+          localStorage.setItem("token", token);
+          if (values.rememberMe) {
+            localStorage.setItem("rememberedEmail", values.email);
+            localStorage.setItem("rememberedPassword", values.password);
+          } else {
+            localStorage.removeItem("rememberedEmail");
+            localStorage.removeItem("rememberedPassword");
+          }
+        }
+        navigate("/");
+      } catch (error) {
+        setError("Invalid email or password.");
+      }
+    },
+  });
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("rememberedEmail");
+    const storedPassword = localStorage.getItem("rememberedPassword");
+
+    if (storedEmail && storedPassword) {
+      formik.setFieldValue("email", storedEmail);
+      formik.setFieldValue("password", storedPassword);
+      formik.setFieldValue("rememberMe", true);
     }
-  })
-    
-  
+  }, [formik]);
+
+  const handleRememberMeChange = (e) => {
+    const { name, checked } = e.target;
+    formik.handleChange(e);
+
+    if (!checked) {
+      localStorage.removeItem("rememberedEmail");
+      localStorage.removeItem("rememberedPassword");
+    }
+  };
 
   return (
     <form onSubmit={formik.handleSubmit} className="form">
@@ -65,17 +103,36 @@ export default function LoginForm() {
         helperText={formik.touched.password && formik.errors.password}
       />
 
-      <FormControlLabel
-        control={<Checkbox value="remember" color="primary" />}
+      <label>
+        <input
+          type="checkbox"
+          name="rememberMe"
+          checked={formik.values.rememberMe}
+          onChange={handleRememberMeChange}
+        />
+        Remember Me
+      </label>
+      {/* <FormControlLabel
+        control={<Checkbox value="remember" color="primary"  
+        checked={formik.values.rememberMe}
+        onChange={handleRememberMeChange}
+        />}
         label="Remember me"
-      />
+      /> */}
+      {error && <Box sx={{ color: "red" }}>{error}</Box>}
+
       <Button color="primary" variant="contained" fullWidth type="submit">
         Submit
       </Button>
-      <Link href="" underline="hover" onClick={() => {navigate('/forgot-page')}}>
+      <Link
+        href=""
+        underline="hover"
+        onClick={() => {
+          navigate("/forgot-page");
+        }}
+      >
         Forgot your password?
       </Link>
-      
     </form>
   );
 }

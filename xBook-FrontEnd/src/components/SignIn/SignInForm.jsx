@@ -2,25 +2,28 @@ import React from "react";
 import { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { Button, TextField, Box, InputLabel, MenuItem, FormControl, Select, FormHelperText} from "@mui/material";
-
+import {
+  Button,
+  TextField,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
+  FormHelperText,
+  Box
+} from "@mui/material";
 import PasswordInput from "../Form/PasswordInput";
 import EmailInput from "../Form/EmailInput";
-import Modal from "../Modal/ModalLogin"
-
-
-import useAxios from "../../helpers/UseAxios";
-
-
-
+import Modal from "../Modal/ModalLogin";
+import axios from "axios";
 import "../Login/Login.scss";
+import { useNavigate } from "react-router-dom";
+
 export default function SignInForm() {
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [error, setError] = useState(null);
 
-    const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  
   const validationSchema = yup.object({
     email: yup
       .string("Enter your email")
@@ -50,15 +53,28 @@ export default function SignInForm() {
     },
     validationSchema: validationSchema,
 
-    // onSubmit: (values)=>{
-    //   console.log(values);
-    // }
+    onSubmit: async (values) => {
+      try {
+        await axios.post(
+          "http://localhost:8080/api/v1/auth/registration",
+          values,
+          {
+            "Content-Type": "application/json",
+            accept: "*/*",
+          }
+        );
+        setShowModal(true);
+      } catch (error) {
+        setError("Invalid email or password.");
+        // console.error('Error:', error);
+      }
+    },
+  });
 
-    onSubmit: (values) => {
-      useAxios('http://localhost:8080/api/v1/auth/registration', values)
-    }
-  
-  })
+  const closeModal = () => {
+    setShowModal(false);
+    navigate("/login");
+  };
 
   return (
     <form onSubmit={formik.handleSubmit} className="form">
@@ -98,7 +114,6 @@ export default function SignInForm() {
             helperText={formik.touched.dob && formik.errors.dob}
           />
         </div>
-      
 
         <FormControl
           sx={{
@@ -119,10 +134,9 @@ export default function SignInForm() {
             <MenuItem value={"man"}>Men</MenuItem>
             <MenuItem value={"woman"}>Woman</MenuItem>
             <MenuItem value={"other"}>Other</MenuItem>
-
           </Select>
 
-          <FormHelperText style={{color: 'red'}}>
+          <FormHelperText style={{ color: "red" }}>
             {formik.touched.gender && formik.errors.gender}
           </FormHelperText>
         </FormControl>
@@ -142,19 +156,18 @@ export default function SignInForm() {
         error={formik.touched.password && Boolean(formik.errors.password)}
         helperText={formik.touched.password && formik.errors.password}
       />
-
-      <Button color="primary" variant="contained" fullWidth type="submit" 
-      onClick={handleOpen}
-      >
+      {error && <Box sx={{ color: "red" }}>{error}</Box>}
+      <Button color="primary" variant="contained" fullWidth type="submit">
         Submit
       </Button>
-
-      <Modal
-      handleClose={handleClose}
-      open={open}
-      title={'Registration was successful'}
-      text={`To complete the registration, go to the mail ${formik.values.email} for confirmation`}
-      />
+      {showModal && (
+        <Modal
+          open={showModal}
+          handleClose={closeModal}
+          title={"Registration was successful"}
+          text={`To complete the registration, go to the mail ${formik.values.email} for confirmation`}
+        />
+      )}
     </form>
   );
 }
