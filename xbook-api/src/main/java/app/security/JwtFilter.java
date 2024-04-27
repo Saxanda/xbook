@@ -49,7 +49,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 log.error("Cannot parse jwt token: {}", ex.getMessage());
             }
 
-            userId.flatMap(id -> userService.findById(id)
+            userId.flatMap(id -> userService.findById(Long.valueOf(id))
                     .map(JwtUserDetails::new)
                     .map(jwtUD -> new UsernamePasswordAuthenticationToken(jwtUD, null, jwtUD.getAuthorities()))).ifPresent(at -> {
                 at.setDetails(new WebAuthenticationDetailsSource().buildDetails(rq));
