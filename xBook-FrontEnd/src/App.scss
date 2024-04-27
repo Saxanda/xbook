@@ -1,1 +1,64 @@
+.postComponent{
+    max-width: 628px;
+    margin: 0 auto;
+    
+    
+}
+.postComponent_header{
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+}
 
+.postComponent_header_btns button{
+    margin: 5px;
+}
+
+.postComponent_footer_activiti{
+    &_info{
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+    }
+    &_btns{
+        display: flex;
+        justify-content: space-around;
+        padding-bottom: 5px;
+        & button{
+            
+        }
+    }
+}
+
+.post-comments{
+    max-width: 628px;
+    margin: 0 auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: 40vh;
+}
+.comment{
+    display: flex;
+    
+    &-body{
+        background-color: rgb(171, 202, 220, 0.5);
+        padding: 10px;
+        border-radius: 10px;
+    }
+}
+
+.comment-list{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+.postPage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: rgba(216, 234, 247, 0.5);
+}
