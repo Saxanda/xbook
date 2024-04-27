@@ -1,30 +1,51 @@
 package app.entity;
 
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
 @Table(name = "posts")
+
+@EqualsAndHashCode(callSuper = false)
 public class Post extends AbstractEntity {
 
-    // Other fields and mappings...
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
-    private String title; // Field for post title
+
+    @Column(name = "title")
+        private String title; // Field for post Title
+
     @Lob
     @Column(name = "body", columnDefinition = "CLOB")
-    private String body;
-    private String media;
-    private int likes;
+    private String body; // Text Field
+
+    @Column(name = "media")
+    private String media;// URL to picture or Video ex. "https://static.xx.fbcdn.net/rsrc.php/y1/r/4lCu2zih0ca.svg"
+
+    @Column(name = "likes")
+    private int likes; // Likes counter
+
+    @Column(name = "post_id")
     private Long postID;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
     private PostType type; // Post is original or repost
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "original_post_id")
+    private Post originalPost; // In case there is a repost
 }
