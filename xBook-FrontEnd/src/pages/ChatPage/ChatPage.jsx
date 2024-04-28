@@ -34,6 +34,7 @@ export default function ChatPage() {
                 });
                 setMessages(response.data);
                 setLoading(false);
+                console.log("messages reload")
             } catch (error) {
                 console.error('Error fetching messages:', error);
             }
@@ -64,7 +65,8 @@ export default function ChatPage() {
                         }
                     );
                     console.log('Message edit sent:', response.data);
-                    triggerChange();
+                    
+                    deleteTriggerChange();
                     setInputText('');
                     //localStorage.setItem('lastActiveUser', 0);
                 } catch (error) {

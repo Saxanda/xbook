@@ -23,17 +23,18 @@ export default function Window({ data, token, trigger, redactButton }) {
             chatWindowRef.current?.scrollTo({ top: chatWindowRef.current.scrollHeight });
     }, [messages]); 
 
-    const deleteMessage = (id) =>{
+    const deleteMessage = async (id) =>{
         try {
-            const response =  axios.delete(`http://localhost:8080/api/messages/delete/${id}`, {
+            const response = await axios.delete(`http://localhost:8080/api/messages/delete/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
+            console.log('Message deleted:', response.data);
+            trigger();
         } catch (error) {
             console.error('Error deleting message:', error);
         }
-        trigger();
     }
 
     return (
