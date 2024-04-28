@@ -41,6 +41,13 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
+    public List<CommentResponse> getAllCommentsByPostId(Long postId) {
+        List<Comment> comments = commentRepository.findByPostId(postId);
+        return comments.stream()
+                .map(commentMapper::toCommentResponse)
+                .collect(Collectors.toList());
+    }
+
     public CommentResponse getCommentById(Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("Comment not found"));

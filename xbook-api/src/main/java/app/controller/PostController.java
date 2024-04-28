@@ -3,7 +3,6 @@ package app.controller;
 
 import app.dto.request.PostRequest;
 import app.dto.response.PostResponse;
-
 import app.entity.User;
 import app.service.PostService;
 import app.service.UserService;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
@@ -32,20 +30,22 @@ public class PostController {
     private final PostService postService;
     private final UserService userService;
 
-    @PostMapping("/posts")
+    @PostMapping("/post")
+    // originalPostId as a parameter allows the method to support creating two types of posts
     public ResponseEntity<PostResponse> createPost(@RequestBody PostRequest postRequest,
                                                    @RequestParam(required = false) Long originalPostId) {
 
-        Optional<User> authUserOptional = Optional.ofNullable(userService.getAuthUser());
-        if (authUserOptional.isEmpty()) {
+        User authUser = userService.getAuthUser();
+        //System.out.println("User authorized" + authUser);
+        if (authUser.isActivated()) {
             // Unauthorized access
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         // User authorized
-        User authUser = authUserOptional.get();
-        Long userId = authUser.getId();
+        Long userId = userService.getAuthCurrentUserId();
 
         PostResponse createdPost = postService.createPost(postRequest, userId, originalPostId);
+        System.out.println("Create post" + createdPost);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 
@@ -55,19 +55,19 @@ public class PostController {
         return ResponseEntity.ok(allPosts);
     }
 
-    @GetMapping("/{postId}")
+    @GetMapping("/fetch/{postId}")
     public ResponseEntity<PostResponse> getPostById(@PathVariable Long postId) {
         PostResponse post = postService.getPostById(postId);
         return ResponseEntity.ok(post);
     }
 
-    @PutMapping("/{postId}")
+    @PutMapping("/update/{postId}")
     public ResponseEntity<PostResponse> updatePost(@PathVariable Long postId, @RequestBody PostRequest postRequest) {
         PostResponse updatedPost = postService.updatePost(postId, postRequest);
         return ResponseEntity.ok(updatedPost);
     }
 
-    @DeleteMapping("/{postId}")
+    @DeleteMapping("/delete/{postId}")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
         postService.deletePost(postId);
         return ResponseEntity.noContent().build();

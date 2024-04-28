@@ -21,15 +21,15 @@ public class LikeController {
 
     private final LikeService likeService;
 
-    @PostMapping("/likes")
+    @PostMapping("/like")
     public ResponseEntity<LikeResponse> createLike(@RequestBody LikeRequest likeRequest) {
         LikeResponse createdLike = likeService.createLike(likeRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdLike);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<LikeResponse> getLikeById(@PathVariable Long id) {
-        LikeResponse like = likeService.getLikeById(id);
+    @GetMapping("/{likeId}")
+    public ResponseEntity<LikeResponse> getLikeById(@PathVariable Long likeId) {
+        LikeResponse like = likeService.getLikeById(likeId);
         if (like != null) {
             return ResponseEntity.ok(like);
         } else {
@@ -37,9 +37,9 @@ public class LikeController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLike(@PathVariable Long id) {
-        likeService.deleteLike(id);
+    @DeleteMapping("/remove/{likeId}")
+    public ResponseEntity<Void> deleteLike(@PathVariable Long likeId) {
+        likeService.deleteLike(likeId);
         return ResponseEntity.noContent().build();
     }
 }

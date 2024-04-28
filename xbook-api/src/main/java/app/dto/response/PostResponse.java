@@ -1,6 +1,5 @@
 package app.dto.response;
 
-import lombok.AllArgsConstructor;
 import app.entity.PostType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
