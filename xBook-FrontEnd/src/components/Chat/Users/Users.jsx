@@ -23,6 +23,7 @@ export default function Users({ onClicked, messages, currentId, trigger }) {
                         Authorization: `Bearer ${token}`,
                     },
                 });
+                console.log(response.data);
                 setUsers(response.data);
                 setLoading(false);
             } catch (error) {

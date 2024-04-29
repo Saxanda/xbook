@@ -32,6 +32,7 @@ export default function UsersItem({ image, name, lastMessage }) {
               </li>
             </ul>
           </li>
+          <button>DELETE</button>
         </ul>
       </div>
     </div>

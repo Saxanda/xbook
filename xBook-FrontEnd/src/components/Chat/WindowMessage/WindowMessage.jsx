@@ -8,12 +8,15 @@ export default function WindowMessage({ state, text, time, id, redactButton, del
         <div className={classNameDiv}>
             
             <p className={classNameText}>
+            {state === 'input' && (
                 <button 
                 className="chat__message_button"
                 onClick={() => redactButton(id, text)}
                 >
                     <img className="chat__message-icon redact" src={redactImage} alt="" />
                 </button>
+            )}
+                
                 
                 <span className="chat__message-text-inside">
                     {text}
@@ -22,13 +25,15 @@ export default function WindowMessage({ state, text, time, id, redactButton, del
                 <span className="chat__message-time">
                     {time}
                 </span>
-
-                <button 
-                className="chat__message_button"
-                onClick={() => deleteButton(id)}
-                >
-                    <img className="chat__message-icon delete" src={deletingImage} alt="" />
-                </button>
+                {state === 'input' && (
+                    <button 
+                    className="chat__message_button"
+                    onClick={() => deleteButton(id)}
+                    >
+                        <img className="chat__message-icon delete" src={deletingImage} alt="" />
+                    </button>
+                )}
+                
             </p>
         </div>
     )

@@ -34,7 +34,7 @@ export default function ChatPage() {
                 });
                 setMessages(response.data);
                 setLoading(false);
-                console.log("messages reload")
+                //console.log("messages reload")
             } catch (error) {
                 console.error('Error fetching messages:', error);
             }
