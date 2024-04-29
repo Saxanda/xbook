@@ -1,5 +1,6 @@
 package app.entity;
 
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +17,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 @Table(name = "posts")
+
 @EqualsAndHashCode(callSuper = false)
 public class Post extends AbstractEntity {
 

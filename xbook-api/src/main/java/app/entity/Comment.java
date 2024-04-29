@@ -1,5 +1,6 @@
 package app.entity;
 
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,6 +29,7 @@ public class Comment extends AbstractEntity {
     @Lob
     @Column(name = "content", columnDefinition = "CLOB")
     private String content;
+
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id", referencedColumnName = "id")  // refers to Post's primary key
