@@ -18,7 +18,7 @@ public class PostMapper {
         return modelMapper.map(post, PostResponse.class);
     }
 
-    public Post toPost(PostRequest postRequest) {
+    public Post toPostRequest(PostRequest postRequest) {
         return modelMapper.map(postRequest, Post.class);
     }
 
