@@ -5,13 +5,20 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { Button, Checkbox, FormControlLabel, Link, Box } from "@mui/material";
 
+
+import { useDispatch, useSelector } from 'react-redux';
+import { setAuthData, clearAuthData } from '../../redux/authSlice'
+
 import PasswordInput from "../Form/PasswordInput";
 import EmailInput from "../Form/EmailInput";
 import axios from "axios";
 import "./Login.scss";
 
 export default function LoginForm() {
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [error, setError] = useState(null);
 
   const validationSchema = yup.object({
@@ -47,16 +54,13 @@ export default function LoginForm() {
           }
         );
         const { token } = response.data;
-        if (token) {
-          localStorage.setItem("token", token);
-          if (values.rememberMe) {
-            localStorage.setItem("rememberedEmail", values.email);
-            localStorage.setItem("rememberedPassword", values.password);
-          } else {
-            localStorage.removeItem("rememberedEmail");
-            localStorage.removeItem("rememberedPassword");
-          }
+
+        if (values.rememberMe) {
+          localStorage.setItem('token', token);
+        } else {
+          sessionStorage.setItem('token', token);
         }
+        dispatch(setAuthData({ token }));
         navigate("/");
       } catch (error) {
         setError("Invalid email or password.");
@@ -64,25 +68,11 @@ export default function LoginForm() {
     },
   });
 
-  useEffect(() => {
-    const storedEmail = localStorage.getItem("rememberedEmail");
-    const storedPassword = localStorage.getItem("rememberedPassword");
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
+    dispatch(clearAuthData());
 
-    if (storedEmail && storedPassword) {
-      formik.setFieldValue("email", storedEmail);
-      formik.setFieldValue("password", storedPassword);
-      formik.setFieldValue("rememberMe", true);
-    }
-  }, [formik]);
-
-  const handleRememberMeChange = (e) => {
-    const { name, checked } = e.target;
-    formik.handleChange(e);
-
-    if (!checked) {
-      localStorage.removeItem("rememberedEmail");
-      localStorage.removeItem("rememberedPassword");
-    }
   };
 
   return (
@@ -108,7 +98,7 @@ export default function LoginForm() {
           type="checkbox"
           name="rememberMe"
           checked={formik.values.rememberMe}
-          onChange={handleRememberMeChange}
+          onChange={formik.handleChange}
         />
         Remember Me
       </label>

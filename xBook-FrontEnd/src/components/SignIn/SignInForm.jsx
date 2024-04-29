@@ -65,7 +65,7 @@ export default function SignInForm() {
         );
         setShowModal(true);
       } catch (error) {
-        setError("Invalid email or password.");
+        setError("Something went wrong. User Registation failed");
         // console.error('Error:', error);
       }
     },

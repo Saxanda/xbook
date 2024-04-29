@@ -2,6 +2,9 @@
 import './App.scss'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import { Provider } from 'react-redux';
+import store from './redux/store';
 import Header from './components/Header/Header';
 import PostPage from './components/Post/PostPage';
 import { useState, useEffect } from 'react';
@@ -24,6 +27,7 @@ function App() {
 
 
   return (
+    <Provider store={store}>
     <Router>
       <Header></Header>
       <Routes>
@@ -38,6 +42,7 @@ function App() {
         />
       </Routes>
     </Router>
+    </Provider>
   )
 }
 
