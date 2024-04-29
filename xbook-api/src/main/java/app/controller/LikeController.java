@@ -23,7 +23,7 @@ public class LikeController {
 
     @PostMapping("/like")
     public ResponseEntity<LikeResponse> createLike(@RequestBody LikeRequest likeRequest) {
-        LikeResponse createdLike = likeService.createLike(likeRequest);
+        LikeResponse createdLike = likeService.addLike(likeRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdLike);
     }
 
@@ -39,7 +39,7 @@ public class LikeController {
 
     @DeleteMapping("/remove/{likeId}")
     public ResponseEntity<Void> deleteLike(@PathVariable Long likeId) {
-        likeService.deleteLike(likeId);
+        likeService.removeLike(likeId);
         return ResponseEntity.noContent().build();
     }
 }

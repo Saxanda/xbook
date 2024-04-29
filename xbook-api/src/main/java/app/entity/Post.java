@@ -36,9 +36,6 @@ public class Post extends AbstractEntity {
     @Column(name = "likes")
     private int likes; // Likes counter
 
-    @Column(name = "post_id")
-    private Long postID;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private PostType type; // Post is original or repost
