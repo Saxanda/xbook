@@ -91,6 +91,18 @@ ul{
 .chat__item-last-message{
     font-size: 15px;
 }
+
+.chat__users_button-user{
+    width: 100%;
+    background-color: inherit;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+}
 //////////////////////////////////////// WINDOW
 .chat__window{
     width: 75%;

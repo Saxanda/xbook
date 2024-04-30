@@ -30,7 +30,7 @@ export default function Window({ data, token, trigger, redactButton }) {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log('Message deleted:', response.data);
+            //console.log('Message deleted:', response.data);
             trigger();
         } catch (error) {
             console.error('Error deleting message:', error);

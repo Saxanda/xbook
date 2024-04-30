@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
-export default function UsersItem({ image, name, lastMessage }) {
+export default function UsersItem({ image, name, lastMessage, id, handleUserClick, index, deleteChat }) {
   const [resolvedLastMessage, setResolvedLastMessage] = useState('');
 
+  const checker = () => {
+    console.log(id);
+  }
   useEffect(() => {
     if (lastMessage.length > 10) {
       setResolvedLastMessage(`${lastMessage.slice(0, 10)}...`);
@@ -14,7 +17,12 @@ export default function UsersItem({ image, name, lastMessage }) {
   return (
     <div className="chat__users_details_container">
       <div className="chat__users_item-container">
+                       
         <ul className="chat__users_item-list">
+        <button
+        className="chat__users_button-user"
+        onClick={() => handleUserClick(index, id)}
+        >    
           <li className="chat__users_item-image">
             <img src={image} alt="icon.png" />
           </li>
@@ -32,7 +40,11 @@ export default function UsersItem({ image, name, lastMessage }) {
               </li>
             </ul>
           </li>
-          <button>DELETE</button>
+          </button>
+          <button
+          onClick={() => deleteChat(id)}
+          >DELETE</button>
+          
         </ul>
       </div>
     </div>

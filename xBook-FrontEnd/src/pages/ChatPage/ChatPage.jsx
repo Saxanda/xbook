@@ -23,9 +23,27 @@ export default function ChatPage() {
     const [deleteTrigger, setDeleteTrigger] = useState(false);
 
     const [token, setToken] = useState('eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE0MTI2NjE0LCJleHAiOjE3MTQ3MzE0MTR9.JwarHBhMYVirjg-khlOKMe_5CLG8iy8n0a4He3MJOjQ');
-
+    useEffect(() => {
+            if(id!==Int16Array)
+        {
+            const fetchChats = async () => {
+                try {
+                    const response = await axios.get('http://localhost:8080/api/chats', {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    setID(response.data[0].id)
+                } catch (error) {
+                    console.error('Error fetching chats:', error);
+                }
+            };
+            fetchChats();
+        }
+    }, [])
     useEffect(() => {
         const fetchMessages = async () => {
+            
             try {
                 const response = await axios.get(`http://localhost:8080/api/chats/messages/${id}`, {
                     headers: {
@@ -64,7 +82,7 @@ export default function ChatPage() {
                             },
                         }
                     );
-                    console.log('Message edit sent:', response.data);
+                    //console.log('Message edit sent:', response.data);
                     
                     deleteTriggerChange();
                     setInputText('');
@@ -92,7 +110,7 @@ export default function ChatPage() {
                         },
                     }
                 );
-                console.log('Message sent:', response.data);
+                //console.log('Message sent:', response.data);
                 triggerChange();
                 setInputText('');
                 localStorage.setItem('lastActiveUser', 0);
@@ -114,9 +132,9 @@ export default function ChatPage() {
     };
 
     const deleteTriggerChange = () => {
-        console.log(trigger)
+        //console.log(trigger)
         setDeleteTrigger(prevTrigger => !prevTrigger);
-        console.log("changed")
+        //console.log("changed")
     };
 
     const handleKeyDown = (event) => {
@@ -138,6 +156,7 @@ export default function ChatPage() {
                         messages={messages}
                         currentId={id}
                         trigger={trigger}
+                        triggerChange={deleteTriggerChange}
                     />
                 </li>
 
