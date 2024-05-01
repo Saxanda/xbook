@@ -14,6 +14,5 @@ public class PostResponse {
     private String body;
     private String media;
     private int likes;
-    private Long postID;
     private PostType type;
 }

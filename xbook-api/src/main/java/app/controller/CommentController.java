@@ -2,7 +2,9 @@ package app.controller;
 
 import app.dto.request.CommentRequest;
 import app.dto.response.CommentResponse;
+import app.entity.User;
 import app.service.CommentService;
+import app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +22,22 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/comments")
-public class CommentsController {
-
+public class CommentController {
+    private final UserService userService;
     private final CommentService commentService;
 
     @PostMapping("/comment")
     public ResponseEntity<CommentResponse> createComment(@RequestBody CommentRequest commentRequest) {
+
+        User authUser = userService.getAuthUser();
+        if (!authUser.isActivated()) {
+            // Unauthorized access
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // User authorized
         CommentResponse commentResponse = commentService.createComment(commentRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(commentResponse);
+        return ResponseEntity.ok().body(commentResponse);
     }
 
     @GetMapping("/fetch/{commentId}")
