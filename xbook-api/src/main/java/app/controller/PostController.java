@@ -36,8 +36,6 @@ public class PostController {
                                                    @RequestParam(required = false) Long originalPostId) {
 
         User authUser = userService.getAuthUser();
-        System.out.println("User authorized" + authUser);
-
         if (!authUser.isActivated()) {
             // Unauthorized access
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

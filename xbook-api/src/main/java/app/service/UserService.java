@@ -55,9 +55,11 @@ public class UserService {
         JwtUserDetails principal = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return principal.getUser();
     }
+
     public Long getAuthCurrentUserId() {
         return getAuthUser().getId();
     }
+
     public void saveUser(User user) {
         userRepository.save(user);
     }

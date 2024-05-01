@@ -4,6 +4,8 @@ import app.dto.mapper.CommentMapper;
 import app.dto.request.CommentRequest;
 import app.dto.response.CommentResponse;
 import app.entity.Comment;
+import app.entity.Post;
+import app.entity.User;
 import app.repository.CommentRepository;
 import app.repository.PostRepository;
 import app.repository.UserRepository;
@@ -15,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+
 @RequiredArgsConstructor
 public class CommentService {
 
@@ -24,12 +26,19 @@ public class CommentService {
     private final PostRepository postRepository;
     private final CommentMapper commentMapper;
 
-    public CommentResponse createComment(CommentRequest commentRequest) {
-        Comment comment = commentMapper.toCommentRequest(commentRequest);
-        comment.setUser(userRepository.findById(commentRequest.getUserID())
-                .orElseThrow(() -> new IllegalArgumentException("User not found")));
-        comment.setPost(postRepository.findById(commentRequest.getPostID())
-                .orElseThrow(() -> new IllegalArgumentException("Post not found")));
+    @Transactional
+    public CommentResponse createComment(CommentRequest request) {
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + request.getUserId()));
+        Post post = postRepository.findById(request.getPostId())
+                .orElseThrow(() -> new IllegalArgumentException("Post not found with ID: " + request.getPostId()));
+        System.out.println("Request received CommentService : " + request);
+
+        Comment comment = new Comment();
+        System.out.println("Comment after mapper: " + comment);
+        comment.setUser(user);
+        comment.setPost(post);
+        comment.setContent(request.getContent());
         Comment savedComment = commentRepository.save(comment);
         return commentMapper.toCommentResponse(savedComment);
     }

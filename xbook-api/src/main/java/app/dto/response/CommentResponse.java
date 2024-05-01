@@ -1,8 +1,11 @@
 package app.dto.response;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class CommentResponse {
+    private Long id;
     private String content;
+    private Long userId;
+    private Long postId;
 }

@@ -9,9 +9,12 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -19,12 +22,12 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class Post extends AbstractEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "title")
-        private String title; // Field for post Title
+    private String title; // Field for post Title
 
     @Lob
     @Column(name = "body", columnDefinition = "CLOB")
@@ -43,4 +46,7 @@ public class Post extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "original_post_id")
     private Post originalPost; // In case there is a repost
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments; //to make possible to delete comments associated with post
 }

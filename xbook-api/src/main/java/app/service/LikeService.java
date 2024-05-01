@@ -7,10 +7,9 @@ import app.entity.Like;
 import app.entity.Post;
 import app.entity.User;
 import app.repository.LikeRepository;
-import app.repository.UserRepository;
 import app.repository.PostRepository;
+import app.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
