@@ -1,0 +1,11 @@
+.friendCard{
+    display: flex;
+    padding: 16px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    border: 2px solid #f0f2f5;
+
+    &__info{
+        margin-right: 16px;
+    }
+}

@@ -1,0 +1,14 @@
+.profileFriends{
+    background-color: white;
+    border-radius: 8px;
+    padding: 16px;
+
+    .friendsList{
+        display: flex;
+        flex-wrap: wrap;
+        list-style: none;
+        flex: 1 1 80px;
+        margin: 0;
+        padding: 0;
+    }
+}

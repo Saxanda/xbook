@@ -22,7 +22,7 @@ export default function ProfilePagePosts({userData}){
                             </li>
                             <li className='userInfo__item'>
                                 <CakeIcon color='action' sx={{marginRight: "12px"}}/>
-                                <Typography>
+                                <Typography variant='subtitle2'>
                                     {userData.date_of_birth}
                                 </Typography>
                             </li>
