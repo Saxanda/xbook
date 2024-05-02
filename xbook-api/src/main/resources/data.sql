@@ -17,3 +17,6 @@ VALUES (1, 'My First Post', 'This is my first post on XBook!',
 
 INSERT INTO comments (user_id, content, post_id)
 VALUES (1, 'This is a comment.', 1);
+
+INSERT INTO bookmarks (user_id, post_id)
+VALUES (1, 1);
