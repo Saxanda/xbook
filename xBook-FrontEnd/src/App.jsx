@@ -29,7 +29,6 @@ function App() {
   return (
     <Provider store={store}>
     <Router>
-      <Header></Header>
       <Routes>
         <Route/>
         <Route path='/login' element={<LoginPage/>}/>
