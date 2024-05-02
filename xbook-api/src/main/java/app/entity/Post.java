@@ -1,5 +1,6 @@
 package app.entity;
 
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,6 +20,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "posts")
+
 @EqualsAndHashCode(callSuper = false)
 public class Post extends AbstractEntity {
 
