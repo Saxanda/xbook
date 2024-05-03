@@ -50,7 +50,9 @@ public class FriendService {
     }
 
     public Friend sendFriendRequest(Long userId, Long friendId) {
-        if (existFriend(userId, friendId) || existFriend(friendId, userId)) {
+        if (userId == friendId) {
+            throw new IllegalArgumentException("User ID and friend ID must be different.");
+        } else if (existFriend(userId, friendId) || existFriend(friendId, userId)) {
             throw new DataIntegrityViolationException("This friend already exists.");
         } else {
             User user = getUserById(userId);

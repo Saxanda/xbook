@@ -1,13 +1,17 @@
 package app.controller;
 
+import app.dto.mapper.FriendMapper;
+import app.dto.mapper.UserMapper;
+import app.dto.response.FriendResponse;
+import app.dto.response.UserResponse;
 import app.entity.Friend;
-import app.entity.User;
 import app.service.FriendService;
 import app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/friends")
@@ -22,43 +27,61 @@ import java.util.List;
 public class FriendController {
     private final FriendService friendService;
     private final UserService userService;
+    private final FriendMapper friendMapper;
+    private final UserMapper userMapper;
 
-    @PostMapping("/add-friend")
+    @PostMapping("/add-friend/{friendId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Friend sendFriendRequest(@RequestParam Long friendId) {
-        return friendService.sendFriendRequest(userService.getCurrentUserId(), friendId);
+    public FriendResponse sendFriendRequest(@PathVariable("friendId") Long friendId) {
+        Friend friend = friendService.sendFriendRequest(userService.getCurrentUserId(), friendId);
+        FriendResponse friendResponse = friendMapper.friendToFriendResponse(friend);
+        return friendResponse;
     }
 
-    @PostMapping("/accept-friend")
-    @ResponseStatus(HttpStatus.OK)
-    public Friend acceptFriendRequest(@RequestParam Long friendId) {
-        return friendService.acceptFriendRequest(userService.getCurrentUserId(), friendId);
+    @PostMapping("/accept-friend/{friendId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public FriendResponse acceptFriendRequest(@PathVariable("friendId") Long friendId) {
+        Friend friend = friendService.acceptFriendRequest(userService.getCurrentUserId(), friendId);
+        FriendResponse friendResponse = friendMapper.friendToFriendResponse(friend);
+        return friendResponse;
     }
 
-    @DeleteMapping("/reject-friend")
+    @DeleteMapping("/reject-friend/{friendId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void rejectFriendRequest(@RequestParam Long friendId) {
+    public void rejectFriendRequest(@PathVariable("friendId") Long friendId) {
         friendService.rejectFriendRequest(userService.getCurrentUserId(), friendId);
     }
 
-    @DeleteMapping("/delete-friend")
+    @DeleteMapping("/delete-friend/{friendId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void terminateFriendship(@RequestParam Long friendId) {
+    public void terminateFriendship(@PathVariable("friendId") Long friendId) {
         friendService.terminateFriendship(userService.getCurrentUserId(), friendId);
     }
 
-    @GetMapping("/my-friends")
-    public List<User> getAllFriends() {
-        return friendService.getAllFriends(userService.getCurrentUserId());
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserResponse> getAllFriends() {
+        return friendService.getAllFriends(userService.getCurrentUserId())
+                .stream()
+                .map(userMapper::userToUserResponse)
+                .collect(Collectors.toList());
     }
 
-    @GetMapping("/my-friend-requests")
-    public List<User> getAllFriendRequests() {
-        return friendService.getAllFriendRequests(userService.getCurrentUserId());
+    @GetMapping("/requests")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserResponse> getAllFriendRequests() {
+        return friendService.getAllFriendRequests(userService.getCurrentUserId())
+                .stream()
+                .map(userMapper::userToUserResponse)
+                .collect(Collectors.toList());
     }
 
-    @GetMapping("/search-friend")
-    public List<User> searchFriend(@RequestParam String input) {
-        return friendService.searchFriend(userService.getCurrentUserId(), input);
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserResponse> searchFriend(@RequestParam String input) {
+        return friendService.searchFriend(userService.getCurrentUserId(), input)
+                .stream()
+                .map(userMapper::userToUserResponse)
+                .collect(Collectors.toList());
     }
 }
