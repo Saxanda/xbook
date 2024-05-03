@@ -58,6 +58,10 @@ public class UserService {
         return principal.getUser();
     }
 
+    public Long getCurrentUserId() {
+        return getAuthUser().getId();
+    }
+
     public void saveUser(User user) {
         userRepository.save(user);
     }
