@@ -24,7 +24,6 @@ public class MessageController {
     }
     @PostMapping("/update/{id}")
     public MessageResponse updateMessage(@PathVariable("id") Long messageId, @RequestBody UpdateMessageRequest newContent) {
-        System.out.println(newContent);
         return messageService.updateMessage(messageId, newContent);
     }
 

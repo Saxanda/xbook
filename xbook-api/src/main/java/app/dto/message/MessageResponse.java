@@ -13,6 +13,7 @@ public class MessageResponse {
     private Long id;
     private LocalDateTime createdDate;
     private ContentType contentType;
+    private boolean isEdited = false;
     private String content;
     private UserInChatRepresentation sender;
     private ChatResponse chat;

@@ -56,7 +56,13 @@ public class UserService {
         return principal.getUser();
     }
 
+
     public Long getAuthCurrentUserId() {
+        return getAuthUser().getId();
+    }
+
+    public Long getCurrentUserId() {
+
         return getAuthUser().getId();
     }
 
@@ -101,6 +107,15 @@ public class UserService {
 
     public List<User> searchUsersByName(String name) {
         return userRepository.findByNameContaining(name);
+    }
+
+    public void updatePassword(String email, String newPassword) {
+        userRepository.findUserByEmail(email).ifPresentOrElse(user -> {
+            user.setPassword(encoder.encode(newPassword));
+            userRepository.save(user);
+        }, () -> {
+            throw new ResourceNotFoundException("User not found with id");
+        });
     }
 
 }

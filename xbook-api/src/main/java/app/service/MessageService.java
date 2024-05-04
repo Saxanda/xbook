@@ -45,16 +45,15 @@ public class MessageService {
         UserInChatRepresentation sender = modelMapper.map(savedMessage.getSender(), UserInChatRepresentation.class);
         msg.setChat(chatResponse);
         msg.setSender(sender);
+        if(savedMessage.getLastModifiedDate().isAfter(savedMessage.getCreatedDate())) {
+            msg.setEdited(true);
+        }
         return msg;
     }
 
     private Message convertToMessage(MessageRequest msgRq, User authUser) {
         Chat chat = chatRepo.findById(msgRq.getChatId()).orElseThrow(() -> new ResourceNotFoundException("Chat is not found!"));
-        Message msg = new Message(ContentType.fromString(msgRq.getContentType()), msgRq.getContent(), authUser, chat, MessageStatus.SENT);
-        System.out.println("Message in convertToMessage method!");
-        System.out.println(msg);
-        System.out.println(msg.getId());
-        return msg;
+        return new Message(ContentType.fromString(msgRq.getContentType()), msgRq.getContent(), authUser, chat, MessageStatus.SENT);
     }
 
     public List<MessageResponse> getChatMessages(Long chatId) {

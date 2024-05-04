@@ -26,8 +26,6 @@ public class ChatController {
     // Creates new chat with a person with {email}
     @PostMapping("/create/{email}")
     public ChatResponse createNewChat(@PathVariable("email") String emailOfChatParticipant) {
-        System.out.println("email in Controller!");
-        System.out.println(emailOfChatParticipant);
         return chatService.save(emailOfChatParticipant);
     }
 
@@ -36,7 +34,7 @@ public class ChatController {
         return chatService.findById(chatId);
     }
 
-    // Delete chat with all messages in it
+    // Delete chat and all its messages
     @DeleteMapping("/delete/{id}")
     public boolean deleteChat(@PathVariable("id") Long chatId) {
         return chatService.deleteById(chatId);
