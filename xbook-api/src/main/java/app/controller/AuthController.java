@@ -3,6 +3,7 @@ package app.controller;
 import app.dto.mapper.UserMapper;
 import app.dto.request.LoginRequest;
 import app.dto.request.UpdateUserPasswordRequest;
+import app.dto.request.UserEmailRequest;
 import app.dto.request.UserRegistrationRequest;
 import app.dto.response.ErrorResponse;
 import app.dto.response.LoginResponse;
@@ -65,8 +66,8 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestBody String email) {
-        resetPasswordService.sendResetPasswordLink(email);
+    public ResponseEntity<String> resetPassword(@RequestBody UserEmailRequest emailRq) {
+        resetPasswordService.sendResetPasswordLink(emailRq.getEmail());
         return ResponseEntity.ok("Reset password link sent successfully!");
     }
 
