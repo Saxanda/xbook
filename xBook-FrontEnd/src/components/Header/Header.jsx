@@ -1,4 +1,7 @@
 import * as React from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { clearEmail } from "../../redux/authSlice";
+import { useDispatch } from "react-redux";
 import {
   AppBar,
   Box,
@@ -14,7 +17,8 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import PeopleIcon from "@mui/icons-material/People";
-import { NavLink } from "react-router-dom";
+
+
 
 const pages = [
   { name: "Home", path: "/" },
@@ -30,6 +34,8 @@ const settings = [
 export default function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -44,6 +50,14 @@ export default function Header() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    dispatch(clearEmail());
+    handleCloseUserMenu();
+    navigate("/login");
   };
 
   return (
@@ -171,7 +185,14 @@ export default function Header() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
+                <MenuItem
+                  key={setting.name}
+                  onClick={
+                    setting.name === "Logout"
+                      ? handleLogout
+                      : handleCloseUserMenu
+                  }
+                >
                   <NavLink
                     to={setting.path}
                     style={{
