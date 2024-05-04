@@ -110,7 +110,6 @@
 			<version>33.1.0-jre</version>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>

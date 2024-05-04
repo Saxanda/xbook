@@ -1,3 +1,7 @@
+INSERT INTO posts (user_id, title, body, media, likes, type, original_post_id)
+VALUES (1, 'My First Post', 'This is my first post on XBook!',
+        'https://m.media-amazon.com/images/I/71FEBlBJqgL._AC_SL1312_.jpg', 10, 'ORIGINAL', NULL);
+        
 INSERT INTO users (name, surname, email, password, date_of_birth, gender, role, photo, avatar, address, is_activated)
 VALUES ('John', 'Doe', 'john.doe@example.com', '$2a$10$iwRji5mPlwatlHuKkof20Ot/pQfuUIqrpEviIRk4gMGdeH1XWaavm', '1990-01-01', 'male', 'USER', 'photo.jpg', 'avatar.jpg', '123 Main Street', TRUE);
 
@@ -69,4 +73,5 @@ VALUES ('2024-05-01 10:32:32.391846', '2024-05-01 10:32:32.391846', 'TEXT', 'Hel
 INSERT INTO message (created_date, last_modified_date, content_type, content, sender_id, chat_id, status)
 VALUES ('2024-05-01 10:35:32.391846', '2024-05-01 10:35:32.391846', 'TEXT', 'Yeah, we can meet tomorrow at 6pm', '3', '2', 'SENT');
 
-
+INSERT INTO comments (user_id, content, post_id)
+VALUES (1, 'This is a comment.', 1);
