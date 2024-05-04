@@ -32,8 +32,10 @@ public class CommentService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + request.getUserId()));
         Post post = postRepository.findById(request.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("Post not found with ID: " + request.getPostId()));
+        System.out.println("Request received CommentService : " + request);
 
         Comment comment = new Comment();
+        System.out.println("Comment after mapper: " + comment);
         comment.setUser(user);
         comment.setPost(post);
         comment.setContent(request.getContent());

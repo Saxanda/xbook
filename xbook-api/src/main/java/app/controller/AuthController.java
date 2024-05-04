@@ -2,24 +2,23 @@ package app.controller;
 
 import app.dto.mapper.UserMapper;
 import app.dto.request.LoginRequest;
+import app.dto.request.UpdateUserPasswordRequest;
 import app.dto.request.UserRegistrationRequest;
 import app.dto.response.ErrorResponse;
 import app.dto.response.LoginResponse;
 import app.entity.User;
 import app.security.JwtTokenService;
 import app.service.EmailConfirmationService;
+import app.service.ResetPasswordService;
 import app.service.UserService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -30,6 +29,7 @@ public class AuthController {
     private final PasswordEncoder encoder;
     private final JwtTokenService tokenService;
     private final EmailConfirmationService emailConfirmationService;
+    private final ResetPasswordService resetPasswordService;
 
     @PostMapping("registration")
     @ResponseStatus(HttpStatus.CREATED)
@@ -46,7 +46,11 @@ public class AuthController {
             User createdUser = userService.createUser(user);
 
             // Trigger email confirmation process using EmailConfirmationService class
-            emailConfirmationService.sendConfirmationEmail(createdUser.getEmail(), confirmationToken);
+            String letterContent = "Click the following link to confirm your email: " +
+                                  "http://localhost:8080/confirm-email?token=" +
+                                  confirmationToken;
+            emailConfirmationService.sendEmail(createdUser.getEmail(), "Email Confirmation Required", letterContent);
+//            emailConfirmationService.sendConfirmationEmail(createdUser.getEmail(), confirmationToken);
             return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.userToUserRegistrationResponse(createdUser));
         }
     }
@@ -59,5 +63,19 @@ public class AuthController {
                 .orElse(ResponseEntity.status(HttpStatus.valueOf(401))
                         .body(LoginResponse.error("wrong email/password combination")));
     }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody String email) {
+        resetPasswordService.sendResetPasswordLink(email);
+        return ResponseEntity.ok("Reset password link sent successfully!");
+    }
+
+    @PutMapping("/update-password/{token}")
+    public ResponseEntity<String> updatePassword(@PathVariable("token") String token,
+                                                 @RequestBody UpdateUserPasswordRequest updateUserPasswordRequest) {
+        resetPasswordService.resetUserPassword(token, updateUserPasswordRequest.getEmail(), updateUserPasswordRequest.getNewPassword());
+        return ResponseEntity.ok("Password reset successfully!");
+    }
+
 
 }

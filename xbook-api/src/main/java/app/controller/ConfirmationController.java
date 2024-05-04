@@ -31,7 +31,6 @@ public class ConfirmationController {
                 return ResponseEntity.badRequest().body("Invalid or expired confirmation token.");
             }
         } catch (Exception e) {
-            // For more exceptions
             return ResponseEntity.internalServerError().body("An error occurred during email confirmation.");
         }
     }
