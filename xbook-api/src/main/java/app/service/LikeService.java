@@ -46,11 +46,6 @@ public class LikeService {
         return likeMapper.toLikeResponse(savedLike);
     }
 
-    public LikeResponse getLikeById(Long likeId) {
-        Like like = likeRepository.findById(likeId)
-                .orElseThrow(() -> new EntityNotFoundException("Like not found with id: " + likeId));
-        return likeMapper.toLikeResponse(like);
-    }
 
     public void removeLike(Long likeId) {
         Like like = likeRepository.findById(likeId)

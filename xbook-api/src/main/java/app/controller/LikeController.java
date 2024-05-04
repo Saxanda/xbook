@@ -22,19 +22,10 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping("/like")
-    public ResponseEntity<LikeResponse> createLike(@RequestBody LikeRequest likeRequest) {
-        LikeResponse createdLike = likeService.addLike(likeRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdLike);
-    }
+    public ResponseEntity<String> createLike(@RequestBody LikeRequest likeRequest) {
+        likeService.addLike(likeRequest);
 
-    @GetMapping("/{likeId}")
-    public ResponseEntity<LikeResponse> getLikeById(@PathVariable Long likeId) {
-        LikeResponse like = likeService.getLikeById(likeId);
-        if (like != null) {
-            return ResponseEntity.ok(like);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body("Like added");
     }
 
     @DeleteMapping("/remove/{likeId}")
