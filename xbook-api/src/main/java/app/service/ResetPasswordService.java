@@ -30,7 +30,7 @@ public class ResetPasswordService {
         if (user.isEmpty()) throw new ResourceNotFoundException("User with email '" + email + "' was not found!");
         String resetPasswordToken = generateAndAddTokenToCache(email);
         String letterContent = "Click the following link to reset your password: " +
-                               "http://localhost:8080/forgot-password?token=" +
+                               "http://localhost:5173/forgot-password?token=" +
                                resetPasswordToken +
                                " This link will be invalid in 10 minutes!";
 
