@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,20 +22,27 @@ public class NotificationService {
     private final UserService userService;
 
     public Notification createNotification(NotificationRequest notificationRequest) {
-        // Fetch the user from database
+        // User from database
+        User sender =userService.findById(notificationRequest.getSenderId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found with sender ID: " + notificationRequest.getSenderId()));
+        User recipient = userService.findById(notificationRequest.getRecipientId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + notificationRequest.getRecipientId()));
 
-        User recipient = userService.findById(notificationRequest.getRecipient())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + notificationRequest.getRecipient()));
-
-        // Create a new Notification entity
+        // Create a new Notification
         Notification notification = new Notification();
         notification.setMessage(notificationRequest.getMessage());
         notification.setTimestamp(LocalDateTime.now());
+        notification.setSender(sender);
         notification.setRecipient(recipient);
         notification.setReadStatus(false);
-
-        // Save the Notification entity to the database
         return notificationRepository.save(notification);
+    }
+
+    public List<NotificationResponse> getUserNotifications(Long userId) {
+        List<Notification> notifications = notificationRepository.findByRecipientId(userId);
+        return notifications.stream()
+                .map(notificationMapper::toNotificationResponse)
+                .collect(Collectors.toList());
     }
 
     public NotificationResponse markNotificationAsRead(Long notificationId) {
@@ -45,7 +54,7 @@ public class NotificationService {
 
         notificationRepository.save(notification);
 
-        return notificationMapper.toNotification(notification);
+        return notificationMapper.toNotificationResponse(notification);
 
     }
 }

@@ -9,5 +9,5 @@ public class NotificationResponse {
     private String message;
     private LocalDateTime timestamp;
     private String senderName;
-    private String recipientName;
+    private String recipientName; // User's name to whom the notification is targeted
 }
