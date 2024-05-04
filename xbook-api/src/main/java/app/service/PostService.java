@@ -30,7 +30,7 @@ public class PostService {
     public PostResponse createPost(PostRequest postRequest, Long userId, Long originalPostId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        Post post = postMapper.toPost(postRequest);
+        Post post = postMapper.toPostRequest(postRequest);
         post.setUser(user);
 
         if (originalPostId != null) {
