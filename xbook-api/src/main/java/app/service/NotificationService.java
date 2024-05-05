@@ -27,29 +27,6 @@ public class NotificationService {
     private final FriendService friendService;
     private final PostRepository postRepository;
 
-//    public Notification createNotification(NotificationRequest notificationRequest) {
-//        // Check User, Friend  from database
-//        userService.findById(notificationRequest.getSenderId());
-//        friendService.getFriend(notificationRequest.getRecipientId(), notificationRequest.getSenderId());
-//        // Post associated with the notification
-//        Post post = null;
-//        if (notificationRequest.getPostId() != null) {
-//            Optional<Post> optionalPost = postRepository.findById(notificationRequest.getPostId());
-//            post = optionalPost.orElseThrow(() -> new ResourceNotFoundException("Post not found with ID: " + notificationRequest.getPostId()));
-//        }
-//
-//        // Create a new Notification
-//        Notification notification = new Notification();
-//
-//        notification.setMessage(notificationRequest.getMessage());
-//        notification.setTimestamp(LocalDateTime.now());
-//        notification.setSender(userService.findById(notificationRequest.getSenderId()).orElseThrow(() -> new RuntimeException("Sender not found")));
-//        notification.setPost(post); // Set the associated post
-//        notification.setRecipient(notificationRequest.getRecipientId());
-//        notification.setReadStatus(false);
-//        return notificationRepository.save(notification);
-//    }
-
     public Notification createNotification(NotificationRequest notificationRequest) {
         // Check User, Friend  from database
         User sender = userService.findById(notificationRequest.getSenderId()).get();
