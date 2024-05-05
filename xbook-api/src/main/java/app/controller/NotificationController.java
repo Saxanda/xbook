@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,9 +40,14 @@ public class NotificationController {
     }
 
     @GetMapping("/{recipientId}")
-    public ResponseEntity<List<NotificationResponse>> getRecipientNotifications(@PathVariable Long recipientId) {
-
+    public ResponseEntity<?> getRecipientNotifications(@PathVariable Long recipientId) {
         List<NotificationResponse> notifications = notificationService.getRecipientNotifications(recipientId);
-        return ResponseEntity.ok(notifications);
+        if (notifications.isEmpty()) {
+            // If there are no notifications for this recipient
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "There are no notifications for this recipient.");
+            return ResponseEntity.ok().body(response);
+        }
+        return ResponseEntity.ok().body(notifications);
     }
 }

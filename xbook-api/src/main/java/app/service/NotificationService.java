@@ -3,7 +3,6 @@ package app.service;
 import app.dto.mapper.NotificationMapper;
 import app.dto.request.NotificationRequest;
 import app.dto.response.NotificationResponse;
-import app.entity.Friend;
 import app.entity.Notification;
 import app.entity.Post;
 import app.entity.User;
@@ -75,6 +74,7 @@ public class NotificationService {
 
         return notificationRepository.save(notification);
     }
+
     public List<NotificationResponse> getRecipientNotifications(Long recipientId) {
         List<Notification> notifications = notificationRepository.findByRecipient(recipientId);
         return notifications.stream()
