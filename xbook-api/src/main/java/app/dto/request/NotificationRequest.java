@@ -6,5 +6,8 @@ import lombok.Data;
 public class NotificationRequest {
     private String message;
     private Long senderId;
-    private Long recipientId; // User ID to whom the notification is targeted
+    private Long postId;
+    private Long recipientId; // User's Friend ID to whom the notification is targeted
+
+
 }

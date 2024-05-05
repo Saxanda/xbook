@@ -25,9 +25,9 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @PostMapping("/notification")
-    public ResponseEntity<Notification> createNotification(@RequestBody NotificationRequest notificationRequestRequest) {
-        Notification notificationResponse = notificationService.createNotification(notificationRequestRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(notificationResponse);
+    public ResponseEntity<String> createNotification(@RequestBody NotificationRequest notificationRequestRequest) {
+        notificationService.createNotification(notificationRequestRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Note created");
     }
 
     @PutMapping("/{notificationId}/read")
@@ -36,10 +36,10 @@ public class NotificationController {
         return ResponseEntity.ok(updatedNotification);
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<NotificationResponse>> getUserNotifications(@PathVariable Long userId) {
+    @GetMapping("/{recipientId}")
+    public ResponseEntity<List<NotificationResponse>> getRecipientNotifications(@PathVariable Long recipientId) {
 
-        List<NotificationResponse> notifications = notificationService.getUserNotifications(userId);
+        List<NotificationResponse> notifications = notificationService.getRecipientNotifications(recipientId);
         return ResponseEntity.ok(notifications);
     }
 }

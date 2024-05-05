@@ -29,10 +29,8 @@ public class Notification extends AbstractEntity{
     @JoinColumn(name = "post_id")
     private Post post;  // Reference to the Post entity
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipient_id", nullable = false)
-    private User recipient; // User ID to whom the notification is targeted
-
+    @Column(name = "recipient_id", nullable = false)
+    private Long recipient; // Friend ID to whom the notification is targeted
 
     @Column(nullable = false)
     private boolean readStatus;
