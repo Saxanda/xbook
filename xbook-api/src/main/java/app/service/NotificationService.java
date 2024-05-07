@@ -4,7 +4,9 @@ import app.dto.mapper.NotificationMapper;
 import app.dto.request.NotificationRequest;
 import app.dto.response.NotificationResponse;
 import app.entity.Notification;
+import app.entity.NotificationType;
 import app.entity.Post;
+import app.entity.PostType;
 import app.entity.User;
 import app.exception.ResourceNotFoundException;
 import app.repository.NotificationRepository;
@@ -27,27 +29,7 @@ public class NotificationService {
     private final FriendService friendService;
     private final PostRepository postRepository;
 
-    public Notification createNotification(NotificationRequest notificationRequest) {
-        // Check User, Friend  from database
-        User sender = userService.findById(notificationRequest.getSenderId()).get();
-        friendService.getFriend(notificationRequest.getRecipientId(), notificationRequest.getSenderId());
-
-        // Post associated with the notification
-        Post post = null;
-        if (notificationRequest.getPostId() != null) {
-            Optional<Post> optionalPost = postRepository.findById(notificationRequest.getPostId());
-            post = optionalPost.orElseThrow(() -> new ResourceNotFoundException("Post not found with ID: " + notificationRequest.getPostId()));
-        }
-
-        // Create a new Notification
-        Notification notification = new Notification();
-        notification.setMessage(notificationRequest.getMessage());
-        notification.setTimestamp(LocalDateTime.now());
-        notification.setSender(sender);
-        notification.setPost(post);
-
-        notification.setRecipient(notificationRequest.getRecipientId());
-        notification.setReadStatus(false);
+    public Notification createNotification(Notification notification) {
 
         return notificationRepository.save(notification);
     }
@@ -70,5 +52,34 @@ public class NotificationService {
 
         return notificationMapper.toNotificationResponse(notification);
 
+    }
+
+    public void postNotification(Post post) {
+        // Determine the user who created the post
+        Long userId = post.getUser().getId();
+
+        // Get the list of friends for the user
+        List<User> friends = friendService.getAllFriends(userId);
+
+        // Notification type based on the post type
+        NotificationType type = post.getType() == PostType.REPOST ? NotificationType.REPOST : NotificationType.NEW_POST;
+
+        // Current time for the timestamp
+        LocalDateTime now = LocalDateTime.now();
+
+        // Create and send a notification for each friend
+        for (User friend : friends) {
+            Notification notification = new Notification(
+                    post.getUser(),         // sender
+                    friend.getId(),         // recipient
+                    "Customised message here", // message
+                    type,                   // type
+                    post,                   // related post
+                    now,                    // timestamp
+                    false                   // readStatus
+            );
+
+            createNotification(notification);
+        }
     }
 }

@@ -27,11 +27,11 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    @PostMapping("/notification")
-    public ResponseEntity<String> createNotification(@RequestBody NotificationRequest notificationRequestRequest) {
-        notificationService.createNotification(notificationRequestRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Note created");
-    }
+//    @PostMapping("/notification")
+//    public ResponseEntity<String> createNotification(@RequestBody NotificationRequest notificationRequestRequest) {
+//        notificationService.createNotification(notificationRequestRequest);
+//        return ResponseEntity.status(HttpStatus.CREATED).body("Note created");
+//    }
 
     @PutMapping("/{notificationId}/read")
     public ResponseEntity<NotificationResponse> markNotificationAsRead(@PathVariable Long notificationId) {
