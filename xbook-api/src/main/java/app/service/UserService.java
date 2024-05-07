@@ -1,6 +1,5 @@
 package app.service;
 
-
 import app.dto.request.UpdateUserRequest;
 import app.entity.User;
 import app.exception.ResourceNotFoundException;
@@ -43,14 +42,13 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found User with email = " + email));
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
     public boolean isEmailExisting(String email) {
         return userRepository.existsUserByEmail(email);
     }
 
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
     // Returns specific User based on a JWT token in request
     public User getAuthUser() {
@@ -58,12 +56,21 @@ public class UserService {
         return principal.getUser();
     }
 
+
+    public Long getAuthCurrentUserId() {
+        return getAuthUser().getId();
+    }
+
+    public Long getCurrentUserId() {
+
+        return getAuthUser().getId();
+    }
+
     public void saveUser(User user) {
         userRepository.save(user);
     }
 
     public User findByConfirmationToken(String confirmationToken) {
-
         return userRepository.findByConfirmationToken(confirmationToken);
     }
 
@@ -101,4 +108,16 @@ public class UserService {
     public List<User> searchUsersByName(String name) {
         return userRepository.findByNameContaining(name);
     }
+
+
+    public void updatePassword(String email, String newPassword) {
+        userRepository.findUserByEmail(email).ifPresentOrElse(user -> {
+            user.setPassword(encoder.encode(newPassword));
+            userRepository.save(user);
+        }, () -> {
+            throw new ResourceNotFoundException("User not found with id");
+        });
+    }
+
+
 }

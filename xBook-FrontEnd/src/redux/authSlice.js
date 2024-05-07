@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+
 const initialState = {
   email: localStorage.getItem('email') || '',
 };
@@ -46,3 +47,5 @@ export default authSlice.reducer;
 
 // export const { setAuthData, clearAuthData } = authSlice.actions;
 // export default authSlice.reducer;
+
+

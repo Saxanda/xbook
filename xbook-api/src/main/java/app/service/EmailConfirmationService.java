@@ -17,7 +17,6 @@ import java.util.UUID;
 
 @Service
 public class EmailConfirmationService {
-
     @Value("${spring.mail.host}")
     private String host;
     @Value("${spring.mail.port}")
@@ -31,24 +30,15 @@ public class EmailConfirmationService {
         return UUID.randomUUID().toString();
     }
 
-    public void sendConfirmationEmail(String email, String confirmationToken) {
-        // Email properties
+    public void sendEmail(String recipientEmail, String subject, String messageContent) {
         String fromEmail = emailUsername;
 
-        // Email content
-        String subject = "Email Confirmation Required ";
-        String confirmationLink = "http://localhost:8080/confirm-email?token=" + confirmationToken;
-        String body = "Click the following link to confirm your email: " + confirmationLink;
-
-        // Set up JavaMail properties
         Properties properties = new Properties();
-
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.transport.protocol", "smtp");
         properties.put("mail.smtp.host", host);
         properties.put("mail.smtp.port", port);
-        // Create a session with authentication
 
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
@@ -58,25 +48,13 @@ public class EmailConfirmationService {
         });
 
         try {
-            // Create a MimeMessage object
             MimeMessage message = new MimeMessage(session);
-
-            // Set From: header field of the header.
             message.setFrom(new InternetAddress(fromEmail));
-
-            // Set To: header field of the header.
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-
-            // Set Subject: header field
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail));
             message.setSubject(subject);
-
-            // Set the actual message
-            message.setText(body);
-
-            // Send message
+            message.setText(messageContent);
             Transport.send(message);
-
-            System.out.println("Confirmation email sent successfully.");
+            System.out.println("Email was sent successfully!");
         } catch (MessagingException mex) {
             mex.printStackTrace();
         }

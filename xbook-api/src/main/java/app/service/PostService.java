@@ -6,6 +6,7 @@ import app.dto.response.PostResponse;
 import app.entity.Post;
 import app.entity.PostType;
 import app.entity.User;
+import app.repository.LikeRepository;
 import app.repository.PostRepository;
 import app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +24,13 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
     private final PostMapper postMapper;
 
     public PostResponse createPost(PostRequest postRequest, Long userId, Long originalPostId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        Post post = postMapper.toPost(postRequest);
+        Post post = postMapper.toPostRequest(postRequest);
         post.setUser(user);
 
         if (originalPostId != null) {
@@ -71,4 +73,5 @@ public class PostService {
     public void deletePost(Long postId) {
         postRepository.deleteById(postId);
     }
+
 }

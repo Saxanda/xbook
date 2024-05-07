@@ -53,3 +53,40 @@ Content-Type: application/json
   "dob": "1995-11-21",
   "gender": "male"
 }
+### create post 1
+POST http://localhost:8080/api/v1/auth/posts
+Content-Type: application/json
+
+{
+  "user_id": 3,
+  "title": "my new skills with Posts on XBook",
+  "body": "Today, I am lazy to write some code!",
+  "media": "https://www.dogseechew.in/storage/editor_61ef6aa53fc7d-joe-caione-qo-pif84vxg-unsplash-min.jpg",
+  "type": "ORIGINAL",
+  "originalPostId": null
+}
+
+### create post 2
+POST http://localhost:8080/api/v1/auth/posts
+Content-Type: application/json
+
+{
+  "title": "my new skills with Posts on XBook",
+  "body": "Today, I am too lazy to write some code!",
+  "media": "https://www.dogseechew.in/storage/editor_61ef6aa53fc7d-joe-caione-qo-pif84vxg-unsplash-min.jpg",
+  "type": "ORIGINAL"
+}
+### create post 3
+POST http://localhost:8080/api/v1/auth/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwiaWF0IjoxNzE0MjUzMzA5LCJleHAiOjE3MTQ4NTgxMDl9.Gug2ItpliXN7Tkpgj1HECfCKrV7cOW6qIm_HIM4Scvg
+Content-Type: application/json
+
+{
+  "user_id": 3,
+  "title": "My First Post",
+  "body": "This is my first post on XBook!",
+  "media": "https://m.media-amazon.com/images/I/71FEBlBJqgL._AC_SL1312_.jpg",
+  "likes": 5,
+  "post_id": 2,
+  "type": "ORIGINAL"
+}
