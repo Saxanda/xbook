@@ -1,16 +1,13 @@
 package app.dto.request;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 
 @Data
-public class UpdateUserPasswordRequest {
+public class UserEmailRequest {
     @NotNull
     @Email(message = "Invalid email format")
     private String email;
-
-    @NotNull
-    private String newPassword;
 }
