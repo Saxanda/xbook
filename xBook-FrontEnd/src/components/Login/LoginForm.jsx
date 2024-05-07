@@ -11,6 +11,7 @@ import { setEmail } from "../../redux/authSlice";
 import PasswordInput from "../Form/PasswordInput";
 import EmailInput from "../Form/EmailInput";
 import axios from "axios";
+import { jwtDecode } from 'jwt-decode'
 import "./Login.scss";
 
 export default function LoginForm() {
@@ -46,12 +47,20 @@ export default function LoginForm() {
             email: values.email,
             password: values.password,
           },
+         
           {
             "Content-Type": "application/json",
             accept: "*/*",
           }
         );
-        const { email, token } = response.data;
+        const {token,email}  = response.data;
+        // const decodedToken = jwtDecode(token);
+        // const userEmail = decodedToken.email;
+        // console.log('Decoded token:', decodedToken);
+        // console.log('User email:', userEmail);
+        // const user= jwtDecode(token);
+        //   console.log(user);
+     
         dispatch(setEmail(email));
 
         if (values.rememberMe) {
