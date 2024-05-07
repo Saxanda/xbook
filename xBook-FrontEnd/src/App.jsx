@@ -3,6 +3,7 @@ import './App.scss'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header/Header';
+import Home from './components/Pages/Home';
 import PostPage from './components/Post/PostPage';
 import { useState, useEffect } from 'react';
 
@@ -24,7 +25,7 @@ function App() {
     <Router>
       <Header></Header>
       <Routes>
-        <Route></Route>
+        <Route path="/" element={<Home />} />
         <Route></Route>
         <Route></Route>
         <Route 
