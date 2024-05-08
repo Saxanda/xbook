@@ -109,6 +109,7 @@ public class UserService {
         return userRepository.findByNameContaining(name);
     }
 
+
     public void updatePassword(String email, String newPassword) {
         userRepository.findUserByEmail(email).ifPresentOrElse(user -> {
             user.setPassword(encoder.encode(newPassword));
@@ -117,5 +118,6 @@ public class UserService {
             throw new ResourceNotFoundException("User not found with id");
         });
     }
+
 
 }
