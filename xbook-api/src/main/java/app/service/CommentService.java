@@ -25,6 +25,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final CommentMapper commentMapper;
+    private final NotificationService notificationService;
 
     @Transactional
     public CommentResponse createComment(CommentRequest request) {
@@ -38,6 +39,8 @@ public class CommentService {
         comment.setPost(post);
         comment.setContent(request.getContent());
         Comment savedComment = commentRepository.save(comment);
+
+        notificationService.commentNotification(savedComment);
         return commentMapper.toCommentResponse(savedComment);
     }
 

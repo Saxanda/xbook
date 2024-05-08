@@ -23,6 +23,7 @@ public class LikeService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final LikeMapper likeMapper;
+    private final NotificationService notificationService;
 
     public LikeResponse addLike(LikeRequest likeRequest) {
         User user = userRepository.findById(likeRequest.getUserId())
@@ -42,7 +43,7 @@ public class LikeService {
         Like savedLike = likeRepository.save(newLike);
         post.setLikes(post.getLikes() + 1);
         postRepository.save(post);
-
+        notificationService.likeNotification(savedLike);
         return likeMapper.toLikeResponse(savedLike);
     }
 

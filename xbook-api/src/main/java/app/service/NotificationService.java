@@ -3,6 +3,8 @@ package app.service;
 import app.dto.mapper.NotificationMapper;
 import app.dto.request.NotificationRequest;
 import app.dto.response.NotificationResponse;
+import app.entity.Comment;
+import app.entity.Like;
 import app.entity.Notification;
 import app.entity.NotificationType;
 import app.entity.Post;
@@ -81,5 +83,65 @@ public class NotificationService {
 
             createNotification(notification);
         }
+    }
+
+    public void commentNotification(Comment comment) {
+        // Determine the user who created the comment
+        Long userId = comment.getUser().getId();
+
+        // Get the list of friends for the user
+        List<User> friends = friendService.getAllFriends(userId);
+
+        // Notification type based on the post type
+        NotificationType type = NotificationType.NEW_COMMENT;
+
+        // Current time for the timestamp
+        LocalDateTime now = LocalDateTime.now();
+
+        // Create and send a notification for each friend
+        for (User friend : friends) {
+            Notification notification = new Notification(
+                    comment.getUser(),         // sender
+                    friend.getId(),         // recipient
+                    "Customised message here", // message
+                    type,                   // type
+                    comment.getPost(),      // related post
+                    now,                    // timestamp
+                    false                   // readStatus
+            );
+
+            createNotification(notification);
+        }
+
+    }
+
+    public void likeNotification(Like like) {
+        // Determine the user who created the like
+        Long userId = like.getUser().getId();
+
+        // Get the list of friends for the user
+        List<User> friends = friendService.getAllFriends(userId);
+
+        // Notification type based on the post type
+        NotificationType type = NotificationType.LIKE;
+
+        // Current time for the timestamp
+        LocalDateTime now = LocalDateTime.now();
+
+        // Create and send a notification for each friend
+        for (User friend : friends) {
+            Notification notification = new Notification(
+                    like.getUser(),         // sender
+                    friend.getId(),         // recipient
+                    "Customised message here", // message
+                    type,                   // type
+                    like.getPost(),      // related post
+                    now,                    // timestamp
+                    false                   // readStatus
+            );
+
+            createNotification(notification);
+        }
+
     }
 }
