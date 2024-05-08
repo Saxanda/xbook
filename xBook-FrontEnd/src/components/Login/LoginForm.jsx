@@ -1,26 +1,20 @@
 import React from "react";
-
 import { useEffect, useState } from "react";
-
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { Button, Checkbox, FormControlLabel, Link, Box } from "@mui/material";
 
 
-import { useDispatch } from "react-redux";
-import { setEmail } from "../../redux/authSlice";
+import { useDispatch, useSelector } from 'react-redux';
+import { setAuthData, clearAuthData } from '../../redux/authSlice'
 
 import PasswordInput from "../Form/PasswordInput";
 import EmailInput from "../Form/EmailInput";
 import axios from "axios";
-import { jwtDecode } from 'jwt-decode'
 import "./Login.scss";
 
-
-
 export default function LoginForm() {
-
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -59,23 +53,14 @@ export default function LoginForm() {
             accept: "*/*",
           }
         );
-
-        const {token,email}  = response.data;
-        // const decodedToken = jwtDecode(token);
-        // const userEmail = decodedToken.email;
-        // console.log('Decoded token:', decodedToken);
-        // console.log('User email:', userEmail);
-        // const user= jwtDecode(token);
-        //   console.log(user);
-     
-        dispatch(setEmail(email));
+        const { token } = response.data;
 
         if (values.rememberMe) {
-          localStorage.setItem("token", token);
+          localStorage.setItem('token', token);
         } else {
-          sessionStorage.setItem("token", token);
+          sessionStorage.setItem('token', token);
         }
-
+        dispatch(setAuthData({ token }));
         navigate("/");
       } catch (error) {
         setError("Invalid email or password.");
@@ -83,14 +68,12 @@ export default function LoginForm() {
     },
   });
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
+    dispatch(clearAuthData());
 
-  // const handleLogout = () => {
-  //   localStorage.removeItem('token');
-  //   sessionStorage.removeItem('token');
-  //   dispatch(clearAuthData());
-
-  // };
-
+  };
 
   return (
     <form onSubmit={formik.handleSubmit} className="form">

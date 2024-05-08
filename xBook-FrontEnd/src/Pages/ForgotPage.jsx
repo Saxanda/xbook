@@ -9,24 +9,4 @@ export default function ForgotPage (){
     )
 }
 
-// PasswordReset.jsx
-
-// import ForgotPasswordForm from '../components/Forgot/Forgot';
-// import { useState } from 'react';
-
-// const PasswordReset = () => {
-//   const [resetToken, setResetToken] = useState('');
-
-//   const handleFirstStepComplete = (token) => {
-//     setResetToken(token);
-//   };
-
-//   return (
-//     <div>
-//       {!resetToken && <ForgotPasswordForm onComplete={handleFirstStepComplete} />}
-//     </div>
-//   );
-// }
-
-// export default PasswordReset;
 
