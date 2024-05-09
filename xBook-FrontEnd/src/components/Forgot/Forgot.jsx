@@ -15,10 +15,10 @@ const ForgotPasswordForm = () => {
       const response = await axios.post('http://localhost:8080/api/v1/auth/reset-password', { email: email });
       const token = response.data.token;
       setResetToken(token); 
-      setMessage('Ссылка для сброса пароля была отправлена на почту.');
+      setMessage('A password reset link has been sent by email.');
       setStage(2); 
     } catch (error) {
-      setMessage('Ошибка при отправке формы. Пожалуйста, попробуйте ещё раз.');
+      setMessage('Error submitting the form. Please try again.');
     }
   };
 
@@ -26,29 +26,29 @@ const ForgotPasswordForm = () => {
     <div className="password-reset-container">
       {stage === 1 && (
         <form onSubmit={handleFirstSubmit}>
-          <h2>Забыли пароль</h2>
-          <p>Для восстановления пароля введите ваш электронный адрес</p>
+          <h2>Forgot your password</h2>
+          <p>To recover your password, enter your email address</p>
           <div>
-            <input
+            <input className='firgotInput'
               type="email"
               name="email"  
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="Введите ваш email"
+              placeholder="Enter your email"
             />
           </div>
           <div className='password-reset-button'>
-            <button type="submit">Отправить</button>
-            <button type="button" onClick={() => window.history.back()}>Отменить</button>
+            <button type="submit">Send</button>
+            <button type="button" onClick={() => window.history.back()}>Cancel</button>
           </div>
         </form>
       )}
       {stage === 2 && (
         <div className='massage' >
-          <h1>Ссылка для сброса пароля была отправлена на почту.</h1>
+          <h1>A password reset link has been sent by email.</h1>
           <div className='password-reset-button'>
-            <button type="button" onClick={() => window.history.back()}>Продолжить</button>
+            <button type="button" onClick={() => window.history.back()}>Continue</button>
           </div>
         </div>
       )}

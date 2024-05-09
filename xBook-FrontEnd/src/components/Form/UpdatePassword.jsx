@@ -17,31 +17,31 @@ const UpdatePasswordForm = ({ resetToken, redirectToLogin }) => {
     try {
       const email = localStorage.getItem('email') || ''; 
       await axios.put(`http://localhost:8080/api/v1/auth/update-password/${resetToken}`, { newPassword, email });
-      setMessage('Пароль успешно изменен.');
+      setMessage('Password changed');
       redirectToLogin();
     } catch (error) {
-      setMessage('Ошибка изменения пароля.');
+      setMessage('Error changing password.');
     }
   };
 
   return (
     <div className="password-reset-container">
       <form onSubmit={handleSecondSubmit}>
-        <h2>Смена пароля</h2>
-        <p>Введите новый пароль</p>
+        <h2>Change Password</h2>
+        <p>Enter a new password</p>
         <div>
-          <input
+          <input className='firgotInput'
             type="password"
             name="newPassword"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             required
-            placeholder="Введите новый пароль"
+            placeholder="Enter a new password"
           />
         </div>
         {error && <p style={{ color: 'black', fontSize: '15px' }}>{error}</p>}
         <div className='password-reset-button'>
-          <button type="submit">Изменить пароль</button>
+          <button type="submit">Change password</button>
         </div>
       </form>
       {message && <p>{message}</p>}
