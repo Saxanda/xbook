@@ -5,7 +5,7 @@ const UpdatePasswordForm = ({ resetToken, redirectToLogin }) => {
   const [newPassword, setNewPassword] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-
+  
   const handleSecondSubmit = async (e) => {
     e.preventDefault();
 
