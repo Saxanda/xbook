@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import PostBody from "./PostBody"
+import PosdBodyRepost from './PostBodyRepost';
 import PostFooter from "./PostFooter"
 import PostHeader from "./PostHeader"
 import Paper from '@mui/material/Paper';
@@ -8,16 +9,25 @@ export default function Post({ postData, postComments }){
     if (!postData) {
         return null;
     }
+    const { postWithRepost } = postData;
+    
     return(
         <Paper elevation={3} className='postComponent' >
             <PostHeader 
                 userData={postData.user}
                 date={postData.date}
             />
-            <PostBody   
-                text={postData.text}    
-                media={postData.media}
-            />
+            {postWithRepost ? (
+                <PosdBodyRepost
+                    originalPostId={postData.originalPostId}
+                    text={postData.text}  
+                />
+            ) : (
+                <PostBody   
+                    text={postData.text}    
+                    media={postData.media}
+                />
+            )}
             <PostFooter
                 likes={postData.likes} 
                 comments={postData.commentsCount}
@@ -34,6 +44,8 @@ Post.propTypes = {
     postData: PropTypes.shape({
         user: PropTypes.object.isRequired,
         text: PropTypes.string.isRequired,
+        postWithRepost: PropTypes.bool.isRequired,
+        originalPostId: PropTypes.string.isRequired,
         media: PropTypes.shape({
             images: PropTypes.arrayOf(PropTypes.string).isRequired,
         }).isRequired,

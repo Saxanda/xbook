@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import Post from "./Post";
+import Paper from '@mui/material/Paper';
 import { useParams } from 'react-router-dom';
 import PostComments from './PostComments';
 
@@ -11,12 +12,14 @@ export default function PostPage({postData}) {
     return (
         <div className='postPage'>
         {post && (
-            <Post
-                postData={post} 
-                postComments={<PostComments comments={post.comments} />} 
-            />
+            <Paper style={{ height: '90vh', overflowY: 'scroll' }}>
+                <Post
+                    postData={post} 
+                    postComments={<PostComments comments={post.comments} />} 
+                />
+            </Paper>
         )}
-        </div>
+    </div>
     );
 }
 
