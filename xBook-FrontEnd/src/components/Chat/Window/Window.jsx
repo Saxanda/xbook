@@ -2,9 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import WindowMessage from "../WindowMessage/WindowMessage";
 import axios from 'axios';
 
-const currentYear = 2024;
 
-export default function Window({ data, token, trigger, redactButton }) {
+export default function Window({ data, token, trigger, redactButton, chatClear }) {
     const [messages, setMessages] = useState([]);
     const [initialized, setInitialized] = useState(false);
     const chatWindowRef = useRef(null);
@@ -39,32 +38,38 @@ export default function Window({ data, token, trigger, redactButton }) {
 
     return (
         <div className="chat__window_container">
-            <div ref={chatWindowRef} className="chat__window-chat">
-                {groupedMessages.map((group, index) => (
-                    <div key={index} className={`chat__message-block ${group.type}`}>
-                        {group.messages.map((message, idx) => {
-                            const formattedDate = formatDate(message.createdDate);
-                            
-                            const shouldDisplayDate = formatDate(message.createdDate) !== prevDate;
-                            prevDate = formatDate(message.createdDate);
-
-                            return (
-                                <React.Fragment key={idx}>
-                                    {shouldDisplayDate && <p className='chat__message-date'>{formattedDate}</p>}
-                                    <WindowMessage 
-                                    text={message.content} 
-                                    state={typeChecker(message)} 
-                                    time={formatTime(message.createdDate)}
-                                    id={message.id}
-                                    deleteButton={deleteMessage} 
-                                    redactButton={redactButton}
-                                    />
-                                </React.Fragment>
-                            );
-                        })}
-                    </div>
-                ))}
-            </div>
+            {chatClear ? (
+                <div className="chat__window-chat">
+                    <p>No chat chosen</p>
+                </div>
+            ) : (
+                <div ref={chatWindowRef} className="chat__window-chat">
+                    {groupedMessages.map((group, index) => (
+                        <div key={index} className={`chat__message-block ${group.type}`}>
+                            {group.messages.map((message, idx) => {
+                                const formattedDate = formatDate(message.createdDate);
+                                
+                                const shouldDisplayDate = formatDate(message.createdDate) !== prevDate;
+                                prevDate = formatDate(message.createdDate);
+    
+                                return (
+                                    <React.Fragment key={idx}>
+                                        {shouldDisplayDate && <p className='chat__message-date'>{formattedDate}</p>}
+                                        <WindowMessage 
+                                        text={message.content} 
+                                        state={typeChecker(message)} 
+                                        time={formatTime(message.createdDate)}
+                                        id={message.id}
+                                        deleteButton={deleteMessage} 
+                                        redactButton={redactButton}
+                                        />
+                                    </React.Fragment>
+                                );
+                            })}
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

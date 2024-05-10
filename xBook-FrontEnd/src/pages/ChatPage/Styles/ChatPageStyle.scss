@@ -103,6 +103,21 @@ ul{
     align-items: center;
     gap: 10px;
 }
+
+.chat__users-add-container{
+    padding-bottom: 10px;
+}
+
+.chat__users-add{
+    width: 100%;
+    background-color: inherit;
+    border: 0px;
+    cursor: pointer;
+}
+.chat__users-add-inp{
+    color: white;
+    width: 95%;
+}
 //////////////////////////////////////// WINDOW
 .chat__window{
     width: 75%;

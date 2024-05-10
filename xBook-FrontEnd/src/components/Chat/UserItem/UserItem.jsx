@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 export default function UsersItem({ image, name, lastMessage, id, handleUserClick, index, deleteChat }) {
   const [resolvedLastMessage, setResolvedLastMessage] = useState('');
 
-  const checker = () => {
-    console.log(id);
-  }
+  // const checker = () => {
+  //   console.log(id);
+  // }
   useEffect(() => {
     if (lastMessage.length > 10) {
       setResolvedLastMessage(`${lastMessage.slice(0, 10)}...`);

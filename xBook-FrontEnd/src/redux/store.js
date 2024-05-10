@@ -1,11 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-
-import { reducer as yourSliceReducer } from './slice';
+import testReducer from './test.slice/test.slice';
+import tokenSlice from './token.slice/token.slice';
 
 const store = configureStore({
-    reducer: {
-        yourSlice: yourSliceReducer,
-    },
+  reducer: {
+    test: testReducer,
+    token: tokenSlice,
+  },
 });
 
 export default store;
