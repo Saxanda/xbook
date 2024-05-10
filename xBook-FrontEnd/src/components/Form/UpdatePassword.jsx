@@ -5,7 +5,7 @@ const UpdatePasswordForm = ({ resetToken, redirectToLogin }) => {
   const [newPassword, setNewPassword] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-
+  
   const handleSecondSubmit = async (e) => {
     e.preventDefault();
 
@@ -16,7 +16,7 @@ const UpdatePasswordForm = ({ resetToken, redirectToLogin }) => {
 
     try {
       const email = localStorage.getItem('email') || ''; 
-      await axios.put(`http://localhost:8080/api/v1/auth/update-password/${resetToken}`, { newPassword, email });
+      await axios.put(`http://localhost:8080/api/v1/auth/update-password/${resetToken}`, {newPassword, email });
       setMessage('Password changed');
       redirectToLogin();
     } catch (error) {

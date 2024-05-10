@@ -3,7 +3,7 @@ import axios from 'axios';
 import './Forgot.scss';
 
 const ForgotPasswordForm = () => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(localStorage.getItem('email') || '');
   const [message, setMessage] = useState('');
   const [resetToken, setResetToken] = useState(''); 
   const [stage, setStage] = useState(1); 
@@ -12,11 +12,13 @@ const ForgotPasswordForm = () => {
     e.preventDefault();
 
     try {
+      
       const response = await axios.post('http://localhost:8080/api/v1/auth/reset-password', { email: email });
       const token = response.data.token;
       setResetToken(token); 
       setMessage('A password reset link has been sent by email.');
       setStage(2); 
+      localStorage.setItem('email', email);
     } catch (error) {
       setMessage('Error submitting the form. Please try again.');
     }
