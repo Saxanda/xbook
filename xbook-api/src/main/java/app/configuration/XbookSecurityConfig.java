@@ -49,6 +49,10 @@ public class XbookSecurityConfig {
                 .authorizeRequests(authorize -> authorize
                         .requestMatchers(
                                 AntPathRequestMatcher.antMatcher("/"),
+                                AntPathRequestMatcher.antMatcher("/index.html"),
+                                AntPathRequestMatcher.antMatcher("/static/**"),
+                                AntPathRequestMatcher.antMatcher("/assets/**"),
+                                AntPathRequestMatcher.antMatcher("/vite.svg"),
                                 AntPathRequestMatcher.antMatcher("/h2-console/**"),
                                 AntPathRequestMatcher.antMatcher("/confirm-email**"),
                                 AntPathRequestMatcher.antMatcher("/swagger-ui/**"),
