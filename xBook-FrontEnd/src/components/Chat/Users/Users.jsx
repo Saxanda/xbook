@@ -2,17 +2,20 @@ import React, { useState, useEffect } from 'react';
 import UsersItem from "../UserItem/UserItem";
 import axios from 'axios';
 
-export default function Users({ onClicked, messages, currentId, trigger, triggerChange }) {
+export default function Users({ onClicked, messages, currentId, trigger, secondTrigger ,triggerChange, changeUserArray }) {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [lastActiveUser, setLastActiveUser] = useState(0);
     const [emailVer, setEmailVer] = useState(false);
+
+    const [emptyChat, setEmptyChat] = useState(false);
 
     const [inputText, setInputText] = useState('');
 
     const [token, setToken] = useState('eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE1MjY2NTg2LCJleHAiOjE3MTU4NzEzODZ9.FCwSdYEU_MSqeBs16A8kh6UL4FPjHR81n7UPj83-HGY');
 
     const deleteChat = async (id) => { // удаление чата
+        if(users.length <=1) setLastActiveUser(-1)
         try {
             const response = await axios.delete(`http://localhost:8080/api/chats/delete/${id}`, {
                 headers: {
@@ -20,16 +23,17 @@ export default function Users({ onClicked, messages, currentId, trigger, trigger
                 },
             });
             //console.log('Message deleted:', response.data);
+            console.log( "lastActive: " + localStorage.getItem("lastActiveUserId") + " id: " + id)
             if(localStorage.getItem("lastActiveUserId") == id)
                 {
                    handleIdChange();
+                   triggerChange();
                 }
             else{
                 console.log(localStorage.getItem("lastActiveUserId"));
                 console.log(id);
                 triggerChange();
             }
-            console.log(users)
         } catch (error) {
             console.error('Error deleting message:', error);
         }
@@ -38,20 +42,26 @@ export default function Users({ onClicked, messages, currentId, trigger, trigger
     const handleIdChange = () => {
         let lastIndex = parseInt(lastActiveUser);
         console.log(users.length)
+        let tempId;
+        if(users.length == 1) lastIndex = null
         if (lastIndex !== null) {
-            let tempId;
             if (lastIndex < users.length - 1) {
                 tempId = users[lastIndex+1].id;
             } else {
                 lastIndex--;
                 tempId = users[lastIndex].id;
             }
-            console.log(tempId);
-            handleUserClick(lastIndex, tempId);
         }
+        else
+        {
+            lastIndex = 0;
+            tempId = -1;
+        }
+        handleUserClick(lastIndex, tempId);
     };
     
     useEffect(() => { // список чатов
+        console.log(lastActiveUser)
         const headers = { 
             'Access-Control-Allow-Origin': '*',
             "Content-Type": "application/json",
@@ -67,7 +77,15 @@ export default function Users({ onClicked, messages, currentId, trigger, trigger
                 });
                 //console.log(response.data[0].id);
                 setUsers(response.data);
+                changeUserArray(response.data)
                 setLoading(false);
+                if(emptyChat)
+                    {
+                        const tempId = response.data[0].id;
+                        handleUserClick(0, tempId);
+                        localStorage.setItem("lastActiveUserId", tempId)
+                        setEmptyChat(false);
+                    }
             } catch (error) {
                 console.error('Error fetching chats:', error);
                 setLoading(false);
@@ -75,7 +93,7 @@ export default function Users({ onClicked, messages, currentId, trigger, trigger
         };
 
         fetchChats();
-    }, [token, messages, trigger]);
+    }, [token, trigger, secondTrigger]);
 
     useEffect(() => { // сохранение с каким пользователем был последний чат
         const savedLastActiveUser = localStorage.getItem('lastActiveUser');
@@ -95,6 +113,7 @@ export default function Users({ onClicked, messages, currentId, trigger, trigger
     const handleUserClick = (index, id) => { //при нажатии на чат сохранение нового последнего пользователя
         setLastActiveUser(index);
         onClicked(id);
+        console.log("id: " + id + " index: " + index);
         localStorage.setItem('lastActiveUser', index);
         localStorage.setItem('lastActiveUserId', id);
     };
@@ -131,13 +150,23 @@ export default function Users({ onClicked, messages, currentId, trigger, trigger
             setInputText('');
             triggerChange();
             setEmailVer(false)
-            localStorage.setItem('lastActiveUser', parseInt(localStorage.getItem('lastActiveUser')) + 1);
+            if(lastActiveUser!=0 && lastActiveUser!=-1)
+            {
+                localStorage.setItem('lastActiveUser', parseInt(localStorage.getItem('lastActiveUser')) + 1);
+            }
+            else
+            {
+                localStorage.setItem('lastActiveUser', 0);
+                setEmptyChat(true);
+            }
+            
             setLastActiveUser(parseInt(localStorage.getItem('lastActiveUser')));
         } catch (error) {
             setEmailVer(true)
             console.error('Error sending message:', error);
         }
     };
+
 
     return (
         <div className="chat__users_container">

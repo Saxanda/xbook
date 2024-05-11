@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setToken } from '../../redux/token.slice/token.slice';
 
 export default function ChatPage() {
+    const [users, setUsers] = useState([]); 
     const [loading, setLoading] = useState(true);
     const [inputText, setInputText] = useState('');
     const [isRedact, setIsRedact] = useState(false);
@@ -33,55 +34,64 @@ export default function ChatPage() {
     //     dispatch(setToken('eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE1MjY2NTg2LCJleHAiOjE3MTU4NzEzODZ9.FCwSdYEU_MSqeBs16A8kh6UL4FPjHR81n7UPj83-HGY'))
     // }, [])
     const [token, setToken] = useState('eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE1MjY2NTg2LCJleHAiOjE3MTU4NzEzODZ9.FCwSdYEU_MSqeBs16A8kh6UL4FPjHR81n7UPj83-HGY');
-    useEffect(() => { //Выбор первого элемента из списка чатов
-            if(id!==Int16Array)
-        {
-            const fetchChats = async () => {
-                try {
-                    const response = await axios.get('http://localhost:8080/api/chats', {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    });
-                    const firstChatId = response.data.length > 0 ? response.data[0].id : 0;
-                    if (firstChatId !== 0) {
-                        //setID(firstChatId);
-                        setFirstUserId(firstChatId);
-                    }
-                } catch (error) {
-                    console.error('Error fetching chats:', error);
-                }
-            };
-            fetchChats();
-        }
-    }, [])
+    // useEffect(() => { //Выбор первого элемента из списка чатов
+    //         if(id!==Int16Array)
+    //     {
+    //         const fetchChats = async () => {
+    //             try {
+    //                 const response = await axios.get('http://localhost:8080/api/chats', {
+    //                     headers: {
+    //                         Authorization: `Bearer ${token}`,
+    //                     },
+    //                 });
+    //                 const firstChatId = response.data.length > 0 ? response.data[0].id : 0;
+    //                 if (firstChatId !== 0) {
+    //                     //setID(firstChatId);
+    //                     setFirstUserId(firstChatId);
+    //                 }
+    //             } catch (error) {
+    //                 console.error('Error fetching chats:', error);
+    //             }
+    //         };
+    //         fetchChats();
+    //     }
+    // }, [])
     useEffect(() => { // Загрузка чата
         const fetchMessages = async () => {
-            
-            try {
+            //console.log("success" + id)
+            if(users.length > 0 && id!=-1)
+                {
+                    try {
                 const response = await axios.get(`http://localhost:8080/api/chats/messages/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
                 setMessages(response.data);
+                console.log(response.data)
                 setLoading(false);
-                console.log("messages reload")
                 setChatClear(false);
             } catch (error) {
                 console.error('Error fetching messages:', error);
                 setChatClear(true);
             }
+                }
+                else{
+                    setChatClear(true);
+                }
+            
         };
 
         fetchMessages();
-    }, [token, id, trigger, deleteTrigger]);
+    }, [token, id, trigger, deleteTrigger, users]);
 
     const handleIdChange = (index) => { //сохранение выбранного пользователем чата
         setID(index);
         localStorage.setItem('lastActiveChatID', index); 
     };
-
+    const changeUserArray = (users) => {
+        setUsers(users);
+    }
     const handleMessageSend = async () => { // отправка и редактировавание сообщения
         if(isRedact) //редактирование
         {
@@ -170,7 +180,9 @@ export default function ChatPage() {
                         messages={messages}
                         currentId={id}
                         trigger={trigger}
+                        secondTrigger={deleteTrigger}
                         triggerChange={deleteTriggerChange}
+                        changeUserArray={changeUserArray}
                     />
                 </li>
 

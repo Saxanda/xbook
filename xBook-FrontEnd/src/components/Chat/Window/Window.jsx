@@ -44,34 +44,38 @@ export default function Window({ data, token, trigger, redactButton, chatClear }
                 </div>
             ) : (
                 <div ref={chatWindowRef} className="chat__window-chat">
-                    {groupedMessages.map((group, index) => (
-                        <div key={index} className={`chat__message-block ${group.type}`}>
-                            {group.messages.map((message, idx) => {
-                                const formattedDate = formatDate(message.createdDate);
-                                
-                                const shouldDisplayDate = formatDate(message.createdDate) !== prevDate;
-                                prevDate = formatDate(message.createdDate);
+                    {messages.length === 0 ? (
+                        <p>No messages yet</p>
+                    ) : (
+                        groupedMessages.map((group, index) => (
+                            <div key={index} className={`chat__message-block ${group.type}`}>
+                                {group.messages.map((message, idx) => {
+                                    const formattedDate = formatDate(message.createdDate);
+                                    const shouldDisplayDate = formattedDate !== prevDate;
+                                    prevDate = formattedDate;
     
-                                return (
-                                    <React.Fragment key={idx}>
-                                        {shouldDisplayDate && <p className='chat__message-date'>{formattedDate}</p>}
-                                        <WindowMessage 
-                                        text={message.content} 
-                                        state={typeChecker(message)} 
-                                        time={formatTime(message.createdDate)}
-                                        id={message.id}
-                                        deleteButton={deleteMessage} 
-                                        redactButton={redactButton}
-                                        />
-                                    </React.Fragment>
-                                );
-                            })}
-                        </div>
-                    ))}
+                                    return (
+                                        <React.Fragment key={idx}>
+                                            {shouldDisplayDate && <p className='chat__message-date'>{formattedDate}</p>}
+                                            <WindowMessage 
+                                                text={message.content} 
+                                                state={typeChecker(message)} 
+                                                time={formatTime(message.createdDate)}
+                                                id={message.id}
+                                                deleteButton={deleteMessage} 
+                                                redactButton={redactButton}
+                                            />
+                                        </React.Fragment>
+                                    );
+                                })}
+                            </div>
+                        ))
+                    )}
                 </div>
             )}
         </div>
     );
+    
 }
 
 function typeChecker(message) {
