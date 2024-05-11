@@ -11,11 +11,12 @@ import app.entity.PostType;
 import app.entity.User;
 import app.exception.ResourceNotFoundException;
 import app.repository.NotificationRepository;
-import app.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,9 +26,8 @@ import java.util.stream.Collectors;
 public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
-    private final UserService userService;
     private final FriendService friendService;
-    private final PostRepository postRepository;
+    private final TaskScheduler taskScheduler;
 
     public Notification createNotification(Notification notification) {
 
@@ -42,16 +42,22 @@ public class NotificationService {
     }
 
     public NotificationResponse markNotificationAsRead(Long notificationId) {
-
         Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification not found with ID: " + notificationId));
 
         notification.setReadStatus(true);
-
         notificationRepository.save(notification);
 
-        return notificationMapper.toNotificationResponse(notification);
+        // Deletion task to run after 5 minutes
+        taskScheduler.schedule(() -> {
+            deleteNotification(notification.getId());
+        }, LocalDateTime.now().plusSeconds(5).atZone(ZoneId.systemDefault()).toInstant());
 
+        return notificationMapper.toNotificationResponse(notification);
+    }
+
+    private void deleteNotification(Long notificationId) {
+        notificationRepository.deleteById(notificationId);
     }
 
     public void postNotification(Post post) {
