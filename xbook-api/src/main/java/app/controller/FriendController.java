@@ -58,10 +58,10 @@ public class FriendController {
         friendService.terminateFriendship(userService.getCurrentUserId(), friendId);
     }
 
-    @GetMapping
+    @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDetailsResponse> getAllFriends() {
-        return friendService.getAllFriends(userService.getCurrentUserId())
+    public List<UserDetailsResponse> getAllFriends(@PathVariable("userId") Long userId) {
+        return friendService.getAllFriends(userId)
                 .stream()
                 .map(userMapper::userDetailsResponse)
                 .collect(Collectors.toList());
@@ -78,8 +78,8 @@ public class FriendController {
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDetailsResponse> searchFriend(@RequestParam String input) {
-        return friendService.searchFriend(userService.getCurrentUserId(), input)
+    public List<UserDetailsResponse> searchFriend(@RequestParam("userId") Long userId, @RequestParam("input") String input) {
+        return friendService.searchFriend(userId, input)
                 .stream()
                 .map(userMapper::userDetailsResponse)
                 .collect(Collectors.toList());
