@@ -1,6 +1,9 @@
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   datasource:
-    url: jdbc:h2:/src/main/resources/xbook.db
+    url: jdbc:h2:~/xbook
     username: sax
     password: 123
     driver-class-name: org.h2.Driver
@@ -20,3 +23,13 @@ spring:
     console:
       path: /h2-console
       enabled: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: socialxbook@gmail.com
+    password: 123  #Ask for password
+
+  myapp:
+    login-url: http://localhost:5173
+
