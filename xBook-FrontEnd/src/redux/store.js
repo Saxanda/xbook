@@ -1,12 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import testReducer from './test.slice/test.slice';
-import tokenSlice from './token.slice/token.slice';
+
+import rootReducer from './rootReducer';
 
 const store = configureStore({
-  reducer: {
-    test: testReducer,
-    token: tokenSlice,
-  },
+    reducer: rootReducer,
 });
 
 export default store;
