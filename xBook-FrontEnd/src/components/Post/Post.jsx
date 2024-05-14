@@ -33,6 +33,7 @@ export default function Post({ postData, postComments }){
                 comments={postData.commentsCount}
                 reposts={postData.reposts}
                 postId={postData.postId}
+                originalPostId={postData.originalPostId}
             />
             {postComments}
         </Paper>
@@ -45,7 +46,7 @@ Post.propTypes = {
         user: PropTypes.object.isRequired,
         text: PropTypes.string.isRequired,
         postWithRepost: PropTypes.bool.isRequired,
-        originalPostId: PropTypes.string.isRequired,
+        originalPostId: PropTypes.number.isRequired,
         media: PropTypes.shape({
             images: PropTypes.arrayOf(PropTypes.string).isRequired,
         }).isRequired,
