@@ -13,8 +13,12 @@ export default function CreateRepostModal({ open, handleClose, postId }){
         handleClose();
         setNewText('')
     }
+    const close = () =>{
+        handleClose();
+        setNewText('');
+    }
     return (
-        <Modal open={open} onClose={handleClose}>
+        <Modal open={open} onClose={close}>
             <Paper
                 elevation={3}
                 style={{
@@ -28,7 +32,7 @@ export default function CreateRepostModal({ open, handleClose, postId }){
                 }}
             >
                 <Typography variant="h5" gutterBottom>Створити Репост</Typography>
-                <IconButton onClick={handleClose} style={{ position: 'absolute', top: '10px', right: '10px', padding: '0' }}>
+                <IconButton onClick={close} style={{ position: 'absolute', top: '10px', right: '10px', padding: '0' }}>
                     <CloseIcon />
                 </IconButton>
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>

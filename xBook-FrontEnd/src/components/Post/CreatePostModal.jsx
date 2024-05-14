@@ -88,7 +88,7 @@ export default function CreatePostModal({ open, handleClose }) {
                 onDrop={handleDrop}
             >
                 <Typography variant="h5" gutterBottom>Створити допис</Typography>
-                <IconButton onClick={handleClose} style={{ position: 'absolute', top: '10px', right: '10px', padding: '0' }}>
+                <IconButton onClick={close} style={{ position: 'absolute', top: '10px', right: '10px', padding: '0' }}>
                     <CloseIcon />
                 </IconButton>
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
