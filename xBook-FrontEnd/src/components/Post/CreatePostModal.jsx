@@ -67,9 +67,15 @@ export default function CreatePostModal({ open, handleClose }) {
         setSelectedImages([]);
         setImgURLs([]);
     };
+    const close = () =>{
+        handleClose();
+        setNewText('');
+        setSelectedImages([]);
+        setImgURLs([]);
+    }
 
     return (
-        <Modal open={open} onClose={handleClose}>
+        <Modal open={open} onClose={close}>
             <Paper
                 elevation={3}
                 style={{
@@ -104,7 +110,7 @@ export default function CreatePostModal({ open, handleClose }) {
                         <IconButton component="span">
                             <PhotoIcon />
                         </IconButton>
-                        <IconButton onClick={() => { setSelectedImages([]); setImgURLs([]); }}>
+                        <IconButton onClick={() => { setSelectedImages([]); setImgURLs([]);document.getElementById("file-input").value="" }}>
                             <DeleteIcon />
                         </IconButton>
                     </label>
