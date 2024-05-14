@@ -1,20 +1,15 @@
-
 import './App.scss'
+import { Provider } from 'react-redux';
+import store from './redux/store';
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header/Header';
+import AppRoutes from './AppRoutes';
 
 function App() {
-
+  
   return (
-    <Router>
-      <Header></Header>
-      <Routes>
-        <Route></Route>
-        <Route></Route>
-        <Route></Route>
-      </Routes>
-    </Router>
+    <Provider store={store}>
+      <AppRoutes/>
+    </Provider>
   )
 }
 

@@ -28,4 +28,8 @@ public class User extends AbstractEntity {
     private String photo;
     private String avatar;
     private String address;
+    @Column(name = "confirmation_token")
+    private String confirmationToken;// New User confirmation by email
+    @Column(name = "is_activated")
+    private boolean isActivated; //User account is activated by default "false"
 }
