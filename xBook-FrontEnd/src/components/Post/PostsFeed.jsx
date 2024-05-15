@@ -1,20 +1,23 @@
 import { useState, useEffect } from 'react';
 import Post from '../Post/Post';
 import { Grid, Typography } from '@mui/material/';
+import { getPosts } from '../Post/postApi';
 
 export default function PostsFeed(){
-
     const [postData, setPostData] = useState([]);
 
     useEffect(() => {
-        fetch('../testPostData.json')
-        .then(response => response.json())
-        .then(data => {
+        const fetchData = async () => {
+        try {
+            const data = await getPosts();
             setPostData(data);
-        })
-        .catch(error => console.error('Error fetching data:', error));
-    }, []);
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+        }
+        };
 
+        fetchData();
+    }, []);
     return(
         <Grid container spacing={3}>
             {postData.map(post => (

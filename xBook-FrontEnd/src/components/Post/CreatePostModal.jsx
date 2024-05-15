@@ -6,6 +6,7 @@ import PostMediaGrid from './PostMediaGrid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+// import { createPost } from './postApi';
 
 export default function CreatePostModal({ open, handleClose }) {
     const [newText, setNewText] = useState('');
