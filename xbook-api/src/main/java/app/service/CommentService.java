@@ -25,6 +25,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final CommentMapper commentMapper;
+    private final NotificationService notificationService;
 
     @Transactional
     public CommentResponse createComment(CommentRequest request) {
@@ -32,14 +33,14 @@ public class CommentService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + request.getUserId()));
         Post post = postRepository.findById(request.getPostId())
                 .orElseThrow(() -> new IllegalArgumentException("Post not found with ID: " + request.getPostId()));
-        System.out.println("Request received CommentService : " + request);
 
         Comment comment = new Comment();
-        System.out.println("Comment after mapper: " + comment);
         comment.setUser(user);
         comment.setPost(post);
         comment.setContent(request.getContent());
         Comment savedComment = commentRepository.save(comment);
+
+        notificationService.commentNotification(savedComment);
         return commentMapper.toCommentResponse(savedComment);
     }
 
