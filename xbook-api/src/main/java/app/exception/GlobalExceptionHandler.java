@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.time.format.DateTimeParseException;
+
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -35,6 +37,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleGeneralException(Exception ex) {
         // In case server error during email confirmation process
         return ResponseEntity.internalServerError().body("An internal server error occurred.");
+    }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<String> handleDateTimeParseException(DateTimeParseException ex) {
+        log.warn(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid date format. Date must be in the format YYYY-MM-DD. "
+                + ex.getMessage() + ".");
     }
 
 }

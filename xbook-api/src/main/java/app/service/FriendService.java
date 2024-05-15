@@ -31,6 +31,10 @@ public class FriendService {
                 .orElseThrow(() -> new ResourceNotFoundException("This friend was not found."));
     }
 
+    public FriendshipStatus getFriendshipStatus(Long userId, Long friendId){
+        return getFriend(userId, friendId).getStatus();
+    }
+
     public Friend updateFriend(Friend friend) {
         friend.setStatus(FriendshipStatus.ACCEPTED);
         return friendRepository.save(friend);
