@@ -43,7 +43,7 @@ public class UserController {
 
 
     @GetMapping("{id}")
-    public ResponseEntity getUserById(@PathVariable("id") Long id) {
+    public ResponseEntity<UserResponse> getUserById(@PathVariable("id") Long id) {
         User user = userService.findById(id).get();
         UserResponse userResponse = userMapper.userToUserResponse(user);
 

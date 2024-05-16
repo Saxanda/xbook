@@ -90,6 +90,10 @@ public class FriendService {
         deleteFriend(getFriend(friendId, userId));
     }
 
+    public List<User> getAll(Long userId){
+    return userRepository.findFriendsById(userId);
+    }
+
     public Page<User> getAllFriends(Long userId, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
         return userRepository.findFriendsByUserId(userId, pageable);
