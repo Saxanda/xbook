@@ -4,6 +4,7 @@ import app.dto.mapper.UserMapper;
 import app.dto.request.PatchUserRequest;
 import app.dto.request.UpdateUserRequest;
 import app.dto.response.UserDetailsResponse;
+
 import app.dto.response.UserResponse;
 import app.entity.FriendshipStatus;
 import app.entity.User;
@@ -11,6 +12,7 @@ import app.service.FriendService;
 import app.service.UserService;
 import app.utils.ControllerUtils;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,12 +35,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("api/v1/users")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173", maxAge = 3600)
 public class UserController {
     private final UserService userService;
 
     private final FriendService friendService;
     private final UserMapper userMapper;
+
 
     @GetMapping("{id}")
     public ResponseEntity getUserById(@PathVariable("id") Long id) {

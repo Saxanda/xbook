@@ -1,7 +1,9 @@
 import * as React from "react";
+import { useState, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { clearEmail } from "../../redux/authSlice";
-import { useDispatch } from "react-redux";
 import {
   AppBar,
   Box,
@@ -14,11 +16,20 @@ import {
   Button,
   Tooltip,
   MenuItem,
+  InputBase,
+  Paper,
+  MenuList,
 } from "@mui/material";
+
 import MenuIcon from "@mui/icons-material/Menu";
 import PeopleIcon from "@mui/icons-material/People";
-
-
+import SearchIcon from "@mui/icons-material/Search";
+import {
+  setAnchorElNav,
+  setAnchorElUser,
+  setSearchQuery,
+  clearHeaderState,
+} from "../../redux/headerSlice";
 
 const pages = [
   { name: "Home", path: "/" },
@@ -32,33 +43,91 @@ const settings = [
 ];
 
 export default function Header() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const searchRef = useRef(null);
+
+  const [searchResults, setSearchResults] = useState({});
+  const [open, setOpen] = useState(false);
+
+  const anchorElNav = useSelector((state) => state.header.anchorElNav);
+  const anchorElUser = useSelector((state) => state.header.anchorElUser);
+  const searchQuery = useSelector((state) => state.header.searchQuery);
 
   const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
+    dispatch(setAnchorElNav(event.currentTarget));
   };
+
   const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
+    dispatch(setAnchorElUser(event.currentTarget));
   };
 
   const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
+    dispatch(setAnchorElNav(null));
   };
 
   const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
+    dispatch(setAnchorElUser(null));
+  };
+
+  const handleSearchChange = (event) => {
+    dispatch(setSearchQuery(event.target.value));
+  };
+
+  const handleSearch = () => {
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (!token) {
+      console.error("Token not available.");
+      return;
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    axios
+      .get(
+        `http://localhost:8080/api/v1/users/search?name=${searchQuery}`,
+        config
+      )
+      .then((response) => {
+        setSearchResults(response.data);
+        setOpen(true);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error("Error searching:", error);
+      });
+  };
+  const handleCloseModal = () => {
+    setOpen(false);
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");
     dispatch(clearEmail());
-    handleCloseUserMenu();
+    dispatch(clearHeaderState());
+
     navigate("/login");
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   return (
     <AppBar position="static">
@@ -161,7 +230,41 @@ export default function Header() {
               </Button>
             ))}
           </Box>
+          <Box
+            sx={{
+              position: "relative",
+              borderRadius: 3,
+              backgroundColor: "rgba(240, 240, 240, 0.7)",
+              backdropFilter: "blur(5px)",
+              marginRight: 10,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "0 8px",
+                height: "100%",
+              }}
+            >
+              <SearchIcon style={{ color: "gray" }} />
 
+              <InputBase
+                placeholder="Search…"
+                inputProps={{ "aria-label": "search" }}
+                style={{ marginLeft: 4 }}
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearch();
+                    dispatch(setSearchQuery(""));
+                  }
+                }}
+                ref={searchRef}
+              />
+            </div>
+          </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -210,6 +313,36 @@ export default function Header() {
           </Box>
         </Toolbar>
       </Container>
+
+      {open && (
+        <Paper
+          style={{
+            position: "absolute",
+            top: 70,
+            right: 100,
+            width: "20%",
+            zIndex: 1,
+          }}
+        >
+          <MenuList>
+            {searchResults.length === 0 ? (
+              <MenuItem>No results found</MenuItem>
+            ) : (
+              searchResults.map((result) => (
+                <MenuItem
+                  key={result.id}
+                  onClick={() => {
+                    handleCloseModal();
+                    navigate(`/user/${result.id}`);
+                  }}
+                >
+                  {result.name} {result.surname}
+                </MenuItem>
+              ))
+            )}
+          </MenuList>
+        </Paper>
+      )}
     </AppBar>
   );
 }
