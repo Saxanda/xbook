@@ -29,6 +29,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT u.* FROM users u " +
             "INNER JOIN friends f " +
+            "ON u.id = f.friend_id AND f.status ='ACCEPTED'  " +
+            "WHERE f.user_id = :userId",
+            nativeQuery = true)
+    List<User> findFriendsById(@Param("userId") Long userId);
+
+    @Query(value = "SELECT u.* FROM users u " +
+            "INNER JOIN friends f " +
             "ON u.id = f.user_id AND f.status ='PENDING'  " +
             "WHERE f.friend_id = :userId",
             nativeQuery = true)

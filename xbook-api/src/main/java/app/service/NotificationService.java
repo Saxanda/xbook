@@ -65,7 +65,7 @@ public class NotificationService {
         Long userId = post.getUser().getId();
 
         // Get the list of friends for the user
-        List<User> friends = friendService.getAllFriends(userId);
+        List<User> friends = friendService.getAll(userId);
 
         // Notification type based on the post type
         NotificationType type = post.getType() == PostType.REPOST ? NotificationType.REPOST : NotificationType.NEW_POST;
@@ -94,7 +94,7 @@ public class NotificationService {
         Long userId = comment.getUser().getId();
 
         // Get the list of friends for the user
-        List<User> friends = friendService.getAllFriends(userId);
+        List<User> friends = friendService.getAll(userId);
 
         // Notification type based on the post type
         NotificationType type = NotificationType.NEW_COMMENT;
@@ -124,7 +124,7 @@ public class NotificationService {
         Long userId = like.getUser().getId();
 
         // Get the list of friends for the user
-        List<User> friends = friendService.getAllFriends(userId);
+        List<User> friends = friendService.getAll(userId);
 
         // Notification type based on the post type
         NotificationType type = NotificationType.LIKE;
