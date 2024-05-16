@@ -3,7 +3,6 @@ package app.controller;
 import app.dto.mapper.UserMapper;
 import app.dto.request.UpdateUserRequest;
 import app.dto.response.UserDetailsResponse;
-import app.dto.response.UserRegistrationResponse;
 import app.entity.User;
 import app.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("api/v1/users")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173", maxAge = 3600)
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
