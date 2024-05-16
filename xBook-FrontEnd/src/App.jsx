@@ -14,16 +14,16 @@ import ForgotPage from './Pages/ForgotPage';
 import PrivateRoutes from "./helpers/PrivateRoutes";
 
 function App() {
-  // const [postData, setPostData] = useState([]);
+  const [postData, setPostData] = useState([]);
 
-  // useEffect(() => {
-  //   fetch('../testPostData.json')
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       setPostData(data);
-  //     })
-  //     .catch(error => console.error('Error fetching data:', error));
-  // }, []);
+  useEffect(() => {
+    fetch('../testPostData.json')
+      .then(response => response.json())
+      .then(data => {
+        setPostData(data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
 
   return (
     <Router>
