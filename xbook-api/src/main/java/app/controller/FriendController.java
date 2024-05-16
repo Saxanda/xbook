@@ -8,6 +8,7 @@ import app.entity.Friend;
 import app.service.FriendService;
 import app.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,9 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/friends")
@@ -60,28 +58,28 @@ public class FriendController {
 
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDetailsResponse> getAllFriends(@PathVariable("userId") Long userId) {
-        return friendService.getAllFriends(userId)
-                .stream()
-                .map(userMapper::userDetailsResponse)
-                .collect(Collectors.toList());
+    public Page<UserDetailsResponse> getAllFriends(@PathVariable("userId") Long userId,
+                                                   @RequestParam(defaultValue = "0") Integer page,
+                                                   @RequestParam(defaultValue = "5") Integer size) {
+        return friendService.getAllFriends(userId, page, size)
+                .map(userMapper::userDetailsResponse);
     }
 
     @GetMapping("/requests")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDetailsResponse> getAllFriendRequests() {
-        return friendService.getAllFriendRequests(userService.getCurrentUserId())
-                .stream()
-                .map(userMapper::userDetailsResponse)
-                .collect(Collectors.toList());
+    public Page<UserDetailsResponse> getAllFriendRequests(@RequestParam(defaultValue = "0") Integer page,
+                                                          @RequestParam(defaultValue = "5") Integer size) {
+        return friendService.getAllFriendRequests(userService.getCurrentUserId(), page, size)
+                .map(userMapper::userDetailsResponse);
     }
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDetailsResponse> searchFriend(@RequestParam("userId") Long userId, @RequestParam("input") String input) {
-        return friendService.searchFriend(userId, input)
-                .stream()
-                .map(userMapper::userDetailsResponse)
-                .collect(Collectors.toList());
+    public Page<UserDetailsResponse> searchFriend(@RequestParam("userId") Long userId,
+                                                  @RequestParam("input") String input,
+                                                  @RequestParam(defaultValue = "0") Integer page,
+                                                  @RequestParam(defaultValue = "5") Integer size) {
+        return friendService.searchFriend(userId, input, page, size)
+                .map(userMapper::userDetailsResponse);
     }
 }

@@ -8,6 +8,9 @@ import app.repository.FriendRepository;
 import app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +32,10 @@ public class FriendService {
     public Friend getFriend(Long userId, Long friendId) {
         return friendRepository.findByUserIdAndFriendId(userId, friendId)
                 .orElseThrow(() -> new ResourceNotFoundException("This friend was not found."));
+    }
+
+    public FriendshipStatus getFriendshipStatus(Long userId, Long friendId){
+        return getFriend(userId, friendId).getStatus();
     }
 
     public Friend updateFriend(Friend friend) {
@@ -83,16 +90,19 @@ public class FriendService {
         deleteFriend(getFriend(friendId, userId));
     }
 
-    public List<User> getAllFriends(Long userId) {
-        return userRepository.findFriendsByUserId(userId);
+    public Page<User> getAllFriends(Long userId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findFriendsByUserId(userId, pageable);
     }
 
-    public List<User> getAllFriendRequests(Long userId) {
-        return userRepository.findFriendRequestsByUserId(userId);
+    public Page<User> getAllFriendRequests(Long userId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findFriendRequestsByUserId(userId, pageable);
     }
 
-    public List<User> searchFriend(Long userId, String input) {
-        return userRepository.searchFriend(userId, input);
+    public Page<User> searchFriend(Long userId, String input, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.searchFriend(userId, input, pageable);
     }
 
 }
