@@ -1,17 +1,26 @@
 package app.controller;
 
 import app.dto.mapper.UserMapper;
+import app.dto.request.PatchUserRequest;
 import app.dto.request.UpdateUserRequest;
 import app.dto.response.UserDetailsResponse;
-import app.dto.response.UserRegistrationResponse;
+
+import app.dto.response.UserResponse;
+import app.entity.FriendshipStatus;
 import app.entity.User;
+import app.service.FriendService;
 import app.service.UserService;
+import app.utils.ControllerUtils;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,28 +35,25 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("api/v1/users")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173", maxAge = 3600)
 public class UserController {
     private final UserService userService;
+
+    private final FriendService friendService;
     private final UserMapper userMapper;
 
-    // Retrieve all users
-    @GetMapping("all")
-    @ResponseStatus(HttpStatus.OK)
-    public List<UserDetailsResponse> getAll() {
-        return userService.getAllUsers().stream()
-                .map(userMapper::userDetailsResponse)
-                .collect(Collectors.toList());
+
+    @GetMapping("{id}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable("id") Long id) {
+        User user = userService.findById(id).get();
+        UserResponse userResponse = userMapper.userToUserResponse(user);
+
+        Long userId = userService.getCurrentUserId();
+        FriendshipStatus friendshipStatus = friendService.getFriendshipStatus(userId, id);
+        userResponse.setStatus(friendshipStatus);
+
+        return ResponseEntity.ok(userResponse);
     }
-    // Get a single user by ID
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<UserDetailsResponse> getUserById(@PathVariable Long id) {
-        return userService.findById(id)
-                .map(userMapper::userDetailsResponse)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
+
     // Update user details by ID
     @PutMapping("/{id}")
     public ResponseEntity<UserDetailsResponse> updateUserById(@PathVariable Long id, @Validated @RequestBody UpdateUserRequest request) {
@@ -57,6 +63,7 @@ public class UserController {
         }
         return ResponseEntity.ok(userMapper.userDetailsResponse(updatedUser));
     }
+
     // Search users by name or surname
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
@@ -65,4 +72,24 @@ public class UserController {
                 .map(userMapper::userDetailsResponse)
                 .collect(Collectors.toList());
     }
+
+    @PatchMapping("{id}")
+    public ResponseEntity patchUserById(@PathVariable("id") Long id, @Validated @RequestBody PatchUserRequest request, BindingResult bindingResult) {
+        if (ControllerUtils.handleValidationErrors(bindingResult) != null) {
+            return ControllerUtils.handleValidationErrors(bindingResult);
+        } else {
+            User user = userMapper.patchUserRequestToUser(request);
+            User patchedUser = userService.patchUserById(id, user);
+            UserDetailsResponse userResponse = userMapper.userDetailsResponse(patchedUser);
+            return ResponseEntity.ok(userResponse);
+        }
+    }
+
+    @GetMapping("/all")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<UserDetailsResponse> getAll(@RequestParam(defaultValue = "0") Integer page,
+                                            @RequestParam(defaultValue = "5") Integer size) {
+        return userService.getAllUsersPage(page, size).map(userMapper::userDetailsResponse);
+    }
+
 }

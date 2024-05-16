@@ -25,6 +25,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
+    private final NotificationService notificationService;
     private final PostMapper postMapper;
 
     public PostResponse createPost(PostRequest postRequest, Long userId, Long originalPostId) {
@@ -44,6 +45,7 @@ public class PostService {
             post.setType(PostType.ORIGINAL);
         }
         Post savedPost = postRepository.save(post);
+        notificationService.postNotification(savedPost);
         return postMapper.toPostResponse(savedPost);
     }
 

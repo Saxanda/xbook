@@ -4,6 +4,7 @@ import app.configuration.cache.CacheStore;
 import app.entity.User;
 import app.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,6 +16,9 @@ public class ResetPasswordService {
     private final UserService userService;
     private final CacheStore<String> resetPasswordTokenCache;
     private final EmailConfirmationService emailConfirmationService;
+    @Value("${frontend.url}")
+    private String clientUrl;
+
     private String generateToken() {
         return UUID.randomUUID().toString();
     }
@@ -30,7 +34,7 @@ public class ResetPasswordService {
         if (user.isEmpty()) throw new ResourceNotFoundException("User with email '" + email + "' was not found!");
         String resetPasswordToken = generateAndAddTokenToCache(email);
         String letterContent = "Click the following link to reset your password: " +
-                               "http://localhost:5173/forgot-password?token=" +
+                               clientUrl + "/forgot-password?token=" +
                                resetPasswordToken +
                                " This link will be invalid in 10 minutes!";
 

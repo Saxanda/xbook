@@ -44,7 +44,7 @@ public class PostController {
         Long userId = userService.getAuthCurrentUserId();
 
         PostResponse createdPost = postService.createPost(postRequest, userId, originalPostId);
-        System.out.println("Create post" + createdPost);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 
