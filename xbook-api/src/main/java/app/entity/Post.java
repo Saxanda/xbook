@@ -31,8 +31,7 @@ public class Post extends AbstractEntity {
     @Column(name = "title")
     private String title; // Field for post Title
 
-    @Lob
-    @Column(name = "body", columnDefinition = "CLOB")
+    @Column(name = "body", columnDefinition = "TEXT")
     private String body; // Text Field
 
     @Column(name = "media")
