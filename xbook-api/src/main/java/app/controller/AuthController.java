@@ -15,6 +15,7 @@ import app.service.UserService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +32,8 @@ public class AuthController {
     private final JwtTokenService tokenService;
     private final EmailConfirmationService emailConfirmationService;
     private final ResetPasswordService resetPasswordService;
+    @Value("${backend.url}")
+    private String backendUrl;
 
     @PostMapping("registration")
     @ResponseStatus(HttpStatus.CREATED)
@@ -48,10 +51,9 @@ public class AuthController {
 
             // Trigger email confirmation process using EmailConfirmationService class
             String letterContent = "Click the following link to confirm your email: " +
-                                  "http://localhost:8080/confirm-email?token=" +
+                                  backendUrl + "/confirm-email?token=" +
                                   confirmationToken;
             emailConfirmationService.sendEmail(createdUser.getEmail(), "Email Confirmation Required", letterContent);
-//            emailConfirmationService.sendConfirmationEmail(createdUser.getEmail(), confirmationToken);
             return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.userToUserRegistrationResponse(createdUser));
         }
     }
