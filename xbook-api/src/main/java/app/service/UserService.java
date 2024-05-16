@@ -9,6 +9,7 @@ import app.security.JwtUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,10 +47,6 @@ public class UserService {
 
     public boolean isEmailExisting(String email) {
         return userRepository.existsUserByEmail(email);
-    }
-
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
     }
 
     // Returns specific User based on a JWT token in request
@@ -160,7 +157,8 @@ public class UserService {
         }
     }
 
-    public Page<User> pageGetAllUsers(Pageable pageable ) {
+    public Page<User> getAllUsersPage(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
         return userRepository.findAll(pageable);
     }
 

@@ -11,10 +11,7 @@ import app.service.FriendService;
 import app.service.UserService;
 import app.utils.ControllerUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -42,15 +39,6 @@ public class UserController {
 
     private final FriendService friendService;
     private final UserMapper userMapper;
-
-    // Retrieve all users
-    @GetMapping("all")
-    @ResponseStatus(HttpStatus.OK)
-    public List<UserDetailsResponse> getAll() {
-        return userService.getAllUsers().stream()
-                .map(userMapper::userDetailsResponse)
-                .collect(Collectors.toList());
-    }
 
     @GetMapping("{id}")
     public ResponseEntity getUserById(@PathVariable("id") Long id) {
@@ -95,23 +83,11 @@ public class UserController {
         }
     }
 
-    //    public Page<CustomerResponse> getAllCustomers(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<Customer> pageCustomers = customerService.pageGetAllCustomers(pageable);
-//        Page<CustomerResponse> result = pageCustomers.map(mapper::customerToCustomerResponse);
-//        return result;
-//    }
-
-    @GetMapping
+    @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    public Page<UserDetailsResponse> getAllWithPagination(@RequestParam(defaultValue = "0") int page,
-                                                          @RequestParam(defaultValue = "5") int size){
-        Pageable pageable = PageRequest.of(page, size);
-        Page<User> pageUsers = userService.pageGetAllUsers(pageable);
-        Page<UserDetailsResponse> resultPage = pageUsers.map(userMapper::userDetailsResponse);
-        return resultPage;
+    public Page<UserDetailsResponse> getAll(@RequestParam(defaultValue = "0") Integer page,
+                                            @RequestParam(defaultValue = "5") Integer size) {
+        return userService.getAllUsersPage(page, size).map(userMapper::userDetailsResponse);
     }
 
 }
