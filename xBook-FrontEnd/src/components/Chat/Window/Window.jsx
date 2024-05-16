@@ -29,7 +29,6 @@ export default function Window({ data, token, trigger, redactButton, chatClear }
                     Authorization: `Bearer ${token}`,
                 },
             });
-            //console.log('Message deleted:', response.data);
             trigger();
         } catch (error) {
             console.error('Error deleting message:', error);
@@ -91,7 +90,6 @@ function groupMessagesByTypeAndDate(messages) {
 
     messages.forEach(message => {
         const messageType = typeChecker(message);
-        //console.log(message.id)
         if (!currentGroup || currentGroup.type !== messageType || formatDate(currentGroup.date) !== formatDate(message.createdDate)) {
             currentGroup = {
                 type: messageType,
@@ -105,8 +103,6 @@ function groupMessagesByTypeAndDate(messages) {
         } else {
             currentGroup.messages.push(message);
         }
-        //console.log(currentGroup);
-        //console.log(groups);
     });
 
     return groups;

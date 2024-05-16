@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import UsersItem from "../UserItem/UserItem";
 import axios from 'axios';
 
-export default function Users({ onClicked, messages, currentId, trigger, secondTrigger ,triggerChange, changeUserArray }) {
+export default function Users({ onClicked, trigger, secondTrigger ,triggerChange, changeUserArray, token }) {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [lastActiveUser, setLastActiveUser] = useState(0);
@@ -12,8 +12,6 @@ export default function Users({ onClicked, messages, currentId, trigger, secondT
 
     const [inputText, setInputText] = useState('');
 
-    const [token, setToken] = useState('eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE1MjY2NTg2LCJleHAiOjE3MTU4NzEzODZ9.FCwSdYEU_MSqeBs16A8kh6UL4FPjHR81n7UPj83-HGY');
-
     const deleteChat = async (id) => { // удаление чата
         if(users.length <=1) setLastActiveUser(-1)
         try {
@@ -22,7 +20,6 @@ export default function Users({ onClicked, messages, currentId, trigger, secondT
                     Authorization: `Bearer ${token}`,
                 },
             });
-            //console.log('Message deleted:', response.data);
             console.log( "lastActive: " + localStorage.getItem("lastActiveUserId") + " id: " + id)
             if(localStorage.getItem("lastActiveUserId") == id)
                 {
@@ -39,7 +36,7 @@ export default function Users({ onClicked, messages, currentId, trigger, secondT
         }
     }
 
-    const handleIdChange = () => {
+    const handleIdChange = () => { //changing active chat after deleting chat
         let lastIndex = parseInt(lastActiveUser);
         console.log(users.length)
         let tempId;
@@ -60,8 +57,8 @@ export default function Users({ onClicked, messages, currentId, trigger, secondT
         handleUserClick(lastIndex, tempId);
     };
     
-    useEffect(() => { // список чатов
-        console.log(lastActiveUser)
+    useEffect(() => { // chat list
+            console.log(localStorage.getItem("token") || sessionStorage.getItem("token"))
         const headers = { 
             'Access-Control-Allow-Origin': '*',
             "Content-Type": "application/json",
@@ -75,7 +72,6 @@ export default function Users({ onClicked, messages, currentId, trigger, secondT
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                //console.log(response.data[0].id);
                 setUsers(response.data);
                 changeUserArray(response.data)
                 setLoading(false);
@@ -95,7 +91,7 @@ export default function Users({ onClicked, messages, currentId, trigger, secondT
         fetchChats();
     }, [token, trigger, secondTrigger]);
 
-    useEffect(() => { // сохранение с каким пользователем был последний чат
+    useEffect(() => { // saving which user was the last chat with
         const savedLastActiveUser = localStorage.getItem('lastActiveUser');
         if (savedLastActiveUser !== null) {
             setLastActiveUser(parseInt(savedLastActiveUser));
@@ -103,14 +99,14 @@ export default function Users({ onClicked, messages, currentId, trigger, secondT
     }, []);
 
     const [isFirstLoad, setIsFirstLoad] = useState(true);
-    useEffect(() => { // при первой загрузки страницы сохраняет первывй чат
+    useEffect(() => { // Saves the first chat when the page first loads
         if (!isFirstLoad) {
             setLastActiveUser(0);
         }
         setIsFirstLoad(false);
     }, [trigger]);
 
-    const handleUserClick = (index, id) => { //при нажатии на чат сохранение нового последнего пользователя
+    const handleUserClick = (index, id) => { // when you click on a chat, save the new last user
         setLastActiveUser(index);
         onClicked(id);
         console.log("id: " + id + " index: " + index);
@@ -124,7 +120,6 @@ export default function Users({ onClicked, messages, currentId, trigger, secondT
 
     const handleInputChange = (event) => {
         setInputText(event.target.value);
-        //console.log(inputText)
     };
 
     const handleKeyDown = (event) => { // on press enter add chat
