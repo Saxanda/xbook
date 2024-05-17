@@ -1,3 +1,9 @@
+frontend:
+  url: http://localhost:5173
+
+backend:
+  url: http://localhost:8080
+
 spring:
   mvc:
     pathmatch:
@@ -22,14 +28,10 @@ spring:
   h2:
     console:
       path: /h2-console
-      enabled: false
+      enabled: true
 
   mail:
     host: smtp.gmail.com
     port: 587
     username: socialxbook@gmail.com
     password: 123  #Ask for password
-
-  myapp:
-    login-url: http://localhost:5173
-
