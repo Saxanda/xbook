@@ -1,26 +1,37 @@
 .postComponent{
     max-width: 628px;
     margin: 0 auto;
-    
-    
 }
 .postComponent_header{
     display: flex;
     justify-content: space-between;
     padding: 5px;
 }
-
-
-a {
-	cursor: pointer;
-    text-decoration: none;
-}
-body{
-    background-color: #f0f2f5;
-}
-
 .postComponent_header_btns button{
     margin: 5px;
+}
+.home_posts_container{
+    margin: 0 auto;
+    width: 100%;
+    max-width: 628px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.createPost_btn {
+    border-radius: 20px;
+    width: 100%;
+    margin-left: 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .MuiButton-label {
+        justify-content: flex-start;
+        padding-left: 10px;
+    }
 }
 
 .postComponent_footer_activiti{

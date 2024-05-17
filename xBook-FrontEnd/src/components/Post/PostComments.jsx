@@ -24,7 +24,7 @@ export default function PostComments({ comments }) {
 
     return (
         <div>
-            <Box elevation={3} className="post-comments"
+            <Box elevation={3} className="post-comments no-scrollbar"
                 style={{ overflowY: 'auto' }}
             >
                 <div className="comment-list">
