@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PrivateRoutes from "./helpers/PrivateRoutes";
 
-import LoginPage from "./pages/LoginPage";
-import Home from "./pages/Home";
-import Bookmarks from "./pages/Bookmarks";
-import UpdatePasswordPage from './pages/UpdatePasswordPage';
-import ForgotPage from './pages/ForgotPage';
+import LoginPage from "./Pages/LoginPage";
+import Home from "./Pages/Home";
+import Bookmarks from "./Pages/Bookmarks";
+import UpdatePasswordPage from './Pages/UpdatePasswordPage';
+import ForgotPage from './Pages/ForgotPage';
 import Chats from './pages/ChatPage/ChatPage';
 
 export default function AppRoutes() {
@@ -18,7 +18,7 @@ export default function AppRoutes() {
         <Route element={<PrivateRoutes />}>
           <Route path="/" element={<Home />} />
           <Route path="/bookmarks" element={<Bookmarks />} />
-          <Route path="/chats" element={<Chats />} /> 
+          <Route path="/chats" element={<Chats />} />
           <Route></Route>
         </Route>
       </Routes>
