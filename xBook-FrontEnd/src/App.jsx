@@ -7,10 +7,10 @@ import Home from './components/Pages/Home';
 import PostPage from './components/Post/PostPage';
 import { useState, useEffect } from 'react';
 
-import LoginPage from "./Pages/LoginPage";
-import Bookmarks from "./Pages/Bookmarks";
-import UpdatePasswordPage from './Pages/UpdatePasswordPage';
-import ForgotPage from './Pages/ForgotPage';
+import LoginPage from "./pages/LoginPage";
+import Bookmarks from "./pages/Bookmarks";
+import UpdatePasswordPage from './pages/UpdatePasswordPage';
+import ForgotPage from './pages/ForgotPage';
 import PrivateRoutes from "./helpers/PrivateRoutes";
 
 function App() {
