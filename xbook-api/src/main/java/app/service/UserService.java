@@ -1,11 +1,17 @@
 package app.service;
 
-
+import app.dto.request.PatchUserRequest;
+import app.dto.request.UpdateUserRequest;
 import app.entity.User;
 import app.exception.ResourceNotFoundException;
 import app.repository.UserRepository;
+import app.security.JwtUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,20 +22,20 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-
     private final PasswordEncoder encoder;
 
     public User createUser(User user) throws DataIntegrityViolationException {
         try {
             user.setPassword(encoder.encode(user.getPassword()));
             user.setRole("USER");
+            System.out.println("Save user to database :" + user);
             return userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("This user already exists.");
         }
     }
 
-    public Optional<User> findById(Integer id) {
+    public Optional<User> findById(Long id) {
         return Optional.ofNullable(userRepository.findUserById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found User with id = " + id)));
     }
@@ -39,16 +45,9 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found User with email = " + email));
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    public boolean isEmailExisting(String email){
+    public boolean isEmailExisting(String email) {
         return userRepository.existsUserByEmail(email);
     }
-
- Updated upstream;
-
 
     // Returns specific User based on a JWT token in request
     public User getAuthUser() {
@@ -56,12 +55,21 @@ public class UserService {
         return principal.getUser();
     }
 
+
+    public Long getAuthCurrentUserId() {
+        return getAuthUser().getId();
+    }
+
+    public Long getCurrentUserId() {
+
+        return getAuthUser().getId();
+    }
+
     public void saveUser(User user) {
         userRepository.save(user);
     }
 
     public User findByConfirmationToken(String confirmationToken) {
-
         return userRepository.findByConfirmationToken(confirmationToken);
     }
 
@@ -101,5 +109,57 @@ public class UserService {
     }
 
 
-Stashed changes
+    public void updatePassword(String email, String newPassword) {
+        userRepository.findUserByEmail(email).ifPresentOrElse(user -> {
+            user.setPassword(encoder.encode(newPassword));
+            userRepository.save(user);
+        }, () -> {
+            throw new ResourceNotFoundException("User not found with email: " + email);
+        });
+    }
+
+    public User patchUserById(Long id, User patch) {
+        Optional<User> optionalUser = findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            if (patch.getName() != null && !patch.getName().isEmpty() && !patch.getName().equals(user.getName())) {
+                user.setName(patch.getName());
+            }
+
+            if (patch.getSurname() != null && !patch.getSurname().isEmpty() && !patch.getSurname().equals(user.getSurname())) {
+                user.setSurname(patch.getSurname());
+            }
+
+            if (patch.getDob() != null && !patch.getDob().equals(user.getDob())) {
+                user.setDob(patch.getDob());
+            }
+
+            if (patch.getGender() != null && !patch.getGender().isEmpty() && !patch.getGender().equals(user.getGender())) {
+                user.setGender(patch.getGender());
+            }
+
+            if (patch.getPhoto() != null && !patch.getPhoto().isEmpty() && !patch.getPhoto().equals(user.getPhoto())) {
+                user.setPhoto(patch.getPhoto());
+            }
+
+            if (patch.getAvatar() != null && !patch.getAvatar().isEmpty() && !patch.getAvatar().equals(user.getAvatar())) {
+                user.setAvatar(patch.getAvatar());
+            }
+
+            if (patch.getAddress() != null && !patch.getAddress().isEmpty() && !patch.getAddress().equals(user.getAddress())) {
+                user.setAddress(patch.getAddress());
+            }
+
+            return userRepository.save(user);
+        } else {
+            throw new ResourceNotFoundException("User not found with id: " + id);
+        }
+    }
+
+    public Page<User> getAllUsersPage(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findAll(pageable);
+    }
+
 }
