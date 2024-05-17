@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +35,16 @@ public class FriendService {
                 .orElseThrow(() -> new ResourceNotFoundException("This friend was not found."));
     }
 
+    public Optional<Friend> getOptionalFriend(Long userId, Long friendId) {
+        return friendRepository.findByUserIdAndFriendId(userId, friendId);
+    }
+
     public FriendshipStatus getFriendshipStatus(Long userId, Long friendId){
-        return getFriend(userId, friendId).getStatus();
+        if(getOptionalFriend(userId, friendId).isPresent()) {
+            return getOptionalFriend(userId, friendId).get().getStatus();
+        } else {
+            return FriendshipStatus.NONE;
+        }
     }
 
     public Friend updateFriend(Friend friend) {
