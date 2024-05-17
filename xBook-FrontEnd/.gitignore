@@ -23,3 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 .stylelintcache
+/node/node
+/node/npm
+/node/npm.cmd
+/node/npx
+/node/npx.cmd
