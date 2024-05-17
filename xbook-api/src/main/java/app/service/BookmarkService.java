@@ -6,6 +6,9 @@ import app.dto.response.BookmarkResponse;
 import app.entity.Bookmark;
 import app.repository.BookmarkRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,5 +46,15 @@ public class BookmarkService {
             return true;
         }
         return false;
+    }
+
+    public Page<Bookmark> getPageAllBookmarksByUserId(Long userId, Integer page, Integer size){
+        Pageable pageable = PageRequest.of(page, size);
+        return bookmarkRepository.findByUserId(userId, pageable);
+    }
+
+    public Page<Bookmark> getPageAllBookmarksByPostId(Long postId, Integer page, Integer size){
+        Pageable pageable = PageRequest.of(page, size);
+        return bookmarkRepository.findByPostId(postId, pageable);
     }
 }

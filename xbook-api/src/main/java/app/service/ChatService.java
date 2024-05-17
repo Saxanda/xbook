@@ -11,6 +11,9 @@ import app.exception.ResourceNotFoundException;
 import app.repository.ChatRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -59,6 +62,14 @@ public class ChatService {
                 .stream()
                 .map(chat -> convertToChatResponse(chat))
                 .toList();
+    }
+
+    public Page<ChatResponseWithLastMessage> getPageAllUserChats(Integer page, Integer size){
+        User authUser = userService.getAuthUser();
+        Pageable pageable = PageRequest.of(page, size);
+
+        return chatRepo.findByChatParticipantsContainingOrderByLastModifiedDateDesc(authUser, pageable)
+                .map(chat -> convertToChatResponse(chat));
     }
 
     public ChatResponse convertToChatResponse(Chat chat, User chatParticipant) {

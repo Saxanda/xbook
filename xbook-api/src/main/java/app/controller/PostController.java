@@ -7,6 +7,7 @@ import app.entity.User;
 import app.service.PostService;
 import app.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -48,10 +50,18 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<PostResponse>> getAllPosts() {
+//        List<PostResponse> allPosts = postService.getAllPosts();
+//        return ResponseEntity.ok(allPosts);
+//    }
+
     @GetMapping
-    public ResponseEntity<List<PostResponse>> getAllPosts() {
-        List<PostResponse> allPosts = postService.getAllPosts();
-        return ResponseEntity.ok(allPosts);
+    @ResponseStatus(HttpStatus.OK)
+    public Page<PostResponse> getPageAllPosts(@RequestParam(defaultValue = "0") Integer page,
+                                              @RequestParam(defaultValue = "5") Integer size) {
+
+        return postService.getPageAllPosts(page, size);
     }
 
     @GetMapping("/fetch/{postId}")

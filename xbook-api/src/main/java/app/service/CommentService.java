@@ -9,7 +9,11 @@ import app.entity.User;
 import app.repository.CommentRepository;
 import app.repository.PostRepository;
 import app.repository.UserRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +60,12 @@ public class CommentService {
         return comments.stream()
                 .map(commentMapper::toCommentResponse)
                 .collect(Collectors.toList());
+    }
+
+    public Page<CommentResponse> getPageAllCommentsByPostId(Long postId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return commentRepository.findByPostId(postId, pageable)
+                .map(commentMapper::toCommentResponse);
     }
 
     public CommentResponse getCommentById(Long commentId) {
