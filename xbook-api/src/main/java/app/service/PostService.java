@@ -6,7 +6,6 @@ import app.dto.response.PostResponse;
 import app.entity.Post;
 import app.entity.PostType;
 import app.entity.User;
-import app.repository.LikeRepository;
 import app.repository.PostRepository;
 import app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,6 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final LikeRepository likeRepository;
     private final NotificationService notificationService;
     private final PostMapper postMapper;
 
@@ -59,6 +57,13 @@ public class PostService {
     public PostResponse getPostById(Long postId) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         return optionalPost.map(postMapper::toPostResponse).orElse(null);
+    }
+
+    public List<PostResponse> getPostByIds(List<Long> postIds) {
+        List<Post> posts = postRepository.findAllById(postIds);
+        return posts.stream()
+                .map(postMapper::toPostResponse)
+                .collect(Collectors.toList());
     }
 
     public PostResponse updatePost(Long postId, PostRequest postRequest) {
