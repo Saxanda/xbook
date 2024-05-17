@@ -2,7 +2,9 @@ package app.controller;
 
 import app.dto.request.BookmarkRequest;
 import app.dto.response.BookmarkResponse;
+import app.dto.response.PostResponse;
 import app.service.BookmarkService;
+import app.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,17 +24,23 @@ import java.util.List;
 public class BookmarkController {
 
     private final BookmarkService bookmarkService;
-
+    private final PostService postService;
     @PostMapping
     public ResponseEntity<BookmarkResponse> createBookmark(@RequestBody BookmarkRequest bookmarkRequest) {
         BookmarkResponse bookmarkResponse = bookmarkService.createBookmark(bookmarkRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(bookmarkResponse);
     }
 
+//    @GetMapping("/user/{userId}")
+//    public ResponseEntity<List<BookmarkResponse>> getAllBookmarksByUserId(@PathVariable Long userId) {
+//        List<BookmarkResponse> bookmarks = bookmarkService.getAllBookmarksByUserId(userId);
+//        return ResponseEntity.ok(bookmarks);
+//    }
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<BookmarkResponse>> getAllBookmarksByUserId(@PathVariable Long userId) {
-        List<BookmarkResponse> bookmarks = bookmarkService.getAllBookmarksByUserId(userId);
-        return ResponseEntity.ok(bookmarks);
+    public ResponseEntity<List<PostResponse>> getAllBookmarksByUserId(@PathVariable Long userId) {
+        List<Long> bookmarkedPostIds = bookmarkService.getAllBookmarksByUserId(userId);
+        List<PostResponse> bookmarkedPosts = postService.getPostById(bookmarkedPostIds);
+        return ResponseEntity.ok(bookmarkedPosts);
     }
 
     @GetMapping("/post/{postId}")
