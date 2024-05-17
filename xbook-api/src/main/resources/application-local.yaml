@@ -28,7 +28,7 @@ spring:
   h2:
     console:
       path: /h2-console
-      enabled: false
+      enabled: true
 
   mail:
     host: smtp.gmail.com
