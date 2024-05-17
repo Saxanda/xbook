@@ -12,6 +12,9 @@ import app.entity.User;
 import app.exception.ResourceNotFoundException;
 import app.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +42,12 @@ public class NotificationService {
         return notifications.stream()
                 .map(notificationMapper::toNotificationResponse)
                 .collect(Collectors.toList());
+    }
+
+    public Page<NotificationResponse> getPageRecipientNotifications(Long recipientId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return notificationRepository.findByRecipient(recipientId, pageable)
+                .map(notificationMapper::toNotificationResponse);
     }
 
     public NotificationResponse markNotificationAsRead(Long notificationId) {

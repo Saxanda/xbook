@@ -10,6 +10,9 @@ import app.repository.LikeRepository;
 import app.repository.PostRepository;
 import app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +57,12 @@ public class PostService {
         return posts.stream()
                 .map(postMapper::toPostResponse)
                 .collect(Collectors.toList());
+    }
+
+    public Page<PostResponse> getPageAllPosts(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page,size);
+        return postRepository.findAll(pageable)
+                .map(postMapper::toPostResponse);
     }
 
     public PostResponse getPostById(Long postId) {
