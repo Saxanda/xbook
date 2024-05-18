@@ -2,6 +2,7 @@ package app.service;
 
 import app.dto.request.PatchUserRequest;
 import app.dto.request.UpdateUserRequest;
+import app.dto.response.UserDetailsResponse;
 import app.entity.User;
 import app.exception.ResourceNotFoundException;
 import app.repository.UserRepository;
@@ -161,5 +162,19 @@ public class UserService {
         Pageable pageable = PageRequest.of(page, size);
         return userRepository.findAll(pageable);
     }
-
+    public UserDetailsResponse getUserDetails(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return new UserDetailsResponse(
+                user.getId(),
+                user.getName(),
+                user.getSurname(),
+                user.getEmail(),
+                user.getAddress(),
+                user.getPhoto(),
+                user.getAvatar(),
+                user.getDob(),
+                user.getGender()
+        );
+    }
 }
