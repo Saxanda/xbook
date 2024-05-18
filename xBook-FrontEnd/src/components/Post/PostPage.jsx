@@ -20,8 +20,8 @@ export default function PostPage() {
                 const postData = await getOnePost(postId);
                 setPost(postData);
                 const commentsData = await getPostComments(postId);
-                setComments(commentsData);
-                console.log(comments);
+                setComments(commentsData.content);
+                console.log(comments.content);
             } catch (err) {
                 setError(err);
             } finally {

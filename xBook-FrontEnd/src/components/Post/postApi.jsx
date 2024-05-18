@@ -4,8 +4,6 @@ import { jwtDecode } from "jwt-decode";
 
 const API_BASE_URL = 'http://localhost:8080';
 const AUTH_TOKEN = localStorage.getItem('token');
-const UZER_ID = jwtDecode(AUTH_TOKEN).sub
-console.log(UZER_ID);
 
 //-------------post---------------------
 export const getPosts = async () => {
@@ -69,12 +67,11 @@ export const createPost = async (postData) => {
 //------------like----------------------
 export const likePost = async (postId) => {
     try {
-        const API_BASE_URL = 'http://localhost:8080';
-        const AUTH_TOKEN = localStorage.getItem('token');
-        console.log(AUTH_TOKEN);
+        const UZER_ID = jwtDecode(AUTH_TOKEN).sub
+        const userId = UZER_ID;
         const response = await axios.post(
             `${API_BASE_URL}/api/v1/likes/like`,
-            { UZER_ID, postId },  // Передаємо userId і postId у запиті
+            { userId, postId },
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -112,6 +109,7 @@ export const getPostComments = async (postId) => {
 export const createComment = async (content, postId) => {
     try {
         const AUTH_TOKEN = localStorage.getItem('token');
+        const UZER_ID = jwtDecode(AUTH_TOKEN).sub
         const userId = UZER_ID;
         const response = await axios.post(
             `${API_BASE_URL}/api/v1/comments/comment`,

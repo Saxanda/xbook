@@ -28,12 +28,11 @@ export default function Comment({ comment }) {
     if (error) {
         return <div>Error loading user data: {error.message}</div>;
     }
-
     return (
         <div className="comment">
             <Avatar src={user.avatar} alt={user.name} />
             <Box sx={{ ml: 2 }} className="comment-body">
-                <Typography variant="subtitle1" fontWeight="bold">{user.name}</Typography>
+                <Typography variant="subtitle1" fontWeight="bold">{user.name} {user.surname}</Typography>
                 <Typography variant="body1">{comment.content}</Typography>
             </Box>
         </div>
@@ -41,11 +40,5 @@ export default function Comment({ comment }) {
 }
 
 Comment.propTypes = {
-    comment: PropTypes.shape({
-        user: PropTypes.shape({
-            avatar: PropTypes.string.isRequired,
-            fullName: PropTypes.string.isRequired
-        }).isRequired,
-        text: PropTypes.string.isRequired
-    }).isRequired
+    comment: PropTypes.object       
 };

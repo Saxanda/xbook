@@ -10,8 +10,8 @@ export default function PostsFeed(){
         const fetchData = async () => {
         try {
             const data = await getPosts();
-            setPostData(data);
-            console.log(data);
+            setPostData(data.content);
+            console.log(data.content);
         } catch (error) {
             console.error('Error fetching posts:', error);
         }

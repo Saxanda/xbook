@@ -9,11 +9,21 @@ import RepeatIcon from '@mui/icons-material/Repeat';
 import CommentIcon from '@mui/icons-material/Comment';
 import { useNavigate } from 'react-router-dom';
 import CreateRepostModal from './CreateRepostModal';
+import { likePost } from './postApi';
 
 export default function PostFooter({ likes, id, originalPostId }) {
     const [isRepostModalOpen, setRepostModalOpen] = useState(false);
 
     const navigate = useNavigate();
+
+    const handleLikeButtonClick = async () => {
+        try {
+            const result = await likePost(id);
+            console.log('Post liked:', result);
+        } catch (error) {
+            console.error('Error handling like button click:', error);
+        }
+    };
 
     const handleCommentButtonClick = () => {
         navigate(`/post/${id}`);
@@ -22,7 +32,6 @@ export default function PostFooter({ likes, id, originalPostId }) {
     const handleRepostButtonClick = () => {
         setRepostModalOpen(true);
     };
-
     const handleRepostModalClose = () => {
         setRepostModalOpen(false);
     };
@@ -40,7 +49,7 @@ export default function PostFooter({ likes, id, originalPostId }) {
                             </div>
                         </div>
                         <div className="postComponent_footer_activiti_btns">
-                            <IconButton variant="contained" aria-label="like">
+                            <IconButton variant="contained" aria-label="like" onClick={handleLikeButtonClick}>
                                 <ThumbUpIcon />
                             </IconButton>
                             <IconButton variant="contained" aria-label="favorite">

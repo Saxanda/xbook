@@ -76,5 +76,6 @@ export default function PostComments({ comments, postId }) {
 }
 
 PostComments.propTypes = {
-    comments: PropTypes.array.isRequired
+    comments: PropTypes.array,
+    postId: PropTypes.number
 };
