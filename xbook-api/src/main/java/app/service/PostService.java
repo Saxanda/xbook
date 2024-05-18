@@ -9,7 +9,6 @@ import app.entity.PostType;
 import app.entity.User;
 import app.exception.ResourceNotFoundException;
 import app.repository.BookmarkRepository;
-import app.repository.CommentRepository;
 import app.repository.LikeRepository;
 import app.repository.PostRepository;
 import app.repository.UserRepository;
@@ -19,15 +18,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class PostService {
 
@@ -37,9 +31,7 @@ public class PostService {
     private final PostMapper postMapper;
     private final UserService userService;
     private final LikeRepository likeRepository;
-    private final CommentRepository commentRepository;
     private final BookmarkRepository bookmarkRepository;
-
 
     public PostResponse createPost(PostRequest postRequest, Long userId, Long originalPostId) {
         User user = userRepository.findById(userId)
@@ -66,7 +58,7 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
         // Get information about author details
-        UserDetailsResponse userDetailsResponse = mapToUserDetailsResponse(post.getUser());
+        UserDetailsResponse userDetailsResponse = userService.getUserDetails(post.getUser().getId());
         int likesCount = post.getLikes();
         int commentsCount = post.getComments().size();
         int repostsCount = postRepository.countByOriginalPostId(postId);
@@ -74,7 +66,7 @@ public class PostService {
         boolean isLiked = likeRepository.existsByPostIdAndUserId(postId, currentUserId);
         PostResponse originalPostResponse = null;
         if (post.getType() == PostType.REPOST && post.getOriginalPost() != null) {
-            originalPostResponse = mapToBasicPostResponse(post.getOriginalPost());//to Avoid Recursion
+            originalPostResponse = mapToBasicPostResponse(post.getOriginalPost(), userDetailsResponse);//to Avoid Recursion for future
         }
         return new PostResponse(
                 post.getId(),
@@ -92,25 +84,11 @@ public class PostService {
                 isBookmarked
         );
     }
-    private UserDetailsResponse mapToUserDetailsResponse(User user) {
-        if (user == null) return new UserDetailsResponse();
-        // Map fields from User to UserDetailsResponse
-        return new UserDetailsResponse(
-                user.getId(),
-                user.getName(),
-                user.getSurname(),
-                user.getEmail(),
-                user.getAddress(),
-                user.getPhoto(),
-                user.getAvatar(),
-                user.getDob(),
-                user.getGender()
-        );
-    }
-    private PostResponse mapToBasicPostResponse(Post post) {
+
+    private PostResponse mapToBasicPostResponse(Post post, UserDetailsResponse userDetailsResponse) {
         return new PostResponse(
                 post.getId(),
-                mapToUserDetailsResponse(post.getUser()),
+                userDetailsResponse,
                 post.getTimestamp(),
                 post.getTitle(),
                 post.getBody(),
@@ -141,13 +119,6 @@ public class PostService {
     public PostResponse getPostById(Long postId) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         return optionalPost.map(postMapper::toPostResponse).orElse(null);
-    }
-
-    public List<PostResponse> getPostByIds(List<Long> postIds) {
-        List<Post> posts = postRepository.findAllById(postIds);
-        return posts.stream()
-                .map(postMapper::toPostResponse)
-                .collect(Collectors.toList());
     }
 
     public PostResponse updatePost(Long postId, PostRequest postRequest) {
