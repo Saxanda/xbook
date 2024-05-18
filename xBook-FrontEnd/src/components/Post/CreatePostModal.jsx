@@ -6,7 +6,7 @@ import PostMediaGrid from './PostMediaGrid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-// import { createPost } from './postApi';
+import { createPost } from './postApi';
 
 export default function CreatePostModal({ open, handleClose }) {
     const [newText, setNewText] = useState('');
@@ -58,16 +58,25 @@ export default function CreatePostModal({ open, handleClose }) {
     const publish = async () => {
         const imageUrls = await Promise.all(selectedImages.map(image => uploadImageToCloudinary(image)));
         const postData = {
-            text: newText,
-            images: imageUrls.filter(url => url !== null)
+            title: "",
+            body: newText ,
+            media: imageUrls[0] || null, // тимчасове рішення
+            type:"ORIGINAL"
         };
         console.log('Post Data:', postData);
 
-        handleClose();
-        setNewText('');
-        setSelectedImages([]);
-        setImgURLs([]);
+        try {
+            const response = await createPost(postData);
+            console.log('Post created successfully:', response);
+            handleClose();
+            setNewText('');
+            setSelectedImages([]);
+            setImgURLs([]);
+        } catch (error) {
+            console.error('Error creating post:', error);
+        }
     };
+
     const close = () =>{
         handleClose();
         setNewText('');

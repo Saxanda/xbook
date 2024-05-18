@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Avatar, Button, Paper } from '@mui/material';
-import CreatePostModal from './CreatePostModal'; // переконайтеся, що шлях правильний
+import CreatePostModal from './CreatePostModal';
 
 export default function CreatePost() {
     const [open, setOpen] = useState(false);
@@ -8,10 +8,10 @@ export default function CreatePost() {
     const handleOpen = () => {
         setOpen(true);
     };
-
     const handleClose = () => {
         setOpen(false);
     };
+    
 
     return (
         <>

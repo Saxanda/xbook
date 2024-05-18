@@ -10,13 +10,13 @@ import CommentIcon from '@mui/icons-material/Comment';
 import { useNavigate } from 'react-router-dom';
 import CreateRepostModal from './CreateRepostModal';
 
-export default function PostFooter({ likes, comments, reposts, postId, originalPostId }) {
+export default function PostFooter({ likes, id, originalPostId }) {
     const [isRepostModalOpen, setRepostModalOpen] = useState(false);
 
     const navigate = useNavigate();
 
     const handleCommentButtonClick = () => {
-        navigate(`/post/${postId}`);
+        navigate(`/post/${id}`);
     };
 
     const handleRepostButtonClick = () => {
@@ -35,8 +35,8 @@ export default function PostFooter({ likes, comments, reposts, postId, originalP
                         <div className='postComponent_footer_activiti_info'>
                             <Typography variant="body1">Likes {likes}</Typography>
                             <div style={{ display: 'flex', gap: "10px" }}>
-                                <Typography variant="body1">{comments} Comments </Typography>
-                                <Typography variant="body1">Reposts {reposts}</Typography>
+                                {/* <Typography variant="body1">{comments} Comments </Typography>
+                                <Typography variant="body1">Reposts {reposts}</Typography> */}
                             </div>
                         </div>
                         <div className="postComponent_footer_activiti_btns">
@@ -60,7 +60,7 @@ export default function PostFooter({ likes, comments, reposts, postId, originalP
             <CreateRepostModal
                 open={isRepostModalOpen}
                 handleClose={handleRepostModalClose}
-                postId={originalPostId !== null ? originalPostId : postId}
+                postId={originalPostId !== null ? originalPostId : id}
             />
         </>
     );
@@ -68,8 +68,6 @@ export default function PostFooter({ likes, comments, reposts, postId, originalP
 
 PostFooter.propTypes = {
     likes: PropTypes.number.isRequired,
-    comments: PropTypes.number.isRequired,
-    reposts: PropTypes.number.isRequired,
-    postId: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
     originalPostId: PropTypes.number,
 };

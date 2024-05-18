@@ -2,40 +2,38 @@ import PropTypes from 'prop-types';
 import PostBody from "./PostBody"
 import PosdBodyRepost from './PostBodyRepost';
 import PostFooter from "./PostFooter"
-import PostHeader from "./PostHeader"
+// import PostHeader from "./PostHeader"
 import Paper from '@mui/material/Paper';
 
 export default function Post({ postData, postComments }){
     if (!postData) {
         return null;
     }
-    const { postWithRepost } = postData;
-    
     return(
         <Paper elevation={3} className='postComponent' >
-            <PostHeader 
+            {/* <PostHeader 
                 userData={postData.user}
                 date={postData.date}
-            />
-            {postWithRepost ? (
+            /> */}
+            {postData.type === 'REPOST' ? (
                 <PosdBodyRepost
-                    originalPostId={postData.originalPostId}
-                    text={postData.text}  
+                    // originalPostId={postData.originalPostId}
+                    text={postData.body}  
                 />
-            ) : (
-                <PostBody   
-                    text={postData.text}    
-                    media={postData.media}
+                ) : (
+                    <PostBody   
+                        text={postData.body}    
+                        media={[postData.media]}
+                    />
+                )}
+                <PostFooter
+                    likes={postData.likes} 
+                    // comments={postData.commentsCount}
+                    // reposts={postData.reposts}
+                    id={postData.id}
+                    // originalPostId={postData.originalPostId}
                 />
-            )}
-            <PostFooter
-                likes={postData.likes} 
-                comments={postData.commentsCount}
-                reposts={postData.reposts}
-                postId={postData.postId}
-                originalPostId={postData.originalPostId}
-            />
-            {postComments}
+                {postComments}
         </Paper>
         
     )
@@ -43,25 +41,13 @@ export default function Post({ postData, postComments }){
 
 Post.propTypes = {
     postData: PropTypes.shape({
-        user: PropTypes.object.isRequired,
-        text: PropTypes.string.isRequired,
-        postWithRepost: PropTypes.bool.isRequired,
-        originalPostId: PropTypes.number.isRequired,
-        media: PropTypes.shape({
-            images: PropTypes.arrayOf(PropTypes.string).isRequired,
-        }).isRequired,
+        title: PropTypes.string.isRequired,
+        body: PropTypes.string.isRequired,
+        media: PropTypes.string,
+        type: PropTypes.oneOf(['ORIGINAL', 'REPOST']).isRequired,
         likes: PropTypes.number.isRequired,
-        comments: PropTypes.arrayOf(
-            PropTypes.shape({
-                user: PropTypes.object.isRequired,
-                text: PropTypes.string.isRequired
-            })
-        ).isRequired,
-        date: PropTypes.string.isRequired,
-        commentsCount : PropTypes.number.isRequired,
-        reposts : PropTypes.number.isRequired,
-        postId : PropTypes.number.isRequired,
-    }),
+        id: PropTypes.number.isRequired,
+    }).isRequired,
     postComments: PropTypes.node
 };
 

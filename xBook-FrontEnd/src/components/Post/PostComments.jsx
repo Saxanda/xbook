@@ -5,8 +5,9 @@ import { useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import SendIcon from '@mui/icons-material/Send';
 import InputAdornment from '@mui/material/InputAdornment';
+import { createComment } from './postApi';
 
-export default function PostComments({ comments }) {
+export default function PostComments({ comments, postId }) {
 
     const [newComment, setNewComment] = useState('');
 
@@ -14,12 +15,14 @@ export default function PostComments({ comments }) {
         setNewComment(event.target.value);
     };
 
-    const handleCommentSubmit = () => {
-       //-----------
-
-       //-----------
-        console.log('Новий коментар:', newComment);
-        setNewComment('');
+    const handleCommentSubmit = async (event) => {
+        event.preventDefault(); // Щоб запобігти перезавантаженню сторінки
+        try {
+            await createComment(newComment, postId);
+            setNewComment('');
+        } catch (err) {
+            console.error('Error creating comment:', err);
+        }
     };
 
     return (
@@ -73,12 +76,5 @@ export default function PostComments({ comments }) {
 }
 
 PostComments.propTypes = {
-    comments: PropTypes.arrayOf(
-        PropTypes.shape({
-            user: PropTypes.shape({
-                fullName: PropTypes.string.isRequired
-            }).isRequired,
-            text: PropTypes.string.isRequired
-        }).isRequired
-    ).isRequired
+    comments: PropTypes.array.isRequired
 };
