@@ -118,7 +118,9 @@ public class PostService {
 
     public PostResponse getPostById(Long postId) {
         Optional<Post> optionalPost = postRepository.findById(postId);
-        return optionalPost.map(postMapper::toPostResponse).orElse(null);
+        return optionalPost
+                .map(post -> getPostDetails(post.getId(), userService.getAuthCurrentUserId()))
+                .orElse(null);
     }
 
     public PostResponse updatePost(Long postId, PostRequest postRequest) {
