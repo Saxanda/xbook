@@ -1,6 +1,5 @@
 package app.service;
 
-import app.dto.request.PatchUserRequest;
 import app.dto.request.UpdateUserRequest;
 import app.dto.response.UserDetailsResponse;
 import app.entity.User;
@@ -162,6 +161,7 @@ public class UserService {
         Pageable pageable = PageRequest.of(page, size);
         return userRepository.findAll(pageable);
     }
+
     public UserDetailsResponse getUserDetails(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
