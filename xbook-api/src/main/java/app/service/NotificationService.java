@@ -30,12 +30,12 @@ public class NotificationService {
     private final TaskScheduler taskScheduler;
 
     public Notification createNotification(Notification notification) {
-
         return notificationRepository.save(notification);
     }
 
     public List<NotificationResponse> getRecipientNotifications(Long recipientId) {
-        List<Notification> notifications = notificationRepository.findByRecipient(recipientId);
+        List<Notification> notifications = notificationRepository.findByRecipient_Id(recipientId);
+
         return notifications.stream()
                 .map(notificationMapper::toNotificationResponse)
                 .collect(Collectors.toList());
@@ -49,9 +49,8 @@ public class NotificationService {
         notificationRepository.save(notification);
 
         // Deletion task to run after 5 minutes
-        taskScheduler.schedule(() -> {
-            deleteNotification(notification.getId());
-        }, LocalDateTime.now().plusSeconds(5).atZone(ZoneId.systemDefault()).toInstant());
+        taskScheduler.schedule(() -> deleteNotification(notification.getId()),
+                LocalDateTime.now().plusSeconds(5).atZone(ZoneId.systemDefault()).toInstant());
 
         return notificationMapper.toNotificationResponse(notification);
     }
@@ -77,8 +76,8 @@ public class NotificationService {
         for (User friend : friends) {
             Notification notification = new Notification(
                     post.getUser(),         // sender
-                    friend.getId(),         // recipient
-                    "Customised message here", // message
+                    friend,         // recipient
+                    "New post", // message
                     type,                   // type
                     post,                   // related post
                     now,                    // timestamp
@@ -106,8 +105,8 @@ public class NotificationService {
         for (User friend : friends) {
             Notification notification = new Notification(
                     comment.getUser(),         // sender
-                    friend.getId(),         // recipient
-                    "Customised message here", // message
+                    friend,         // recipient
+                    "New Comment", // message
                     type,                   // type
                     comment.getPost(),      // related post
                     now,                    // timestamp
@@ -116,7 +115,6 @@ public class NotificationService {
 
             createNotification(notification);
         }
-
     }
 
     public void likeNotification(Like like) {
@@ -136,8 +134,8 @@ public class NotificationService {
         for (User friend : friends) {
             Notification notification = new Notification(
                     like.getUser(),         // sender
-                    friend.getId(),         // recipient
-                    "Customised message here", // message
+                    friend,         // recipient
+                    "Post liked", // message
                     type,                   // type
                     like.getPost(),      // related post
                     now,                    // timestamp
@@ -146,6 +144,5 @@ public class NotificationService {
 
             createNotification(notification);
         }
-
     }
 }
