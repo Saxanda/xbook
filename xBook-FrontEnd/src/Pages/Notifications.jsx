@@ -9,7 +9,7 @@ export default function Notifications() {
     axios
       .get("http://localhost:8080/api/v1/notifications/{recipientId}", {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE2MDM1MzY2LCJleHAiOjE3MTY2NDAxNjZ9.dHfIcgS2v4icR1CqfdrVpoFtNwdPubJ48JxfalgnHP8`,
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE2MDM4MjY4LCJleHAiOjE3MTY2NDMwNjh9.kS46jsWr6kNqoFRTqJmFb3zkpp7j4-T6Oj7u5u0PiB0`,
         },
       })
       .then((response) => {
