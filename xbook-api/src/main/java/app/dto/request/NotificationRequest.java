@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class NotificationRequest {
+// Fields commented for future endpoint development
 //    private String message;
 //    private Long senderId;
 //    private Long postId;

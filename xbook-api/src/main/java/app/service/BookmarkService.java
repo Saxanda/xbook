@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,11 +27,13 @@ public class BookmarkService {
         return bookmarkMapper.toBookmarkResponse(savedBookmark);
     }
 
-    public List<BookmarkResponse> getAllBookmarksByUserId(Long userId) {
+    public List<Long> getAllBookmarksByUserId(Long userId) {
         List<Bookmark> bookmarks = bookmarkRepository.findByUserId(userId);
-        return bookmarks.stream()
-                .map(bookmarkMapper::toBookmarkResponse)
+        List<Long> bookmarksIds = bookmarks.stream()
+                .map(Bookmark::getPostId)
                 .collect(Collectors.toList());
+        Collections.reverse(bookmarksIds);
+        return bookmarksIds;
     }
 
     public List<BookmarkResponse> getAllBookmarksByPostId(Long postId) {
