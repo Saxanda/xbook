@@ -6,6 +6,7 @@ import Home from "./Pages/Home";
 import Bookmarks from "./Pages/Bookmarks";
 import UpdatePasswordPage from './Pages/UpdatePasswordPage';
 import ForgotPage from './Pages/ForgotPage';
+import Chats from './pages/ChatPage/ChatPage';
 
 export default function AppRoutes() {
   return (
@@ -17,6 +18,7 @@ export default function AppRoutes() {
         <Route element={<PrivateRoutes />}>
           <Route path="/" element={<Home />} />
           <Route path="/bookmarks" element={<Bookmarks />} />
+          <Route path="/chats" element={<Chats />} />
           <Route></Route>
         </Route>
       </Routes>

@@ -12,13 +12,16 @@ import app.entity.User;
 import app.exception.ResourceNotFoundException;
 import app.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 
@@ -30,15 +33,18 @@ public class NotificationService {
     private final TaskScheduler taskScheduler;
 
     public Notification createNotification(Notification notification) {
-
         return notificationRepository.save(notification);
     }
 
-    public List<NotificationResponse> getRecipientNotifications(Long recipientId) {
-        List<Notification> notifications = notificationRepository.findByRecipient(recipientId);
-        return notifications.stream()
-                .map(notificationMapper::toNotificationResponse)
-                .collect(Collectors.toList());
+    public Page<NotificationResponse> getPageRecipientNotifications(Long recipientId, int page, int size) {
+        // Set up the Pageable object with sorting by 'timestamp' in descending order
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
+
+        // Fetch the page of Notifications from the repository
+        Page<Notification> notificationPage = notificationRepository.findByRecipient_Id(recipientId, pageable);
+
+        // Map entities to DTOs
+        return notificationPage.map(notificationMapper::toNotificationResponse);
     }
 
     public NotificationResponse markNotificationAsRead(Long notificationId) {
@@ -49,9 +55,8 @@ public class NotificationService {
         notificationRepository.save(notification);
 
         // Deletion task to run after 5 minutes
-        taskScheduler.schedule(() -> {
-            deleteNotification(notification.getId());
-        }, LocalDateTime.now().plusSeconds(5).atZone(ZoneId.systemDefault()).toInstant());
+        taskScheduler.schedule(() -> deleteNotification(notification.getId()),
+                LocalDateTime.now().plusSeconds(5).atZone(ZoneId.systemDefault()).toInstant());
 
         return notificationMapper.toNotificationResponse(notification);
     }
@@ -77,8 +82,8 @@ public class NotificationService {
         for (User friend : friends) {
             Notification notification = new Notification(
                     post.getUser(),         // sender
-                    friend.getId(),         // recipient
-                    "Customised message here", // message
+                    friend,         // recipient
+                    "New post", // message
                     type,                   // type
                     post,                   // related post
                     now,                    // timestamp
@@ -106,8 +111,8 @@ public class NotificationService {
         for (User friend : friends) {
             Notification notification = new Notification(
                     comment.getUser(),         // sender
-                    friend.getId(),         // recipient
-                    "Customised message here", // message
+                    friend,         // recipient
+                    "New Comment", // message
                     type,                   // type
                     comment.getPost(),      // related post
                     now,                    // timestamp
@@ -116,7 +121,6 @@ public class NotificationService {
 
             createNotification(notification);
         }
-
     }
 
     public void likeNotification(Like like) {
@@ -136,8 +140,8 @@ public class NotificationService {
         for (User friend : friends) {
             Notification notification = new Notification(
                     like.getUser(),         // sender
-                    friend.getId(),         // recipient
-                    "Customised message here", // message
+                    friend,         // recipient
+                    "Post liked", // message
                     type,                   // type
                     like.getPost(),      // related post
                     now,                    // timestamp
@@ -146,6 +150,5 @@ public class NotificationService {
 
             createNotification(notification);
         }
-
     }
 }
