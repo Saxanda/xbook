@@ -15,13 +15,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 
@@ -36,18 +36,15 @@ public class NotificationService {
         return notificationRepository.save(notification);
     }
 
-    public List<NotificationResponse> getRecipientNotifications(Long recipientId) {
-        List<Notification> notifications = notificationRepository.findByRecipient_Id(recipientId);
+    public Page<NotificationResponse> getPageRecipientNotifications(Long recipientId, int page, int size) {
+        // Set up the Pageable object with sorting by 'timestamp' in descending order
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
 
-        return notifications.stream()
-                .map(notificationMapper::toNotificationResponse)
-                .collect(Collectors.toList());
-    }
+        // Fetch the page of Notifications from the repository
+        Page<Notification> notificationPage = notificationRepository.findByRecipient_Id(recipientId, pageable);
 
-    public Page<NotificationResponse> getPageRecipientNotifications(Long recipientId, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return notificationRepository.findByRecipient(recipientId, pageable)
-                .map(notificationMapper::toNotificationResponse);
+        // Map entities to DTOs
+        return notificationPage.map(notificationMapper::toNotificationResponse);
     }
 
     public NotificationResponse markNotificationAsRead(Long notificationId) {
