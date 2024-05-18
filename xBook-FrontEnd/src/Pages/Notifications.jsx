@@ -9,7 +9,7 @@ export default function Notifications() {
     axios
       .get("http://localhost:8080/api/v1/notifications/{recipientId}", {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE2MDI5NTkwLCJleHAiOjE3MTY2MzQzOTB9.f7nmJ4ViNi9ZLoMwqFnPwKYzXJht6cI8bo2f5Qpdb_E`,
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE2MDM1MzY2LCJleHAiOjE3MTY2NDAxNjZ9.dHfIcgS2v4icR1CqfdrVpoFtNwdPubJ48JxfalgnHP8`,
         },
       })
       .then((response) => {
@@ -21,5 +21,7 @@ export default function Notifications() {
       });
   }, []);
 
-  return <NotificationsPage></NotificationsPage>;
+  return (
+    <NotificationsPage notificationData={notificationData}></NotificationsPage>
+  );
 }

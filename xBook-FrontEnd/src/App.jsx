@@ -8,11 +8,11 @@ import Header from "./components/Header/Header";
 import PostPage from "./components/Post/PostPage";
 import { useState, useEffect } from "react";
 
-import LoginPage from "./Pages/LoginPage";
+import LoginPage from "./pages/LoginPage";
 // import Home from "./Pages/Home";
 import NotificationsPage from "./components/Notifications/NotificationsPage";
 // import testNotificationData from "./assets/notif.json";
-import axios from "axios";
+// import axios from "axios";
 
 function App() {
   const [postData, setPostData] = useState([]);
@@ -26,24 +26,6 @@ function App() {
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  const [notificationData, setNotificationData] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/v1/notifications/{recipientId}", {
-        headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE2MDI5NTkwLCJleHAiOjE3MTY2MzQzOTB9.f7nmJ4ViNi9ZLoMwqFnPwKYzXJht6cI8bo2f5Qpdb_E`,
-        },
-      })
-      .then((response) => {
-        setNotificationData(response.data);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("error:", error);
-      });
-  }, []);
-
   return (
     <Provider store={store}>
       <Router>
@@ -51,10 +33,7 @@ function App() {
         <Routes>
           <Route />
           <Route path="/login" element={<LoginPage />} />
-          <Route
-            path="/"
-            element={<NotificationsPage notificationData={notificationData} />}
-          />
+          <Route path="/" element={<NotificationsPage />} />
 
           <Route></Route>
           <Route
