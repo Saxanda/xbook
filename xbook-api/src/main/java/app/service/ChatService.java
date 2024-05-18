@@ -11,6 +11,9 @@ import app.exception.ResourceNotFoundException;
 import app.repository.ChatRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -31,8 +34,6 @@ public class ChatService {
         User chatParticipant = userService.findByEmail(emailOfChatParticipant).orElseThrow(() -> new ResourceNotFoundException("User is not found!"));
 
         List<Chat> chats = chatRepo.findChatsByChatParticipantsContainsAndChatParticipantsContains(authUser, chatParticipant);
-        System.out.println("chat in save new chat method!");
-        System.out.println(chats);
 
         if(!chats.isEmpty()) {
             return convertToCreatedNewChatResponse(chats.get(0), chatParticipant);
@@ -57,17 +58,18 @@ public class ChatService {
 
     public List<ChatResponseWithLastMessage> getAllUserChats() {
         User authUser = userService.getAuthUser();
-        System.out.println("Auth user in chatService!");
-        System.out.println(authUser);
-
-        System.out.println("user chats!");
-        System.out.println(chatRepo.findByChatParticipantsContainingOrderByLastModifiedDateDesc(authUser));
-
         return chatRepo.findByChatParticipantsContainingOrderByLastModifiedDateDesc(authUser)
                 .stream()
                 .map(chat -> convertToChatResponse(chat))
                 .toList();
-//        return chatRepo.findAll();
+    }
+
+    public Page<ChatResponseWithLastMessage> getPageAllUserChats(Integer page, Integer size){
+        User authUser = userService.getAuthUser();
+        Pageable pageable = PageRequest.of(page, size);
+
+        return chatRepo.findByChatParticipantsContainingOrderByLastModifiedDateDesc(authUser, pageable)
+                .map(chat -> convertToChatResponse(chat));
     }
 
     public ChatResponse convertToChatResponse(Chat chat, User chatParticipant) {
@@ -98,17 +100,9 @@ public class ChatService {
     }
 
     private Optional<LastMessageInChat> getLastMessage(Chat chat) {
-        System.out.println(chat.getMessages());
-
-//        System.out.println(chat.getMessages().stream().sorted(Comparator.comparing(Message::getCreatedDate).reversed()).limit(1).findFirst());
-
         return chat.getMessages().stream()
                 .max(Comparator.comparing(Message::getCreatedDate))
                 .map(this::convertToLastMessageInChat);
-//                .sorted(Comparator.comparing(Message::getCreatedDate).reversed())
-//                .limit(1)
-//                .map(msg -> convertToLastMessageInChat(msg))
-//                .findFirst();
     }
 
     private LastMessageInChat convertToLastMessageInChat(Message msg) {
@@ -139,7 +133,6 @@ public class ChatService {
     public void updateLastModifiedDate(Chat chat, LocalDateTime lastModifiedDate) {
         Chat chatFromDB = chatRepo.findById(chat.getId()).orElseThrow(() -> new NotFoundException("Chat is not found!"));
         chatFromDB.setLastModifiedDate(lastModifiedDate);
-        // Will update property 'LastModifiedDate' in chat in DB
         chatRepo.save(chatFromDB);
     }
 }

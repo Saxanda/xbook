@@ -15,6 +15,9 @@ import app.utils.ContentType;
 import app.utils.MessageStatus;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -45,16 +48,15 @@ public class MessageService {
         UserInChatRepresentation sender = modelMapper.map(savedMessage.getSender(), UserInChatRepresentation.class);
         msg.setChat(chatResponse);
         msg.setSender(sender);
+        if(savedMessage.getLastModifiedDate().isAfter(savedMessage.getCreatedDate())) {
+            msg.setEdited(true);
+        }
         return msg;
     }
 
     private Message convertToMessage(MessageRequest msgRq, User authUser) {
         Chat chat = chatRepo.findById(msgRq.getChatId()).orElseThrow(() -> new ResourceNotFoundException("Chat is not found!"));
-        Message msg = new Message(ContentType.fromString(msgRq.getContentType()), msgRq.getContent(), authUser, chat, MessageStatus.SENT);
-        System.out.println("Message in convertToMessage method!");
-        System.out.println(msg);
-        System.out.println(msg.getId());
-        return msg;
+        return new Message(ContentType.fromString(msgRq.getContentType()), msgRq.getContent(), authUser, chat, MessageStatus.SENT);
     }
 
     public List<MessageResponse> getChatMessages(Long chatId) {
@@ -65,6 +67,14 @@ public class MessageService {
                 .getMessages()
                 .stream().map(msg -> convertToMessageResponse(msg, chatParticipant))
                 .toList();
+    }
+
+    public Page<MessageResponse> getPageChatMessages(Long chatId, Integer page, Integer size){
+        Pageable pageable = PageRequest.of(page, size);
+        User chatParticipant = chatService.getChatParticipant(chatId);
+        return messageRepo.findByChatId(chatId, pageable)
+                .map(msg -> convertToMessageResponse(msg, chatParticipant));
+
     }
 
     public boolean deleteMessageById(Long messageId) {

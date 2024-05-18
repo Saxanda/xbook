@@ -1,7 +1,16 @@
+frontend:
+  url: http://localhost:5173
+
+backend:
+  url: http://localhost:8080
+
 server:
   port: 8080
 
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   servlet:
     multipart:
       max-file-size: 10MB

@@ -6,9 +6,13 @@ import app.dto.response.PostResponse;
 import app.entity.Post;
 import app.entity.PostType;
 import app.entity.User;
+import app.repository.LikeRepository;
 import app.repository.PostRepository;
 import app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,12 +27,14 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
+    private final NotificationService notificationService;
     private final PostMapper postMapper;
 
     public PostResponse createPost(PostRequest postRequest, Long userId, Long originalPostId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        Post post = postMapper.toPost(postRequest);
+        Post post = postMapper.toPostRequest(postRequest);
         post.setUser(user);
 
         if (originalPostId != null) {
@@ -42,6 +48,7 @@ public class PostService {
             post.setType(PostType.ORIGINAL);
         }
         Post savedPost = postRepository.save(post);
+        notificationService.postNotification(savedPost);
         return postMapper.toPostResponse(savedPost);
     }
 
@@ -50,6 +57,12 @@ public class PostService {
         return posts.stream()
                 .map(postMapper::toPostResponse)
                 .collect(Collectors.toList());
+    }
+
+    public Page<PostResponse> getPageAllPosts(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page,size);
+        return postRepository.findAll(pageable)
+                .map(postMapper::toPostResponse);
     }
 
     public PostResponse getPostById(Long postId) {
@@ -71,4 +84,5 @@ public class PostService {
     public void deletePost(Long postId) {
         postRepository.deleteById(postId);
     }
+
 }
