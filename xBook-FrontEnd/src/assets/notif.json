@@ -1,0 +1,41 @@
+[
+  {
+    "id": 1,
+    "user": {
+      "avatar": "img",
+      "fullName": "Bob Bob"
+    },
+    "sender": "sender_ID",
+    "message": "notification message",
+    "type": "post/repost",
+    "post": "url to post",
+    "time": "1m ago",
+    "readStatus": false
+  },
+  {
+    "id": 2,
+    "user": {
+      "avatar": "img",
+      "fullName": "Bob Bob"
+    },
+    "sender": "sender_ID",
+    "message": "notification message",
+    "type": "like",
+    "post": "url to post",
+    "time": "1m ago",
+    "readStatus": false
+  },
+  {
+    "id": 3,
+    "user": {
+      "avatar": "img",
+      "fullName": "Bob Bob"
+    },
+    "sender": "sender_ID",
+    "message": "notification message",
+    "type": "comment",
+    "post": "url to post",
+    "time": "1m ago",
+    "readStatus": false
+  }
+]
