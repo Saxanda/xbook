@@ -73,5 +73,7 @@ INSERT INTO posts (user_id, title, body, media, likes, type, timestamp, original
 VALUES (1, 'My First Post', 'This is my first post on XBook!', 'https://m.media-amazon.com/images/I/71FEBlBJqgL._AC_SL1312_.jpg', 10, 'ORIGINAL', '2024-05-18 21:50:23', NULL);
 
 
-INSERT INTO comments (user_id, content, post_id)
-VALUES (1, 'This is a comment.', 1);
+INSERT INTO comments (timestamp, user_id, content, post_id)
+VALUES ('2024-05-19 22:50:23',1, 'This is a comment.', 1);
+INSERT INTO comments (timestamp, user_id, content, post_id)
+VALUES ('2024-05-19 23:50:23',2, 'This is a comment.', 1);
