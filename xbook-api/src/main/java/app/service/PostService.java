@@ -123,17 +123,31 @@ public class PostService {
                 .orElse(null);
     }
 
+//    public PostResponse updatePost(Long postId, PostRequest postRequest) {
+//        Optional<Post> optionalPost = postRepository.findById(postId);
+//        if (optionalPost.isPresent()) {
+//            Post post = optionalPost.get();
+//            postMapper.updatePostFromRequest(postRequest, post);
+//            Post updatedPost = postRepository.save(post);
+//            return postMapper.toPostResponse(updatedPost);
+//        }
+//        return null;
+//    }
     public PostResponse updatePost(Long postId, PostRequest postRequest) {
         Optional<Post> optionalPost = postRepository.findById(postId);
-        if (optionalPost.isPresent()) {
-            Post post = optionalPost.get();
-            postMapper.updatePostFromRequest(postRequest, post);
-            Post updatedPost = postRepository.save(post);
-            return postMapper.toPostResponse(updatedPost);
+        if (optionalPost.isEmpty()) {
+            throw new ResourceNotFoundException("Post not found with id: " + postId);
         }
-        return null;
-    }
 
+        Post post = optionalPost.get();
+        postMapper.updatePostFromRequest(postRequest, post);
+
+        // Update the post and get the updated entity
+        Post updatedPost = postRepository.save(post);
+
+        // User and post information
+        return getPostDetails(updatedPost.getId(), userService.getAuthCurrentUserId());
+    }
     public void deletePost(Long postId) {
         postRepository.deleteById(postId);
     }
