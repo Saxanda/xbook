@@ -12,12 +12,17 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDateTime;
+
 
 @Data
 @EqualsAndHashCode(callSuper = true)  // Count on properties from AbstractEntity
 @Entity
 @Table(name = "comments")
 public class Comment extends AbstractEntity {
+
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
