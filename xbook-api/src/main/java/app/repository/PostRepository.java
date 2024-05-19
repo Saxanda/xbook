@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface PostRepository extends JpaRepository<Post, Long> {
     // You can add custom query methods here if needed
     Page<Post> findAll(Pageable pageable);
+
+    int countByOriginalPostId(Long postId);
 }
