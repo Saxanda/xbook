@@ -10,15 +10,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookmarkResponse {
+    private Long bookmarkId;
     private Long postId;
-    private UserDetailsResponse author;
+    private UserDetailsResponse bookmaker;
     private String body;
     private String media;
     private LocalDateTime timestamp;
     private PostResponse originalPost;
     private int likesCount;
-    private int commentsCount; //optional
-    private int repostsCount; //optional
+    private int commentsCount;
+    private int repostsCount;
     private boolean isLiked;
     private boolean isBookmarked;
-}
+
+ }
