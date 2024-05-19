@@ -2,21 +2,37 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Modal, Paper, Typography, IconButton,Avatar,TextField,Button } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { createPost } from './postApi';
 
-export default function CreateRepostModal({ open, handleClose, postId }){
+export default function CreateRepostModal({ open, handleClose, postId, refresh }){
     const [newText, setNewText] = useState('');
     const handleTextChange = (event) => {
         setNewText(event.target.value);
     };
-    const publish=()=>{
-        console.log(postId);
-        handleClose();
-        setNewText('')
+    const publish = async () =>{
+        const postData = {
+            title: "",
+            body: newText ,
+            media: "",
+            type:"REPOST",
+        };
+        try {
+            console.log(postId);
+            const response = await createPost(postData,postId);
+            console.log('Post created successfully:', response);
+            console.log('Post Data:', postData);
+            handleClose();
+            setNewText('')
+            refresh()
+        } catch (error) {
+            console.error('Error creating post:', error);
+        }
     }
     const close = () =>{
         handleClose();
         setNewText('');
     }
+
     return (
         <Modal open={open} onClose={close}>
             <Paper
@@ -62,5 +78,6 @@ export default function CreateRepostModal({ open, handleClose, postId }){
 CreateRepostModal.propTypes = {
     open: PropTypes.bool.isRequired,
     handleClose: PropTypes.func.isRequired,
-    postId: PropTypes.string.isRequired,
+    postId: PropTypes.number,
+    refresh: PropTypes.func
 };

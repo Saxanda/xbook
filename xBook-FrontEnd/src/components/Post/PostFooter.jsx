@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import CreateRepostModal from './CreateRepostModal';
 import { likePost } from './postApi';
 
-export default function PostFooter({ likes, id, originalPostId }) {
+export default function PostFooter({ likes, id, originalPost,comments,reposts,refresh }) {
     const [isRepostModalOpen, setRepostModalOpen] = useState(false);
 
     const navigate = useNavigate();
@@ -44,8 +44,8 @@ export default function PostFooter({ likes, id, originalPostId }) {
                         <div className='postComponent_footer_activiti_info'>
                             <Typography variant="body1">Likes {likes}</Typography>
                             <div style={{ display: 'flex', gap: "10px" }}>
-                                {/* <Typography variant="body1">{comments} Comments </Typography>
-                                <Typography variant="body1">Reposts {reposts}</Typography> */}
+                                <Typography variant="body1">{comments} Comments </Typography>
+                                <Typography variant="body1">Reposts {reposts}</Typography>
                             </div>
                         </div>
                         <div className="postComponent_footer_activiti_btns">
@@ -69,7 +69,8 @@ export default function PostFooter({ likes, id, originalPostId }) {
             <CreateRepostModal
                 open={isRepostModalOpen}
                 handleClose={handleRepostModalClose}
-                postId={originalPostId !== null ? originalPostId : id}
+                postId={originalPost !== null ? originalPost.id : id}
+                refresh = {refresh}
             />
         </>
     );
@@ -78,5 +79,8 @@ export default function PostFooter({ likes, id, originalPostId }) {
 PostFooter.propTypes = {
     likes: PropTypes.number.isRequired,
     id: PropTypes.number.isRequired,
-    originalPostId: PropTypes.number,
+    originalPost: PropTypes.object,
+    reposts :PropTypes.number,
+    comments :PropTypes.number,
+    refresh: PropTypes.func
 };

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Avatar, Button, Paper } from '@mui/material';
 import CreatePostModal from './CreatePostModal';
+import PropTypes from 'prop-types';
 
-export default function CreatePost() {
+export default function CreatePost({onPostCreated}) {
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => {
@@ -27,7 +28,12 @@ export default function CreatePost() {
                 </Button>
             </Paper>
 
-            <CreatePostModal open={open} handleClose={handleClose} />
+            <CreatePostModal open={open} handleClose={handleClose} onPostCreated={onPostCreated} />
         </>
     );
 }
+
+
+CreatePost.propTypes = {
+    onPostCreated: PropTypes.func
+};

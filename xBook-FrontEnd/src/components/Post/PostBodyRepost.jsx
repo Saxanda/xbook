@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+// import { useState, useEffect } from 'react';
 import Paper from '@mui/material/Paper';
 import PostMediaGrid from './PostMediaGrid';
 import PostHeader from './PostHeader';
@@ -6,29 +6,13 @@ import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
-export default function PosdBodyRepost({ originalPostId, text }){
-    const [postData, setPostData] = useState(null);
+export default function PosdBodyRepost({ originalPost, text}){
 
     const navigate = useNavigate();
 
     const handleCommentButtonClick = () => {
-        navigate(`/post/${originalPostId}`);
+        navigate(`/post/${originalPost.id}`);
     };
-
-    useEffect(() => {
-        fetch('../testPostData.json')
-            .then(response => response.json())
-            .then(data => {
-            const post = data.find(post => post.postId === originalPostId);
-            setPostData(post);
-            })
-            .catch(error => console.error('Error fetching data:', error));
-        }, [originalPostId]);
-
-    if (!postData) {
-        return null;
-    }
-
     return(
         <div className="postComponent_body">
             <Typography variant="body1" gutterBottom className='postComponent_body_text' style={{ paddingLeft: '5px' }}>
@@ -36,15 +20,15 @@ export default function PosdBodyRepost({ originalPostId, text }){
             </Typography>
             <Paper onClick={handleCommentButtonClick}>
                 <PostMediaGrid   
-                    media={postData.media}
+                    media={[originalPost.media]}
                 />
                 <PostHeader
-                    userData={postData.user}
-                    date={postData.date}
+                    author={originalPost.author}
+                    date={originalPost.timestamp}
                     isRepost= {true}
                 ></PostHeader>
                 <Typography variant="body1" gutterBottom className='postComponent_body_text' style={{ paddingLeft: '5px' }}>
-                    {postData.text}
+                    {originalPost.text}
                 </Typography>
             </Paper>
         </div>
@@ -52,6 +36,6 @@ export default function PosdBodyRepost({ originalPostId, text }){
 }
 
 PosdBodyRepost.propTypes = {
-    originalPostId: PropTypes.number.isRequired,
-    text: PropTypes.string.isRequired
+    originalPost: PropTypes.object,
+    text: PropTypes.string,
 };

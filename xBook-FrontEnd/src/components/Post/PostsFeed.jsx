@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import Post from '../Post/Post';
 import { Grid, Typography } from '@mui/material/';
 import { getPosts } from '../Post/postApi';
+import PropTypes from 'prop-types';
 
-export default function PostsFeed(){
+export default function PostsFeed({refresh,handlePostCreated}){
     const [postData, setPostData] = useState([]);
 
     useEffect(() => {
@@ -18,12 +19,12 @@ export default function PostsFeed(){
         };
 
         fetchData();
-    }, []);
+    },[refresh]);
     return(
         <Grid container spacing={3}>
             {postData.map(post => (
                 <Grid item xs={12} key={post.id}>
-                    <Post postData={post} />
+                    <Post postData={post} refresh={handlePostCreated} />
                 </Grid>
             ))}
             {postData.length === 0 && (
@@ -34,3 +35,8 @@ export default function PostsFeed(){
         </Grid>
     )
 }
+
+PostsFeed.propTypes = {
+    refresh: PropTypes.bool.isRequired,
+    handlePostCreated: PropTypes.func
+};

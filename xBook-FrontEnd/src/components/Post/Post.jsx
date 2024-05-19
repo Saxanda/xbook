@@ -2,22 +2,22 @@ import PropTypes from 'prop-types';
 import PostBody from "./PostBody"
 import PosdBodyRepost from './PostBodyRepost';
 import PostFooter from "./PostFooter"
-// import PostHeader from "./PostHeader"
+import PostHeader from "./PostHeader"
 import Paper from '@mui/material/Paper';
 
-export default function Post({ postData, postComments }){
+export default function Post({ postData, postComments, refresh }){
     if (!postData) {
         return null;
     }
     return(
         <Paper elevation={3} className='postComponent' >
-            {/* <PostHeader 
-                userData={postData.user}
-                date={postData.date}
-            /> */}
+            <PostHeader 
+                author={postData.author}
+                date={postData.timestamp}
+            />
             {postData.type === 'REPOST' ? (
                 <PosdBodyRepost
-                    // originalPostId={postData.originalPostId}
+                    originalPost={postData.originalPost}
                     text={postData.body}  
                 />
                 ) : (
@@ -27,11 +27,12 @@ export default function Post({ postData, postComments }){
                     />
                 )}
                 <PostFooter
-                    likes={postData.likes} 
-                    // comments={postData.commentsCount}
-                    // reposts={postData.reposts}
+                    likes={postData.likesCount} 
+                    comments={postData.commentsCount}
+                    reposts={postData.repostsCount}
                     id={postData.id}
-                    // originalPostId={postData.originalPostId}
+                    originalPost={postData.originalPost}
+                    refresh ={refresh}
                 />
                 {postComments}
         </Paper>
@@ -40,14 +41,8 @@ export default function Post({ postData, postComments }){
 }
 
 Post.propTypes = {
-    postData: PropTypes.shape({
-        title: PropTypes.string.isRequired,
-        body: PropTypes.string.isRequired,
-        media: PropTypes.string,
-        type: PropTypes.oneOf(['ORIGINAL', 'REPOST']).isRequired,
-        likes: PropTypes.number.isRequired,
-        id: PropTypes.number.isRequired,
-    }).isRequired,
-    postComments: PropTypes.node
+    postData: PropTypes.object,
+    postComments: PropTypes.node,
+    refresh: PropTypes.func
 };
 

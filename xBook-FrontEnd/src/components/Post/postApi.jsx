@@ -44,11 +44,20 @@ export const getOnePost = async (postId) => {
         throw error;
     }
 };
-export const createPost = async (postData) => {
+export const createPost = async (postData, originalPost) => {
     try {
         const AUTH_TOKEN = localStorage.getItem('token');
+
+        // Формуємо базовий URL
+        let url = `${API_BASE_URL}/api/v1/posts/post`;
+
+        // Якщо originalPost переданий, додаємо його як параметр у URL
+        if (originalPost) {
+            url += `?originalPostId=${originalPost}`;
+        }
+
         const response = await axios.post(
-            `${API_BASE_URL}/api/v1/posts/post`,
+            url,
             postData,
             {
                 headers: {

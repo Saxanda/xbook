@@ -8,7 +8,8 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { createPost } from './postApi';
 
-export default function CreatePostModal({ open, handleClose }) {
+
+export default function CreatePostModal({ open, handleClose,onPostCreated }) {
     const [newText, setNewText] = useState('');
     const [selectedImages, setSelectedImages] = useState([]);
     const [imgURLs, setImgURLs] = useState([]);
@@ -72,6 +73,7 @@ export default function CreatePostModal({ open, handleClose }) {
             setNewText('');
             setSelectedImages([]);
             setImgURLs([]);
+            onPostCreated();
         } catch (error) {
             console.error('Error creating post:', error);
         }
@@ -140,4 +142,5 @@ export default function CreatePostModal({ open, handleClose }) {
 CreatePostModal.propTypes = {
     open: PropTypes.bool.isRequired,
     handleClose: PropTypes.func.isRequired,
+    onPostCreated: PropTypes.func
 };
