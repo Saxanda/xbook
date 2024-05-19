@@ -23,10 +23,8 @@ public class Comment extends AbstractEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Lob
-    @Column(name = "content", columnDefinition = "CLOB")
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
-
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "post_id")  // refers to Post's primary key
