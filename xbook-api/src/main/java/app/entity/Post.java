@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -50,4 +51,8 @@ public class Post extends AbstractEntity {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments; //to make possible to delete comments associated with post
+
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
+
 }
