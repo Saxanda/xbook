@@ -1,0 +1,108 @@
+.title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sattings{
+    width: 30px;
+    height: 30px;
+    cursor: pointer; 
+  }
+
+.savedObject{
+    display: flex;
+    align-items: center;
+    
+    cursor: pointer;
+    padding: 2px;
+    background-color: #f3f3f3;
+    border-radius: 8px;
+}
+
+  .objImg{
+    width: 30px;
+    height: 30px; 
+   padding-right: 4px;
+  }
+  
+  .sidebar {
+    width: 320px;
+    height: 100vh;
+    padding: 20px;
+    background-color: #ffffff;
+    border-right: 1px solid rgba(0, 0, 0, 0.153);
+    box-shadow: 0 0px 0px rgba(0, 0, 0, .1), 0 2px 4px rgba(0, 0, 0, .1);  
+    user-select: none; 
+  }
+
+.collections{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f3f3f3;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+  .plus{
+    width: 28px;
+    height: 28px;
+    padding: 8px;
+  }
+  
+  .sidebar h2 {
+    font-size: 25px;
+    border: none;
+    padding-left: 0px;
+    color: black;
+  }
+  .sidebar h3 {
+    user-select: none;
+  }
+ 
+  .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    flex-grow: 1;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.153);
+    border-top: 1px solid rgba(0, 0, 0, 0.153);
+  }
+  
+  .sidebar li {
+    margin-top: 10px;
+    cursor: pointer;
+    list-style: none; 
+    user-select: none; 
+  }
+
+  .sidebar li:hover {
+    color: #7f7f7f; 
+  }
+
+.collectionsNew{
+    padding-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+  .delete-btn{
+    border-radius: 8px;
+  }
+  
+  
+  @media (max-width: 768px) {
+    .bookmark-card {
+      width: calc(50% - 20px);
+      
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .bookmark-card {
+      width: 100%;
+      
+    }
+  }
+  

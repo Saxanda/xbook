@@ -3,7 +3,7 @@ import PrivateRoutes from "./helpers/PrivateRoutes";
 
 import LoginPage from "./Pages/LoginPage";
 import Home from "./Pages/Home";
-import Bookmarks from "./Pages/Bookmarks";
+import BookmarksPage from "./Pages/BookmarksPage";
 import UpdatePasswordPage from './Pages/UpdatePasswordPage';
 import ForgotPage from './Pages/ForgotPage';
 
@@ -16,7 +16,7 @@ export default function AppRoutes() {
           <Route path="/forgot-password/" element={<UpdatePasswordPage />} />
         <Route element={<PrivateRoutes />}>
           <Route path="/" element={<Home />} />
-          <Route path="/bookmarks" element={<Bookmarks />} />
+          <Route path="/bookmarks" element={<BookmarksPage />} />
           <Route></Route>
         </Route>
       </Routes>
