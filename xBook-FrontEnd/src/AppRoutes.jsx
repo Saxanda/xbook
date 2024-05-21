@@ -7,6 +7,7 @@ import Bookmarks from "./Pages/Bookmarks";
 import UpdatePasswordPage from './Pages/UpdatePasswordPage';
 import ForgotPage from './Pages/ForgotPage';
 import Chats from './pages/ChatPage/ChatPage';
+import PostPage from "./components/Post/PostPage";
 
 export default function AppRoutes() {
   return (
@@ -19,6 +20,10 @@ export default function AppRoutes() {
           <Route path="/" element={<Home />} />
           <Route path="/bookmarks" element={<Bookmarks />} />
           <Route path="/chats" element={<Chats />} />
+          <Route 
+          path="/post/:postId" 
+          element={<PostPage/>} 
+          />
           <Route></Route>
         </Route>
       </Routes>

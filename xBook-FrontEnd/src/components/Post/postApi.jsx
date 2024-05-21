@@ -3,12 +3,19 @@ import { jwtDecode } from "jwt-decode";
 
 
 const API_BASE_URL = 'http://localhost:8080';
-const AUTH_TOKEN = localStorage.getItem('token');
+const getToken = () => {
+    let token = sessionStorage.getItem('token');
+    if (!token) {
+        token = localStorage.getItem('token');
+    }
+    return token;
+};
+
 
 //-------------post---------------------
 export const getPosts = async () => {
     try {
-        const AUTH_TOKEN = localStorage.getItem('token');
+        const AUTH_TOKEN = getToken();
         const response = await axios.get(
             `${API_BASE_URL}/api/v1/posts`,
             {
@@ -27,7 +34,7 @@ export const getPosts = async () => {
 };
 export const getOnePost = async (postId) => {
     try {
-        const AUTH_TOKEN = localStorage.getItem('token');
+        const AUTH_TOKEN = getToken();
         const response = await axios.get(
             `${API_BASE_URL}/api/v1/posts/fetch/${postId}`,
             {
@@ -46,7 +53,7 @@ export const getOnePost = async (postId) => {
 };
 export const createPost = async (postData, originalPost) => {
     try {
-        const AUTH_TOKEN = localStorage.getItem('token');
+        const AUTH_TOKEN = getToken();
 
         // Формуємо базовий URL
         let url = `${API_BASE_URL}/api/v1/posts/post`;
@@ -76,6 +83,7 @@ export const createPost = async (postData, originalPost) => {
 //------------like----------------------
 export const likePost = async (postId) => {
     try {
+        const AUTH_TOKEN = getToken();
         const UZER_ID = jwtDecode(AUTH_TOKEN).sub
         const userId = UZER_ID;
         const response = await axios.post(
@@ -98,7 +106,7 @@ export const likePost = async (postId) => {
 //-------------coment---------------------
 export const getPostComments = async (postId) => {
     try {
-        const AUTH_TOKEN = localStorage.getItem('token');
+        const AUTH_TOKEN = getToken();
         const response = await axios.get(
             `${API_BASE_URL}/api/v1/comments/post/${postId}`,
             {
@@ -117,7 +125,7 @@ export const getPostComments = async (postId) => {
 };
 export const createComment = async (content, postId) => {
     try {
-        const AUTH_TOKEN = localStorage.getItem('token');
+        const AUTH_TOKEN = getToken();
         const UZER_ID = jwtDecode(AUTH_TOKEN).sub
         const userId = UZER_ID;
         const response = await axios.post(
@@ -139,7 +147,7 @@ export const createComment = async (content, postId) => {
 };
 export const getUserById = async (uzerId) => {
     try {
-        const AUTH_TOKEN = localStorage.getItem('token');
+        const AUTH_TOKEN = getToken();
         const response = await axios.get(
             `${API_BASE_URL}/api/v1/users/${uzerId}`,
             {
@@ -159,7 +167,7 @@ export const getUserById = async (uzerId) => {
 //----------------user----------------
 export const getUserIsLogin = async () => {
     try {
-        const AUTH_TOKEN = localStorage.getItem('token');
+        const AUTH_TOKEN = getToken();
 
         if (!AUTH_TOKEN) {
             throw new Error('No authentication token found');
