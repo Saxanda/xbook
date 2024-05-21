@@ -1,14 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PrivateRoutes from "./helpers/PrivateRoutes";
 
-import LoginPage from "./Pages/LoginPage";
-import Home from "./Pages/Home";
-import Bookmarks from "./Pages/Bookmarks";
-import UpdatePasswordPage from "./Pages/UpdatePasswordPage";
-import ForgotPage from "./Pages/ForgotPage";
+import LoginPage from "./pages/LoginPage";
+import Home from "./pages/Home";
+import Bookmarks from "./pages/Bookmarks";
+import UpdatePasswordPage from "./pages/UpdatePasswordPage";
+import ForgotPage from "./pages/ForgotPage";
 import Chats from "./pages/ChatPage/ChatPage";
 import PostPage from "./components/Post/PostPage";
-import Notifications from "./Pages/Notifications";
+import Notifications from "./pages/Notifications";
 
 export default function AppRoutes() {
   return (
