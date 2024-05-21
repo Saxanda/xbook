@@ -6,34 +6,36 @@ import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CloseIcon from '@mui/icons-material/Close';
 
-export default function PostHeader({ userData, date }) {
+export default function PostHeader({ author, date, isRepost}) {
     return (
         <div className="postComponent_header">
             <div className="postComponent_header_userinfo">
                 <Stack direction="row" spacing={2} alignItems="center">
-                    <Avatar src={userData.avatar} alt="User Avatar" />
+                    <Avatar src={author.avatar} alt="User Avatar" />
                     <div>
-                        <Typography variant="h6">{userData.fullName}</Typography>
+                        <Typography variant="h6">{author.name} {author.surname}</Typography>
                         <Typography variant="body2" color="textSecondary">{date}</Typography>
                     </div>
                 </Stack>
             </div>
-            <div className="postComponent_header_btns">
-                <IconButton variant="contained" aria-label="more options">
-                    <MoreVertIcon />
-                </IconButton>
-                <IconButton variant="contained" aria-label="close">
-                    <CloseIcon />
-                </IconButton>
-            </div>
+            
+            { !isRepost && (
+                <div className="postComponent_header_btns">
+                    <IconButton variant="contained" aria-label="more options">
+                        <MoreVertIcon />
+                    </IconButton>
+                    <IconButton variant="contained" aria-label="close">
+                        <CloseIcon />
+                    </IconButton>
+                </div>
+            )}
+            
         </div>
     );
 }
 
 PostHeader.propTypes = {
-    userData: PropTypes.shape({
-        avatar: PropTypes.string.isRequired,
-        fullName: PropTypes.string.isRequired
-    }).isRequired,
-    date: PropTypes.string.isRequired
+    author: PropTypes.object,
+    date: PropTypes.string.isRequired,
+    isRepost:PropTypes.bool
 };
