@@ -77,20 +77,6 @@ export default function ProfilePagePosts(){
                             null
                             }
                         </ul>
-                        {/* {
-                            obj.user === "myUser" ?
-                            <Button 
-                            variant="contained"
-                            color='info'
-                            onClick={modalEditProfileOpen} 
-                            sx={{
-                                width: "100%", 
-                                marginTop: "16px"
-                            }}
-                            >Edit Bio</Button>
-                            :
-                            null
-                        } */}
                     </div>
                 </div>
                 <div>
