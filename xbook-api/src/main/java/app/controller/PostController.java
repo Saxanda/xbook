@@ -48,12 +48,6 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<PostResponse>> getAllPosts() {
-//        List<PostResponse> allPosts = postService.getAllPosts();
-//        return ResponseEntity.ok(allPosts);
-//    }
-
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Page<PostResponse> getPageAllPosts(@RequestParam(defaultValue = "0") Integer page,

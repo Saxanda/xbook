@@ -9,11 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -23,24 +22,21 @@ public class BookmarkService {
 
     public BookmarkResponse createBookmark(BookmarkRequest bookmarkRequest) {
         Bookmark bookmark = bookmarkMapper.toBookmarkRequest(bookmarkRequest);
+        bookmark.setTimestamp(LocalDateTime.now());
         Bookmark savedBookmark = bookmarkRepository.save(bookmark);
         return bookmarkMapper.toBookmarkResponse(savedBookmark);
     }
 
-    public List<Long> getAllBookmarksByUserId(Long userId) {
-        List<Bookmark> bookmarks = bookmarkRepository.findByUserId(userId);
-        List<Long> bookmarksIds = bookmarks.stream()
-                .map(Bookmark::getPostId)
-                .collect(Collectors.toList());
-        Collections.reverse(bookmarksIds);
-        return bookmarksIds;
+    public Page<BookmarkResponse> getPageAllBookmarksByUserId(Long userId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
+        return bookmarkRepository.findByUserId(userId, pageable)
+                .map(bookmarkMapper::toBookmarkResponse);
     }
 
-    public List<BookmarkResponse> getAllBookmarksByPostId(Long postId) {
-        List<Bookmark> bookmarks = bookmarkRepository.findByPostId(postId);
-        return bookmarks.stream()
-                .map(bookmarkMapper::toBookmarkResponse)
-                .collect(Collectors.toList());
+    public Page<BookmarkResponse> getPageAllBookmarksByPostId(Long postId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
+        return bookmarkRepository.findByPostId(postId, pageable)
+                .map(bookmarkMapper::toBookmarkResponse);
     }
 
     public boolean deleteBookmark(Long bookmarkId) {
@@ -49,15 +45,5 @@ public class BookmarkService {
             return true;
         }
         return false;
-    }
-
-    public Page<Bookmark> getPageAllBookmarksByUserId(Long userId, Integer page, Integer size){
-        Pageable pageable = PageRequest.of(page, size);
-        return bookmarkRepository.findByUserId(userId, pageable);
-    }
-
-    public Page<Bookmark> getPageAllBookmarksByPostId(Long postId, Integer page, Integer size){
-        Pageable pageable = PageRequest.of(page, size);
-        return bookmarkRepository.findByPostId(postId, pageable);
     }
 }

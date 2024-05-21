@@ -9,7 +9,6 @@ import app.entity.PostType;
 import app.entity.User;
 import app.exception.ResourceNotFoundException;
 import app.repository.BookmarkRepository;
-import app.repository.LikeRepository;
 import app.repository.PostRepository;
 import app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -30,7 +30,6 @@ public class PostService {
     private final NotificationService notificationService;
     private final PostMapper postMapper;
     private final UserService userService;
-    private final LikeRepository likeRepository;
     private final BookmarkRepository bookmarkRepository;
 
     public PostResponse createPost(PostRequest postRequest, Long userId, Long originalPostId) {
@@ -54,7 +53,8 @@ public class PostService {
         return postMapper.toPostResponse(savedPost);
     }
 
-    public PostResponse getPostDetails(Long postId, Long currentUserId) {
+    //Do not delete. This method helps to see all repost to original post
+    public PostResponse getChainPostDetails(Long postId, Long currentUserId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
         // Get information about author details
@@ -63,14 +63,15 @@ public class PostService {
         int commentsCount = post.getComments().size();
         int repostsCount = postRepository.countByOriginalPostId(postId);
         boolean isBookmarked = bookmarkRepository.existsByPostIdAndUserId(postId, currentUserId);
-        boolean isLiked = likeRepository.existsByPostIdAndUserId(postId, currentUserId);
+
         PostResponse originalPostResponse = null;
         if (post.getType() == PostType.REPOST && post.getOriginalPost() != null) {
-            originalPostResponse = mapToBasicPostResponse(post.getOriginalPost(), userDetailsResponse);//to Avoid Recursion for future
+            //originalPostResponse = mapToBasicPostResponse(post.getOriginalPost(), userDetailsResponse);//to Avoid Recursion for future
+            originalPostResponse = getPostDetails(post.getOriginalPost().getId(), currentUserId);
         }
         return new PostResponse(
                 post.getId(),
-                userDetailsResponse, // to UserDetailsResponse constructor
+                userDetailsResponse, // author to UserDetailsResponse constructor
                 post.getTimestamp(),
                 post.getTitle(),
                 post.getBody(),
@@ -78,10 +79,62 @@ public class PostService {
                 originalPostResponse, // Handling of originalPost
                 post.getType(),
                 likesCount,
-                isLiked,
+                likesCount > 0,
                 commentsCount,
                 repostsCount,
                 isBookmarked
+        );
+    }
+
+    public PostResponse getPostDetails(Long postId, Long currentUserId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+
+        // Find the original post
+        Post originalPost = post;
+        while (originalPost.getType() == PostType.REPOST && originalPost.getOriginalPost() != null) {
+            originalPost = originalPost.getOriginalPost();
+        }
+
+        // Now `originalPost` is the last original post
+        UserDetailsResponse originalAuthorDetails = userService.getUserDetails(originalPost.getUser().getId());
+
+        // Get details of the current post's author
+        UserDetailsResponse currentAuthorDetails = userService.getUserDetails(post.getUser().getId());
+
+        // original post
+        PostResponse originalPostResponse = new PostResponse(
+                originalPost.getId(),
+                originalAuthorDetails,
+                originalPost.getTimestamp(),
+                originalPost.getTitle(),
+                originalPost.getBody(),
+                originalPost.getMedia(),
+                null, // No further original post
+                originalPost.getType(),
+                originalPost.getLikes(),
+                originalPost.getLikes() > 0,
+                originalPost.getComments().size(),
+                postRepository.countByOriginalPostId(originalPost.getId()),
+                bookmarkRepository.existsByPostIdAndUserId(originalPost.getId(), currentUserId)
+
+        );
+
+        // Collect details about the current and if there is repost
+        return new PostResponse(
+                post.getId(),
+                currentAuthorDetails,
+                post.getTimestamp(),
+                post.getTitle(),
+                post.getBody(),
+                post.getMedia(),
+                originalPostResponse, // Linked original post details
+                post.getType(),
+                post.getLikes(),
+                post.getLikes() > 0,
+                post.getComments().size(),
+                postRepository.countByOriginalPostId(post.getId()),
+                bookmarkRepository.existsByPostIdAndUserId(post.getId(), currentUserId)
         );
     }
 
@@ -123,15 +176,30 @@ public class PostService {
                 .orElse(null);
     }
 
+    //    public PostResponse updatePost(Long postId, PostRequest postRequest) {
+//        Optional<Post> optionalPost = postRepository.findById(postId);
+//        if (optionalPost.isPresent()) {
+//            Post post = optionalPost.get();
+//            postMapper.updatePostFromRequest(postRequest, post);
+//            Post updatedPost = postRepository.save(post);
+//            return postMapper.toPostResponse(updatedPost);
+//        }
+//        return null;
+//    }
     public PostResponse updatePost(Long postId, PostRequest postRequest) {
         Optional<Post> optionalPost = postRepository.findById(postId);
-        if (optionalPost.isPresent()) {
-            Post post = optionalPost.get();
-            postMapper.updatePostFromRequest(postRequest, post);
-            Post updatedPost = postRepository.save(post);
-            return postMapper.toPostResponse(updatedPost);
+        if (optionalPost.isEmpty()) {
+            throw new ResourceNotFoundException("Post not found with id: " + postId);
         }
-        return null;
+
+        Post post = optionalPost.get();
+        postMapper.updatePostFromRequest(postRequest, post);
+
+        // Update the post and get the updated entity
+        Post updatedPost = postRepository.save(post);
+
+        // User and post information
+        return getPostDetails(updatedPost.getId(), userService.getAuthCurrentUserId());
     }
 
     public void deletePost(Long postId) {

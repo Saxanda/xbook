@@ -68,10 +68,31 @@ INSERT INTO message (created_date, last_modified_date, content_type, content, se
 VALUES ('2024-05-01 10:32:32.391846', '2024-05-01 10:32:32.391846', 'TEXT', 'Hello John Doe!', '3', '2', 'SENT');
 INSERT INTO message (created_date, last_modified_date, content_type, content, sender_id, chat_id, status)
 VALUES ('2024-05-01 10:35:32.391846', '2024-05-01 10:35:32.391846', 'TEXT', 'Yeah, we can meet tomorrow at 6pm', '3', '2', 'SENT');
-
+--- POST with comments
 INSERT INTO posts (user_id, title, body, media, likes, type, timestamp, original_post_id)
 VALUES (1, 'My First Post', 'This is my first post on XBook!', 'https://m.media-amazon.com/images/I/71FEBlBJqgL._AC_SL1312_.jpg', 10, 'ORIGINAL', '2024-05-18 21:50:23', NULL);
 
+-- Inserting the second post
+INSERT INTO posts (user_id, title, body, media, likes, type, timestamp, original_post_id)
+VALUES (2, 'Hello world', 'The sun is shunting !', 'https://www.opengovpartnership.org/wp-content/uploads/2019/05/Ukraine-Landscape-1200x425.jpeg', 2256, 'ORIGINAL', '2024-05-03 21:50:23', NULL);
 
-INSERT INTO comments (user_id, content, post_id)
-VALUES (1, 'This is a comment.', 1);
+-- Inserting the third post
+INSERT INTO posts (user_id, title, body, media, likes, type, timestamp, original_post_id)
+VALUES (1, 'my new skills with Posts on XBook', 'Today, I am too lazy to write some code!', 'https://www.dogseechew.in/storage/editor_61ef6aa53fc7d-joe-caione-qo-pif84vxg-unsplash-min.jpg', 0, 'ORIGINAL', '2024-05-20 15:15:51.700138', NULL);
+
+-- Inserting the fourth post as a repost
+INSERT INTO posts (user_id, title, body, media, likes, type, timestamp, original_post_id)
+VALUES (1, 'string', 'string', 'string', 0, 'REPOST', '2024-05-20 15:17:45.375675', 2);
+
+-- Inserting the fifth post as a repost
+INSERT INTO posts (user_id, title, body, media, likes, type, timestamp, original_post_id)
+VALUES (1, 'Repost the post from author 2', 'string', 'string', 0, 'REPOST', '2024-05-20 15:44:34.841098', 2);
+
+-- Inserting the sixth post as a repost
+INSERT INTO posts (user_id, title, body, media, likes, type, timestamp, original_post_id)
+VALUES (1, 'Repost the post from author 2', 'string', 'string', 0, 'REPOST', '2024-05-20 16:01:35.696088', 5);
+
+INSERT INTO comments (timestamp, user_id, content, post_id)
+VALUES ('2024-05-19 22:50:23',1, 'This is a comment.', 1);
+INSERT INTO comments (timestamp, user_id, content, post_id)
+VALUES ('2024-05-19 23:50:23',2, 'This is a comment.', 1);
