@@ -25,16 +25,12 @@ public class LikeService {
     private final LikeMapper likeMapper;
     private final NotificationService notificationService;
 
+
     public LikeResponse addLike(LikeRequest likeRequest) {
         User user = userRepository.findById(likeRequest.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + likeRequest.getUserId()));
         Post post = postRepository.findById(likeRequest.getPostId())
                 .orElseThrow(() -> new EntityNotFoundException("Post not found with id: " + likeRequest.getPostId()));
-
-        likeRepository.findByUserIdAndPostId(user.getId(), post.getId())
-                .ifPresent(like -> {
-                    throw new IllegalStateException("You already liked this post");
-                });
 
         Like newLike = new Like();
         newLike.setUser(user);
@@ -56,5 +52,16 @@ public class LikeService {
         postRepository.save(post);
 
         likeRepository.delete(like);
+    }
+
+    public void removeLikeByPost(Long postId, Long userId) {
+        // Check if the like exists and belongs to this user
+        Like like = likeRepository.findByUserIdAndPostId(postId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Like not found or does not belong to user"));
+        Post post = like.getPost();
+        post.setLikes(post.getLikes() - 1);
+        postRepository.save(post);
+        likeRepository.delete(like);
+
     }
 }
