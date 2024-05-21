@@ -2,7 +2,6 @@ import './ProfilePagePosts.scss'
 import Typography from '@mui/material/Typography';
 import CottageIcon from '@mui/icons-material/Cottage';
 import CakeIcon from '@mui/icons-material/Cake';
-import Button from '@mui/material/Button';
 import EmailIcon from '@mui/icons-material/Email';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
@@ -80,14 +79,11 @@ export default function ProfilePagePosts(){
                     </div>
                 </div>
                 <div>
-                    <div style={{maxWidth: "500px", height: "128px", backgroundColor: "yellow", marginBottom: "16px"}}>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus repudiandae voluptatibus molestiae id qui facilis vero maxime. Rem amet dolore magni eos asperiores. Sunt possimus id, a iusto iure aliquid!
+                    <div style={{width: "300px", height: "128px", backgroundColor: "grey", marginBottom: "16px"}}>
                     </div>
-                    <div style={{maxWidth: "500px", height: "93px", backgroundColor: "yellow", marginBottom: "16px"}}>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum, obcaecati at quas sint earum debitis eveniet! Quod est voluptatibus expedita beatae recusandae velit, hic nobis quia odio dignissimos, ex sint?
+                    <div style={{width: "300px", height: "93px", backgroundColor: "grey", marginBottom: "16px"}}>
                     </div>
-                    <div style={{maxWidth: "500px", height: "500px", backgroundColor: "yellow"}}>
-                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ad, consequatur quas? Soluta numquam eveniet nemo, quod neque itaque, repudiandae cumque repellat harum vero quam accusamus inventore illo dolor sequi deleniti.
+                    <div style={{width: "300px", height: "500px", backgroundColor: "grey"}}>
                     </div>
                 </div>
             </div>

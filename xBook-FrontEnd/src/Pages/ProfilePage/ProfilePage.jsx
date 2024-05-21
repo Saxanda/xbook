@@ -22,8 +22,7 @@ import { Box } from "@mui/material";
 export default function ProfilePage() {
 
     const dispatch = useDispatch();
-    const [token, setToken] = useState("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMiIsImlhdCI6MTcxNjI3OTcyNCwiZXhwIjoxNzE2ODg0NTI0fQ.hMonTm1_Vobndyl1e43abFd_XgL7z12J_9YCD0IlZMM")
-    localStorage.setItem('token', token);
+    const [token, setToken] = useState(localStorage.getItem("token"))
     
     const [id, setID] = useState(null)
     let urlID = useParams().id;
