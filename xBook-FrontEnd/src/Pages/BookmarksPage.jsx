@@ -7,9 +7,11 @@ export default function BookmarkPage() {
 
     useEffect(() => {
         const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+        
         if (token) {
             const decodedToken = jwtDecode(token);
             const userIdFromToken = decodedToken.sub || decodedToken.id;
+            
             setUserId(userIdFromToken);
         }
     }, []);

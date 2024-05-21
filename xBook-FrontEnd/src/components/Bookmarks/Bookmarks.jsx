@@ -9,26 +9,29 @@ const Bookmarks = ({ userId }) => {
     const [bookmarks, setBookmarks] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("all");
 
+    const fetchBookmarks = async () => {
+        try {
+            const token = getAuthToken();
+            console.log(userId);
+            const response = await axios.get(`http://localhost:8080/api/v1/bookmarks/user/${userId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            setBookmarks(response.data.content);
+            localStorage.setItem('bookmarks', JSON.stringify(response.data));
+        } catch (error) {
+            console.error('Error fetching bookmarks:', error);
+        }
+    };
+
     useEffect(() => {
         if (userId) {
             fetchBookmarks();
         }
     }, [userId]);
 
-    const fetchBookmarks = async () => {
-        try {
-            const token = getAuthToken();
-            const response = await axios.get(`http://localhost:8080/api/v1/bookmarks/user/${userId}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            setBookmarks(response.data);
-            localStorage.setItem('bookmarks', JSON.stringify(response.data));
-        } catch (error) {
-            console.error('Error fetching bookmarks:', error);
-        }
-    };
+   
 
     const deleteBookmark = async (bookmarkId) => {
         try {
@@ -59,7 +62,7 @@ const Bookmarks = ({ userId }) => {
         <div className="container" style={{ display: 'flex' }}>
             <Sidebar onCategoryClick={handleCategoryClick} />
             <div className='Bookmarks'>
-            <BookmarksList bookmarks={filteredBookmarks} deleteBookmark={deleteBookmark} getAuthToken={getAuthToken}/>               
+            <BookmarksList bookmarks={filteredBookmarks} deleteBookmark={deleteBookmark} getAuthToken={getAuthToken} userId={userId}/>               
             </div>
         </div>
     );

@@ -12,7 +12,7 @@ const ForgotPasswordForm = () => {
     e.preventDefault();
 
     try {
-    
+      
       const response = await axios.post('http://localhost:8080/api/v1/auth/reset-password', { email: email });
       const token = response.data.token;
       setResetToken(token); 

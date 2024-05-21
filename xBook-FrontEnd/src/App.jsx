@@ -1,15 +1,44 @@
 import './App.scss'
-import { Provider } from 'react-redux';
-import store from './redux/store';
-
-import AppRoutes from './AppRoutes';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/Header/Header';
+import Home from './components/Pages/Home';
+import PostPage from './components/Post/PostPage';
+import { useState, useEffect } from 'react';
+import LoginPage from "./Pages/LoginPage";
+import BookmarksPage from "./Pages/BookmarksPage";
+import UpdatePasswordPage from './Pages/UpdatePasswordPage';
+import ForgotPage from './Pages/ForgotPage';
+import PrivateRoutes from "./helpers/PrivateRoutes";
 
 function App() {
-  
+  const [postData, setPostData] = useState([]);
+
+  useEffect(() => {
+    fetch('../testPostData.json')
+      .then(response => response.json())
+      .then(data => {
+        setPostData(data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
   return (
-    <Provider store={store}>
-      <AppRoutes/>
-    </Provider>
+    <Router>
+      <Header></Header>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-page" element={<ForgotPage />} />
+          <Route path="/forgot-password/" element={<UpdatePasswordPage />} />
+        <Route element={<PrivateRoutes />}>
+          <Route 
+          path="/post/:postId" 
+          element={<PostPage postData={postData} />} 
+        />
+          <Route path="/bookmarks" element={<BookmarksPage />} />
+        </Route>
+      </Routes>
+    </Router>
   )
 }
 

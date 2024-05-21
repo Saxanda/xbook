@@ -18,8 +18,6 @@ export default function Sidebar({ onCategoryClick }) {
       <ul>
         <h3>My collections</h3>
         <li onClick={() => handleClick("all")}>All</li>
-        {/* <li onClick={() => handleClick("article")}>Posts</li>
-        <li onClick={() => handleClick("image")}>Images</li> */}
       </ul>
     </div>
   );

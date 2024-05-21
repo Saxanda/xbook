@@ -1,54 +1,50 @@
+import React from 'react';
 import PropTypes from 'prop-types';
-import PostBody from "./PostBody"
-import PostFooter from "./PostFooter"
-import PostHeader from "./PostHeader"
+import PostBody from "./PostBody";
+import PosdBodyRepost from './PostBodyRepost';
+import PostFooter from "./PostFooter";
+import PostHeader from "./PostHeader";
 import Paper from '@mui/material/Paper';
 
-export default function Post({ postData, postComments }){
+export default function Post({ postData, postComments, refresh, addToBookmarks }) {
     if (!postData) {
         return null;
     }
-    return(
-        <Paper elevation={3} className='postComponent' >
+
+    return (
+        <Paper elevation={3} className='postComponent'>
             <PostHeader 
-                userData={postData.user}
-                date={postData.date}
+                author={postData.author}
+                date={postData.timestamp}
             />
-            <PostBody   
-                text={postData.text}    
-                media={postData.media}
-            />
+            {postData.type === 'REPOST' ? (
+                <PosdBodyRepost
+                    originalPost={postData.originalPost}
+                    text={postData.body}  
+                />
+            ) : (
+                <PostBody   
+                    text={postData.body}    
+                    media={[postData.media]}
+                />
+            )}
             <PostFooter
-                likes={postData.likes} 
+                likes={postData.likesCount}
                 comments={postData.commentsCount}
-                reposts={postData.reposts}
-                postId={postData.postId}
+                reposts={postData.repostsCount}
+                id={postData.id}
+                originalPost={postData.originalPost}
+                refresh={refresh}
+                addToBookmarks={addToBookmarks}
             />
             {postComments}
         </Paper>
-        
-    )
+    );
 }
 
 Post.propTypes = {
-    postData: PropTypes.shape({
-        user: PropTypes.object.isRequired,
-        text: PropTypes.string.isRequired,
-        media: PropTypes.shape({
-            images: PropTypes.arrayOf(PropTypes.string).isRequired,
-        }).isRequired,
-        likes: PropTypes.number.isRequired,
-        comments: PropTypes.arrayOf(
-            PropTypes.shape({
-                user: PropTypes.object.isRequired,
-                text: PropTypes.string.isRequired
-            })
-        ).isRequired,
-        date: PropTypes.string.isRequired,
-        commentsCount : PropTypes.number.isRequired,
-        reposts : PropTypes.number.isRequired,
-        postId : PropTypes.number.isRequired,
-    }),
-    postComments: PropTypes.node
+    postData: PropTypes.object.isRequired,
+    postComments: PropTypes.node,
+    refresh: PropTypes.func.isRequired,
+    addToBookmarks: PropTypes.func.isRequired 
 };
-
