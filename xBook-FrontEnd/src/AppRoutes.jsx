@@ -6,7 +6,7 @@ import Home from "./Pages/Home";
 import Bookmarks from "./Pages/Bookmarks";
 import UpdatePasswordPage from './Pages/UpdatePasswordPage';
 import ForgotPage from './Pages/ForgotPage';
-import Chats from './pages/ChatPage/ChatPage';
+import Chats from './Pages/ChatPage/ChatPage';
 import PostPage from "./components/Post/PostPage";
 
 export default function AppRoutes() {

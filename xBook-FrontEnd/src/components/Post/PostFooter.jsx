@@ -11,15 +11,18 @@ import { useNavigate } from 'react-router-dom';
 import CreateRepostModal from './CreateRepostModal';
 import { likePost } from './postApi';
 
-export default function PostFooter({ likes, id, originalPost,comments,reposts,refresh }) {
-    const [isRepostModalOpen, setRepostModalOpen] = useState(false);
-
+export default function PostFooter({ likes, id, originalPost,comments,reposts,refresh, isLiked }) {
     const navigate = useNavigate();
+
+    const [isRepostModalOpen, setRepostModalOpen] = useState(false);
+    const [liked, setLiked] = useState(isLiked);
+
 
     const handleLikeButtonClick = async () => {
         try {
             const result = await likePost(id);
             console.log('Post liked:', result);
+            setLiked(true);
         } catch (error) {
             console.error('Error handling like button click:', error);
         }
@@ -50,7 +53,9 @@ export default function PostFooter({ likes, id, originalPost,comments,reposts,re
                         </div>
                         <div className="postComponent_footer_activiti_btns">
                             <IconButton variant="contained" aria-label="like" onClick={handleLikeButtonClick}>
-                                <ThumbUpIcon />
+                                <ThumbUpIcon 
+                                color={liked ? 'primary' : 'default'}
+                                />
                             </IconButton>
                             <IconButton variant="contained" aria-label="favorite">
                                 <FavoriteIcon />
@@ -82,5 +87,6 @@ PostFooter.propTypes = {
     originalPost: PropTypes.object,
     reposts :PropTypes.number,
     comments :PropTypes.number,
-    refresh: PropTypes.func
+    refresh: PropTypes.func,
+    isLiked: PropTypes.bool
 };

@@ -5,7 +5,7 @@ import PostFooter from "./PostFooter"
 import PostHeader from "./PostHeader"
 import Paper from '@mui/material/Paper';
 
-export default function Post({ postData, postComments, refresh }){
+export default function Post({ postData, postComments, refresh, isPage }){
     if (!postData) {
         return null;
     }
@@ -14,6 +14,7 @@ export default function Post({ postData, postComments, refresh }){
             <PostHeader 
                 author={postData.author}
                 date={postData.timestamp}
+                isPage={isPage}
             />
             {postData.type === 'REPOST' ? (
                 <PosdBodyRepost
@@ -33,6 +34,7 @@ export default function Post({ postData, postComments, refresh }){
                     id={postData.id}
                     originalPost={postData.originalPost}
                     refresh ={refresh}
+                    isLiked={postData.liked}
                 />
                 {postComments}
         </Paper>
@@ -43,6 +45,7 @@ export default function Post({ postData, postComments, refresh }){
 Post.propTypes = {
     postData: PropTypes.object,
     postComments: PropTypes.node,
-    refresh: PropTypes.func
+    refresh: PropTypes.func,
+    isPage:PropTypes.bool
 };
 
