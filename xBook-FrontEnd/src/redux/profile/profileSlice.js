@@ -8,6 +8,7 @@ const BASE_URL = 'http://localhost:8080/';
 export const userProfile = createAsyncThunk(
     "profile/userProfile",
     async ({id,user}, {rejectWithValue}) => {
+        console.log("SDFGFWDSDW");
         try {
             const response = await axios.get(`${BASE_URL}api/v1/users/${id}`, {
                 headers: {

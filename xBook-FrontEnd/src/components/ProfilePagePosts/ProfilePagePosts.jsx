@@ -77,7 +77,7 @@ export default function ProfilePagePosts(){
                             null
                             }
                         </ul>
-                        {
+                        {/* {
                             obj.user === "myUser" ?
                             <Button 
                             variant="contained"
@@ -90,7 +90,7 @@ export default function ProfilePagePosts(){
                             >Edit Bio</Button>
                             :
                             null
-                        }
+                        } */}
                     </div>
                 </div>
                 <div>
