@@ -14,6 +14,12 @@ export default function PostPage() {
     const [error, setError] = useState(null);
     const [comments, setComments] = useState([]);
 
+    const [refresh, setRefresh] = useState(false);
+
+    const handleCommentCreated = () => {
+        setRefresh(prev => !prev); 
+    };
+
     useEffect(() => {
         const fetchPost = async () => {
             try {
@@ -21,7 +27,6 @@ export default function PostPage() {
                 setPost(postData);
                 const commentsData = await getPostComments(postId);
                 setComments(commentsData.content);
-                console.log(comments.content);
             } catch (err) {
                 setError(err);
             } finally {
@@ -30,7 +35,7 @@ export default function PostPage() {
         };
 
         fetchPost();
-    }, [postId]);
+    }, [postId,refresh]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -46,7 +51,7 @@ export default function PostPage() {
                 <Paper style={{ height: '90vh', overflowY: 'scroll' }}>
                     <Post
                         postData={post} 
-                        postComments={<PostComments comments={comments} postId={postId} />} 
+                        postComments={<PostComments comments={comments} postId={postId} refresh={handleCommentCreated} />} 
                     />
                 </Paper>
             )}

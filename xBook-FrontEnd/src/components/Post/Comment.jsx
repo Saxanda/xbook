@@ -12,7 +12,7 @@ export default function Comment({ comment }) {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const userData = await getUserById(comment.userId);
+                const userData = await getUserById(comment.author.id);
                 setUser(userData);
             } catch (err) {
                 setError(err);

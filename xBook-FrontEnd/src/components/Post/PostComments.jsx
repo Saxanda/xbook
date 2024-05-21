@@ -7,8 +7,7 @@ import SendIcon from '@mui/icons-material/Send';
 import InputAdornment from '@mui/material/InputAdornment';
 import { createComment } from './postApi';
 
-export default function PostComments({ comments, postId }) {
-
+export default function PostComments({ comments, postId,refresh }) {
     const [newComment, setNewComment] = useState('');
 
     const handleCommentChange = (event) => {
@@ -16,10 +15,11 @@ export default function PostComments({ comments, postId }) {
     };
 
     const handleCommentSubmit = async (event) => {
-        event.preventDefault(); // Щоб запобігти перезавантаженню сторінки
+        event.preventDefault();
         try {
             await createComment(newComment, postId);
             setNewComment('');
+            refresh()
         } catch (err) {
             console.error('Error creating comment:', err);
         }
@@ -77,5 +77,6 @@ export default function PostComments({ comments, postId }) {
 
 PostComments.propTypes = {
     comments: PropTypes.array,
-    postId: PropTypes.number
+    postId: PropTypes.number,
+    refresh: PropTypes.func
 };

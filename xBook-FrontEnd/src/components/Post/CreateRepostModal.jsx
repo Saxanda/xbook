@@ -1,11 +1,25 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { Modal, Paper, Typography, IconButton,Avatar,TextField,Button } from '@mui/material';
+import { Modal, Paper, Typography, IconButton,TextField,Button } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { createPost } from './postApi';
+// import { getUserIsLogin } from './postApi';
 
 export default function CreateRepostModal({ open, handleClose, postId, refresh }){
     const [newText, setNewText] = useState('');
+
+    // const [author,setAuthor] = useState({});
+
+    // const fetchUser = async () => {
+    //     try {
+    //         const user = await getUserIsLogin();
+    //         setAuthor(user);
+    //     } catch (error) {
+    //         console.error('Error fetching user:', error);
+    //     }
+    // };
+    // fetchUser();
+
     const handleTextChange = (event) => {
         setNewText(event.target.value);
     };
@@ -51,10 +65,10 @@ export default function CreateRepostModal({ open, handleClose, postId, refresh }
                 <IconButton onClick={close} style={{ position: 'absolute', top: '10px', right: '10px', padding: '0' }}>
                     <CloseIcon />
                 </IconButton>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-                    <Avatar alt="User Avatar" src="/path/to/avatar.jpg" />
-                    <Typography style={{ marginLeft: '10px' }}>юзернейм</Typography>
-                </div>
+                {/* <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+                    <Avatar alt="User Avatar" src={author.avatar} />
+                    <Typography style={{ marginLeft: '10px' }}>{author.name} {author.surname}</Typography>
+                </div> */}
                 <form>
                     <TextField
                         placeholder="Ваш текст тут..."

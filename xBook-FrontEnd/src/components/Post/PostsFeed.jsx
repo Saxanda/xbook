@@ -12,7 +12,6 @@ export default function PostsFeed({refresh,handlePostCreated}){
         try {
             const data = await getPosts();
             setPostData(data.content);
-            console.log(data.content);
         } catch (error) {
             console.error('Error fetching posts:', error);
         }

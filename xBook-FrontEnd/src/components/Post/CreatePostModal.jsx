@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Avatar, Button, Modal, Paper, Typography, TextField, IconButton } from '@mui/material';
+import { Button, Modal, Paper, Typography, TextField, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import PhotoIcon from '@mui/icons-material/Photo';
 import PostMediaGrid from './PostMediaGrid';
@@ -7,14 +7,27 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { createPost } from './postApi';
-
+// import { getUserIsLogin } from './postApi';
 
 export default function CreatePostModal({ open, handleClose,onPostCreated }) {
     const [newText, setNewText] = useState('');
     const [selectedImages, setSelectedImages] = useState([]);
     const [imgURLs, setImgURLs] = useState([]);
     const [isDraggingOver, setIsDraggingOver] = useState(false);
+    // const [author, setAuthor] = useState({});
+    // const fetchUser = async () => {
+    //     try {
+    //         const uzer = await getUserIsLogin();
+    //         setAuthor(uzer);
+    //         return uzer
+    //     } catch (error) {
+    //         console.error('Error fetching user:', error);
+    //     }
+    // };
+    // fetchUser();
 
+
+    
     const handleTextChange = (event) => {
         setNewText(event.target.value);
     };
@@ -103,10 +116,10 @@ export default function CreatePostModal({ open, handleClose,onPostCreated }) {
                 <IconButton onClick={close} style={{ position: 'absolute', top: '10px', right: '10px', padding: '0' }}>
                     <CloseIcon />
                 </IconButton>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-                    <Avatar alt="User Avatar" src="/path/to/avatar.jpg" />
-                    <Typography style={{ marginLeft: '10px' }}>юзернейм</Typography>
-                </div>
+                {/* <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+                    <Avatar alt="User Avatar" src={author.avatar} />
+                    <Typography style={{ marginLeft: '10px' }}>{author.name} {author.surname}</Typography>
+                </div> */}
                 <form>
                     <TextField
                         placeholder="Ваш текст тут..."

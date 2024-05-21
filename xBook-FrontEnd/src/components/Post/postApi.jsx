@@ -156,5 +156,33 @@ export const getUserById = async (uzerId) => {
         throw error;
     }
 };
+//----------------user----------------
+export const getUserIsLogin = async () => {
+    try {
+        const AUTH_TOKEN = localStorage.getItem('token');
 
+        if (!AUTH_TOKEN) {
+            throw new Error('No authentication token found');
+        }
+
+        const UZER_ID = jwtDecode(AUTH_TOKEN).sub;
+        const userId = UZER_ID;
+
+        const response = await axios.get(
+            `${API_BASE_URL}/api/v1/users/${userId}`,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${AUTH_TOKEN}`,
+                    'accept': '*/*'
+                }
+            }
+        );
+        
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching user login status:', error);
+        throw error;
+    }
+}
 
