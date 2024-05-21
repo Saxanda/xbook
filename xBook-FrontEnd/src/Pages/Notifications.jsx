@@ -4,12 +4,16 @@ import { useState, useEffect } from "react";
 
 export default function Notifications() {
   const [notificationData, setNotificationData] = useState([]);
+  const token = useState(
+    localStorage.getItem("token") || sessionStorage.getItem("token")
+  );
+  const recipientId = useState(localStorage.getItem("recipientId"));
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/v1/notifications/{recipientId}", {
+      .get(`http://localhost:8080/api/v1/notifications/${recipientId}`, {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE2MDM4MjY4LCJleHAiOjE3MTY2NDMwNjh9.kS46jsWr6kNqoFRTqJmFb3zkpp7j4-T6Oj7u5u0PiB0`,
+          Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
@@ -19,7 +23,7 @@ export default function Notifications() {
       .catch((error) => {
         console.error("error:", error);
       });
-  }, []);
+  }, [token, recipientId]);
 
   return (
     <NotificationsPage notificationData={notificationData}></NotificationsPage>

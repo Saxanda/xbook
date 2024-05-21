@@ -1,6 +1,5 @@
 package app.controller;
 
-import app.dto.mapper.BookmarkMapper;
 import app.dto.request.BookmarkRequest;
 import app.dto.response.BookmarkResponse;
 import app.service.BookmarkService;
@@ -18,15 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/bookmarks")
 public class BookmarkController {
 
     private final BookmarkService bookmarkService;
-    private final BookmarkMapper bookmarkMapper;
 
     @PostMapping
     public ResponseEntity<BookmarkResponse> createBookmark(@RequestBody BookmarkRequest bookmarkRequest) {
@@ -49,20 +45,20 @@ public class BookmarkController {
 
     @GetMapping("/user/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public Page<BookmarkResponse> getPageAllBookmarksByUserId(@PathVariable Long userId,
-                                                              @RequestParam(defaultValue = "0") Integer page,
-                                                              @RequestParam(defaultValue = "5") Integer size) {
-        return bookmarkService.getPageAllBookmarksByUserId(userId, page, size)
-                .map(bookmarkMapper::toBookmarkResponse);
+    public ResponseEntity<Page<BookmarkResponse>> getPageAllBookmarksByUserId(@PathVariable Long userId,
+                                                                              @RequestParam(defaultValue = "0") Integer page,
+                                                                              @RequestParam(defaultValue = "5") Integer size) {
+        Page<BookmarkResponse> response = bookmarkService.getPageAllBookmarksByUserId(userId, page, size);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/post/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public Page<BookmarkResponse> getPageAllBookmarksByPostId(@PathVariable Long postId,
-                                                              @RequestParam(defaultValue = "0") Integer page,
-                                                              @RequestParam(defaultValue = "5") Integer size) {
-        return bookmarkService.getPageAllBookmarksByPostId(postId, page, size)
-                .map(bookmarkMapper::toBookmarkResponse);
+    public ResponseEntity<Page<BookmarkResponse>> getPageAllBookmarksByPostId(@PathVariable Long postId,
+                                                                              @RequestParam(defaultValue = "0") Integer page,
+                                                                              @RequestParam(defaultValue = "5") Integer size) {
+        Page<BookmarkResponse> response = bookmarkService.getPageAllBookmarksByPostId(postId, page, size);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{bookmarkId}")
