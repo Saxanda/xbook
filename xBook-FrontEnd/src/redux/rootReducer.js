@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
-import { reducer as yourSliceReducer } from './yourSlice';
+import profileSlice from './profile/profileSlice';
+import friendsSlice from './friends/friendsSlice';
 
 const rootReducer = combineReducers({
-    yourSlice: yourSliceReducer,
+    profile: profileSlice,
+    friends: friendsSlice,
 });
 
 export default rootReducer;

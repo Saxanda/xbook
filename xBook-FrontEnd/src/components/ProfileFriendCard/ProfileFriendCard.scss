@@ -1,11 +1,20 @@
 .friendCard{
     display: flex;
+    justify-content: space-between;
     padding: 16px;
     margin-bottom: 8px;
     border-radius: 8px;
     border: 2px solid #f0f2f5;
 
     &__info{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         margin-right: 16px;
+    }
+
+    .iconWrapper{
+        display: flex;
+        align-items: center;
     }
 }
