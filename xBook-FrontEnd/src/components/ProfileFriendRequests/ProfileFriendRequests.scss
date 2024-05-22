@@ -1,0 +1,35 @@
+.profileRequests{
+    background-color: white;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+
+    .requestsList{
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        column-gap: 8px;
+        list-style: none;
+        // margin: 20px 0 0 0;
+        padding: 0;
+        gap: 20px;
+
+        
+        @media (min-width: 470px){
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @media (min-width: 699px){
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        @media (min-width: 876px){
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .requestList__item{
+            display: flex;
+            justify-content: center;
+        }
+    }
+}
