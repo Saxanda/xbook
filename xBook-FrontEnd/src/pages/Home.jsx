@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Grid } from '@mui/material';
 import PostsFeed from '../components/Post/PostsFeed'
@@ -22,4 +21,4 @@ export default function Home() {
             </Grid>
         </section>
     );
-}
+ }
