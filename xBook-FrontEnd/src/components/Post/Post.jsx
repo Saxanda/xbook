@@ -38,17 +38,9 @@ export default function Post({ postData, postComments, refresh, isPage, addToBoo
                     originalPost={postData.originalPost}
                     refresh ={refresh}
                     isLiked={postData.liked}
+                    addToBookmarks={addToBookmarks}
                 />
-            {/* )} */}
-            <PostFooter
-                likes={postData.likesCount}
-                comments={postData.commentsCount}
-                reposts={postData.repostsCount}
-                id={postData.id}
-                originalPost={postData.originalPost}
-                refresh={refresh}
-                addToBookmarks={addToBookmarks}
-            />
+            
             {postComments}
         </Paper>
     );
