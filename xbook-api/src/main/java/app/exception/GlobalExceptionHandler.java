@@ -1,6 +1,7 @@
 package app.exception;
 
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,10 @@ public class GlobalExceptionHandler {
         log.warn(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid date format. Date must be in the format YYYY-MM-DD. "
                 + ex.getMessage() + ".");
+    }
+    @ExceptionHandler(EntityNotFoundException.class)
+    protected ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
 }
