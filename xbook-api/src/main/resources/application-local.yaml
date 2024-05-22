@@ -1,4 +1,13 @@
+frontend:
+  url: http://localhost:5173
+
+backend:
+  url: http://localhost:8080
+
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   datasource:
     url: jdbc:h2:~/xbook
     username: sax
@@ -25,8 +34,4 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: socialxbook@gmail.com
-    password: 123  #Ask for password
-
-  myapp:
-    login-url: http://localhost:5173
-
+    password: 123 #Ask for password

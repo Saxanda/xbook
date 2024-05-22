@@ -36,9 +36,7 @@ export default function AppRoutes() {
         />
           <Route path="/bookmarks" element={<BookmarksPage />} />
           <Route path="/chats" element={<Chats />} />
-          <Route ></Route>
-        </Route>
-        
+        </Route>       
       </Routes>
     </Router>
   );

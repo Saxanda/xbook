@@ -5,8 +5,15 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CloseIcon from '@mui/icons-material/Close';
+import { format } from 'date-fns';
 
 export default function PostHeader({ author, date, isRepost}) {
+
+const formatDate = (data) => {
+    const date = new Date(data);
+    return format(date, 'EEEE, MMMM do, yyyy, hh:mm:ss a');
+};
+
     return (
         <div className="postComponent_header">
             <div className="postComponent_header_userinfo">
@@ -14,7 +21,7 @@ export default function PostHeader({ author, date, isRepost}) {
                     <Avatar src={author.avatar} alt="User Avatar" />
                     <div>
                         <Typography variant="h6">{author.name} {author.surname}</Typography>
-                        <Typography variant="body2" color="textSecondary">{date}</Typography>
+                        <Typography variant="body2" color="textSecondary">{formatDate(date)}</Typography>
                     </div>
                 </Stack>
             </div>

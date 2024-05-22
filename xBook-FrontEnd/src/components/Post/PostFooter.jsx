@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';

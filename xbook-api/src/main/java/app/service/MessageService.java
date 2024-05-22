@@ -15,6 +15,9 @@ import app.utils.ContentType;
 import app.utils.MessageStatus;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -64,6 +67,14 @@ public class MessageService {
                 .getMessages()
                 .stream().map(msg -> convertToMessageResponse(msg, chatParticipant))
                 .toList();
+    }
+
+    public Page<MessageResponse> getPageChatMessages(Long chatId, Integer page, Integer size){
+        Pageable pageable = PageRequest.of(page, size);
+        User chatParticipant = chatService.getChatParticipant(chatId);
+        return messageRepo.findByChatId(chatId, pageable)
+                .map(msg -> convertToMessageResponse(msg, chatParticipant));
+
     }
 
     public boolean deleteMessageById(Long messageId) {
