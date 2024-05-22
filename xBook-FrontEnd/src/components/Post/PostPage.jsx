@@ -50,8 +50,10 @@ export default function PostPage() {
             {post && (
                 <Paper style={{ height: '90vh', overflowY: 'scroll' }}>
                     <Post
+                        isPage={true}
                         postData={post} 
-                        postComments={<PostComments comments={comments} postId={postId} refresh={handleCommentCreated} />} 
+                        postComments={<PostComments comments={comments} postId={postId} refresh={handleCommentCreated}
+                        />} 
                     />
                 </Paper>
             )}
