@@ -44,7 +44,6 @@ public class LikeController {
         if (likeRepository.findByUserIdAndPostId(userId, likeRequest.getPostId()).isPresent()) {
             return ResponseEntity.ok("You liked this post already");
         }
-
         // Add like to the post
         likeService.addLike(user, likeRequest.getPostId());
         return ResponseEntity.status(HttpStatus.CREATED).body("Like added");
