@@ -6,12 +6,18 @@ import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CloseIcon from '@mui/icons-material/Close';
 import { format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 
-export default function PostHeader({ author, date, isRepost}) {
+export default function PostHeader({ author, date, isRepost, isPage}) {
+
 
 const formatDate = (data) => {
     const date = new Date(data);
     return format(date, 'EEEE, MMMM do, yyyy, hh:mm:ss a');
+};
+const navigate = useNavigate(); 
+const handleBack = () => {
+navigate(-1); 
 };
 
     return (
@@ -31,9 +37,11 @@ const formatDate = (data) => {
                     <IconButton variant="contained" aria-label="more options">
                         <MoreVertIcon />
                     </IconButton>
-                    <IconButton variant="contained" aria-label="close">
+                    {isPage && (
+                        <IconButton variant="contained" aria-label="close" onClick={handleBack}>
                         <CloseIcon />
-                    </IconButton>
+                        </IconButton>
+                    )}
                 </div>
             )}
             
@@ -44,5 +52,6 @@ const formatDate = (data) => {
 PostHeader.propTypes = {
     author: PropTypes.object,
     date: PropTypes.string.isRequired,
-    isRepost:PropTypes.bool
+    isRepost:PropTypes.bool,
+    isPage:PropTypes.bool
 };

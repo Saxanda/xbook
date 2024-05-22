@@ -41,8 +41,8 @@ export default function ChatPage() {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                setMessages(response.data);
-                console.log(response.data)
+                setMessages(response.data.content);
+                console.log(response.data.content)
                 setLoading(false);
                 setChatClear(false);
             } catch (error) {
