@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import initialValue from "./initialValue";
 import axios from 'axios';
 
-const TOKEN = localStorage.getItem('token');
+const TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token");
 const BASE_URL = 'http://localhost:8080/';
 
 export const userProfile = createAsyncThunk(

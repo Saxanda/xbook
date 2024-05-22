@@ -30,6 +30,7 @@ import {
   setSearchQuery,
   clearHeaderState,
 } from "../../redux/headerSlice";
+import { jwtDecode } from "jwt-decode";
 
 const pages = [
   { name: "Home", path: "/" },
@@ -37,10 +38,7 @@ const pages = [
   { name: "Chats", path: "/chats" },
   { name: "Notifications", path: "/notifications" },
 ];
-const settings = [
-  { name: "Profile", path: "/profile" },
-  { name: "Logout", path: "/logout" },
-];
+
 
 export default function Header() {
   const dispatch = useDispatch();
@@ -53,6 +51,12 @@ export default function Header() {
   const anchorElNav = useSelector((state) => state.header.anchorElNav);
   const anchorElUser = useSelector((state) => state.header.anchorElUser);
   const searchQuery = useSelector((state) => state.header.searchQuery);
+
+  let testUser = sessionStorage.getItem("token") || localStorage.getItem("token");
+  const settings = [
+    { name: "Profile", path: `/profile/${parseInt(jwtDecode(testUser).sub)}` },
+    { name: "Logout", path: "/logout" },
+  ];
 
   const handleOpenNavMenu = (event) => {
     dispatch(setAnchorElNav(event.currentTarget));
@@ -111,7 +115,7 @@ export default function Header() {
     sessionStorage.removeItem("token");
     dispatch(clearEmail());
     dispatch(clearHeaderState());
-
+   
     navigate("/login");
   };
 
@@ -333,7 +337,7 @@ export default function Header() {
                   key={result.id}
                   onClick={() => {
                     handleCloseModal();
-                    navigate(`/user/${result.id}`);
+                    navigate(`/profile/${result.id}`);
                   }}
                 >
                   {result.name} {result.surname}

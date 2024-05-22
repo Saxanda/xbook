@@ -23,7 +23,7 @@ import { Box } from "@mui/material";
 export default function ProfilePage() {
 
     const dispatch = useDispatch();
-    const [token, setToken] = useState(localStorage.getItem("token"))
+    const [token, setToken] = useState(localStorage.getItem("token") || sessionStorage.getItem("token"))
     
     const [id, setID] = useState(null)
     let urlID = useParams().id;
@@ -45,7 +45,7 @@ export default function ProfilePage() {
     useEffect(() => {
         if (token) {
             const decodedToken = jwtDecode(token);
-            // console.log(decodedToken);
+            console.log(decodedToken);
             setID(parseInt(decodedToken.sub));
         }
     }, [token]);

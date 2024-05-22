@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 
 export default function ProfileRequestCard({friend}) {
     const dispatch = useDispatch();
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     let urlID = useParams().id;
     urlID = parseInt(urlID);
 
