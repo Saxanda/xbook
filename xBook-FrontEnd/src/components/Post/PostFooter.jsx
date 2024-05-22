@@ -11,8 +11,9 @@ import { useNavigate } from 'react-router-dom';
 import CreateRepostModal from './CreateRepostModal';
 import { likePost } from './postApi';
 
-export default function PostFooter({ likes, id, originalPost,comments,reposts,refresh }) {
+export default function PostFooter({ likes, id, originalPost, comments, reposts, refresh, addToBookmarks }) {
     const [isRepostModalOpen, setRepostModalOpen] = useState(false);
+    const [isBookmarked, setIsBookmarked] = useState(false);
 
     const navigate = useNavigate();
 
@@ -32,6 +33,18 @@ export default function PostFooter({ likes, id, originalPost,comments,reposts,re
     const handleRepostButtonClick = () => {
         setRepostModalOpen(true);
     };
+
+    const handleFavoriteButtonClick = async () => {
+        setIsBookmarked((prevIsBookmarked) => !prevIsBookmarked);
+        try {
+            
+            await addToBookmarks(id);
+            console.log('Post added to bookmarks');
+        } catch (error) {
+            console.error('Error handling favorite button click:', error);
+        }
+    };
+
     const handleRepostModalClose = () => {
         setRepostModalOpen(false);
     };
@@ -52,8 +65,8 @@ export default function PostFooter({ likes, id, originalPost,comments,reposts,re
                             <IconButton variant="contained" aria-label="like" onClick={handleLikeButtonClick}>
                                 <ThumbUpIcon />
                             </IconButton>
-                            <IconButton variant="contained" aria-label="favorite">
-                                <FavoriteIcon />
+                            <IconButton variant="contained" aria-label="favorite" onClick={handleFavoriteButtonClick}>
+                                <FavoriteIcon color={isBookmarked ? "primary" : "default"} />
                             </IconButton>
                             <IconButton variant="contained" aria-label="repost" onClick={handleRepostButtonClick}>
                                 <RepeatIcon />
@@ -70,7 +83,7 @@ export default function PostFooter({ likes, id, originalPost,comments,reposts,re
                 open={isRepostModalOpen}
                 handleClose={handleRepostModalClose}
                 postId={originalPost !== null ? originalPost.id : id}
-                refresh = {refresh}
+                refresh={refresh}
             />
         </>
     );
@@ -80,7 +93,8 @@ PostFooter.propTypes = {
     likes: PropTypes.number.isRequired,
     id: PropTypes.number.isRequired,
     originalPost: PropTypes.object,
-    reposts :PropTypes.number,
-    comments :PropTypes.number,
-    refresh: PropTypes.func
+    reposts: PropTypes.number,
+    comments: PropTypes.number,
+    refresh: PropTypes.func.isRequired,
+    addToBookmarks: PropTypes.func.isRequired 
 };
