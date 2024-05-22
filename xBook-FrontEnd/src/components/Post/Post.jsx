@@ -1,16 +1,19 @@
+
 import PropTypes from 'prop-types';
-import PostBody from "./PostBody"
+import PostBody from "./PostBody";
 import PosdBodyRepost from './PostBodyRepost';
-import PostFooter from "./PostFooter"
-import PostHeader from "./PostHeader"
+import PostFooter from "./PostFooter";
+import PostHeader from "./PostHeader";
 import Paper from '@mui/material/Paper';
 
-export default function Post({ postData, postComments, refresh, isPage }){
+export default function Post({ postData, postComments, refresh, isPage, addToBookmarks }){
+
     if (!postData) {
         return null;
     }
-    return(
-        <Paper elevation={3} className='postComponent' >
+
+    return (
+        <Paper elevation={3} className='postComponent'>
             <PostHeader 
                 author={postData.author}
                 date={postData.timestamp}
@@ -36,16 +39,25 @@ export default function Post({ postData, postComments, refresh, isPage }){
                     refresh ={refresh}
                     isLiked={postData.liked}
                 />
-                {postComments}
+            {/* )} */}
+            <PostFooter
+                likes={postData.likesCount}
+                comments={postData.commentsCount}
+                reposts={postData.repostsCount}
+                id={postData.id}
+                originalPost={postData.originalPost}
+                refresh={refresh}
+                addToBookmarks={addToBookmarks}
+            />
+            {postComments}
         </Paper>
-        
-    )
+    );
 }
 
 Post.propTypes = {
-    postData: PropTypes.object,
+    postData: PropTypes.object.isRequired,
     postComments: PropTypes.node,
     refresh: PropTypes.func,
-    isPage:PropTypes.bool
+    isPage:PropTypes.bool,
+    addToBookmarks: PropTypes.func.isRequired 
 };
-

@@ -168,7 +168,6 @@ export const getUserById = async (uzerId) => {
 export const getUserIsLogin = async () => {
     try {
         const AUTH_TOKEN = getToken();
-
         if (!AUTH_TOKEN) {
             throw new Error('No authentication token found');
         }
@@ -193,5 +192,4 @@ export const getUserIsLogin = async () => {
         throw error;
     }
 }
-
 

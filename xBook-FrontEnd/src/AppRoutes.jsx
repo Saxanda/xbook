@@ -1,15 +1,27 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PrivateRoutes from "./helpers/PrivateRoutes";
-
 import LoginPage from "./Pages/LoginPage";
 import Home from "./Pages/Home";
-import Bookmarks from "./Pages/Bookmarks";
+import BookmarksPage from "./Pages/BookmarksPage";
 import UpdatePasswordPage from './Pages/UpdatePasswordPage';
 import ForgotPage from './Pages/ForgotPage';
 import Chats from './Pages/ChatPage/ChatPage';
-import PostPage from "./components/Post/PostPage";
+import { useState, useEffect } from 'react';
+import PostPage from './components/Post/PostPage';
 
 export default function AppRoutes() {
+
+  const [postData, setPostData] = useState([]);
+
+  useEffect(() => {
+    fetch('../testPostData.json')
+      .then(response => response.json())
+      .then(data => {
+        setPostData(data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
   return (
     <Router>
       <Routes>
@@ -18,14 +30,13 @@ export default function AppRoutes() {
           <Route path="/forgot-password/" element={<UpdatePasswordPage />} />
         <Route element={<PrivateRoutes />}>
           <Route path="/" element={<Home />} />
-          <Route path="/bookmarks" element={<Bookmarks />} />
-          <Route path="/chats" element={<Chats />} />
           <Route 
           path="/post/:postId" 
-          element={<PostPage/>} 
-          />
-          <Route></Route>
-        </Route>
+          element={<PostPage postData={postData} />} 
+        />
+          <Route path="/bookmarks" element={<BookmarksPage />} />
+          <Route path="/chats" element={<Chats />} />
+        </Route>       
       </Routes>
     </Router>
   );
