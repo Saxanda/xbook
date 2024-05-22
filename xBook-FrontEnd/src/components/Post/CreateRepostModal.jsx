@@ -61,7 +61,7 @@ export default function CreateRepostModal({ open, handleClose, postId, refresh }
                     maxWidth: '90%'
                 }}
             >
-                <Typography variant="h5" gutterBottom>Створити Репост</Typography>
+                <Typography variant="h5" gutterBottom>Create Repost</Typography>
                 <IconButton onClick={close} style={{ position: 'absolute', top: '10px', right: '10px', padding: '0' }}>
                     <CloseIcon />
                 </IconButton>
@@ -71,7 +71,7 @@ export default function CreateRepostModal({ open, handleClose, postId, refresh }
                 </div> */}
                 <form>
                     <TextField
-                        placeholder="Ваш текст тут..."
+                        placeholder="Your text here..."
                         fullWidth
                         multiline
                         variant="outlined"
@@ -82,7 +82,7 @@ export default function CreateRepostModal({ open, handleClose, postId, refresh }
                     <Button
                         variant="contained" color="primary" style={{ width: '100%' ,marginTop:"15px"}}
                         onClick={publish}
-                    >Публікувати</Button>
+                    >Post</Button>
                 </form>
             </Paper>
         </Modal>

@@ -8,6 +8,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
+import './Posts.scss'
+
 export default function PostHeader({ author, date, isRepost, isPage}) {
 
 

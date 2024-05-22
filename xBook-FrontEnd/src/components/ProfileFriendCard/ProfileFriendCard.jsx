@@ -12,7 +12,7 @@ import DeleteFriendModal from "../ModalDeleteFriend/DeleteFriendModal.jsx";
 export default function ProfileFriendCard({friend}) {
 
     const {id, avatar, name, surname, dob, address} = friend;
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     const dispatch = useDispatch();
     const { obj } = useSelector(state => state.profile.profileData);
 

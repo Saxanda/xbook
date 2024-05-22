@@ -26,7 +26,7 @@ export default function LoginPage() {
 
     },
     {
-        label: "Sign in",
+        label: "Sign up",
         value: "signIn",
         
     }

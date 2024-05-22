@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router-dom';
 import CreateRepostModal from './CreateRepostModal';
 import { likePost } from './postApi';
 
+import "./Posts.scss"
+
 export default function PostFooter({ likes, id, originalPost,comments,reposts,refresh, isLiked, addToBookmarks }) {
     const navigate = useNavigate();
 
@@ -65,18 +67,18 @@ export default function PostFooter({ likes, id, originalPost,comments,reposts,re
                             </div>
                         </div>
                         <div className="postComponent_footer_activiti_btns">
-                            <IconButton variant="contained" aria-label="like" onClick={handleLikeButtonClick}>
+                            <IconButton className='posts__button like' variant="contained" aria-label="like" onClick={handleLikeButtonClick}>
                                 <ThumbUpIcon 
                                 color={liked ? 'primary' : 'default'}
                                 />
                             </IconButton>
-                            <IconButton variant="contained" aria-label="favorite" onClick={handleFavoriteButtonClick}>
+                            <IconButton className='posts__button favorite' variant="contained" aria-label="favorite" onClick={handleFavoriteButtonClick}>
                                 <FavoriteIcon color={isBookmarked ? "primary" : "default"} />
                             </IconButton>
-                            <IconButton variant="contained" aria-label="repost" onClick={handleRepostButtonClick}>
+                            <IconButton className='posts__button repost' variant="contained" aria-label="repost" onClick={handleRepostButtonClick}>
                                 <RepeatIcon />
                             </IconButton>
-                            <IconButton variant="contained" aria-label="comment" onClick={handleCommentButtonClick}>
+                            <IconButton className='posts__button comment' variant="contained" aria-label="comment" onClick={handleCommentButtonClick}>
                                 <CommentIcon />
                             </IconButton>
                         </div>
