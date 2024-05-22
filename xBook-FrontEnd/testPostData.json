@@ -12,6 +12,8 @@
         "likes": 150,
         "reposts": 23,
         "commentsCount": 2,
+        "postWithRepost" : true,
+        "originalPostId" : 3,
         "comments": [
             {
                 "user": {
@@ -102,6 +104,8 @@
         "likes": 150,
         "reposts": 23,
         "commentsCount": 2,
+        "postWithRepost" : false,
+        "originalPostId" : null,
         "comments": [
             {
                 "user": {
@@ -137,6 +141,8 @@
         "likes": 150,
         "reposts": 23,
         "commentsCount": 2,
+        "postWithRepost" : false,
+        "originalPostId" : null,
         "comments": [
             {
                 "user": {

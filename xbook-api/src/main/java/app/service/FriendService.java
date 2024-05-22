@@ -8,9 +8,13 @@ import app.repository.FriendRepository;
 import app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +33,18 @@ public class FriendService {
     public Friend getFriend(Long userId, Long friendId) {
         return friendRepository.findByUserIdAndFriendId(userId, friendId)
                 .orElseThrow(() -> new ResourceNotFoundException("This friend was not found."));
+    }
+
+    public Optional<Friend> getOptionalFriend(Long userId, Long friendId) {
+        return friendRepository.findByUserIdAndFriendId(userId, friendId);
+    }
+
+    public FriendshipStatus getFriendshipStatus(Long userId, Long friendId){
+        if(getOptionalFriend(userId, friendId).isPresent()) {
+            return getOptionalFriend(userId, friendId).get().getStatus();
+        } else {
+            return FriendshipStatus.NONE;
+        }
     }
 
     public Friend updateFriend(Friend friend) {
@@ -83,16 +99,23 @@ public class FriendService {
         deleteFriend(getFriend(friendId, userId));
     }
 
-    public List<User> getAllFriends(Long userId) {
-        return userRepository.findFriendsByUserId(userId);
+    public List<User> getAll(Long userId){
+    return userRepository.findFriendsById(userId);
     }
 
-    public List<User> getAllFriendRequests(Long userId) {
-        return userRepository.findFriendRequestsByUserId(userId);
+    public Page<User> getAllFriends(Long userId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findFriendsByUserId(userId, pageable);
     }
 
-    public List<User> searchFriend(Long userId, String input) {
-        return userRepository.searchFriend(userId, input);
+    public Page<User> getAllFriendRequests(Long userId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findFriendRequestsByUserId(userId, pageable);
+    }
+
+    public Page<User> searchFriend(Long userId, String input, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.searchFriend(userId, input, pageable);
     }
 
 }

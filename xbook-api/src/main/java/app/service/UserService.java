@@ -1,12 +1,16 @@
 package app.service;
 
 import app.dto.request.UpdateUserRequest;
+import app.dto.response.UserDetailsResponse;
 import app.entity.User;
 import app.exception.ResourceNotFoundException;
 import app.repository.UserRepository;
 import app.security.JwtUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,7 +22,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-
     private final PasswordEncoder encoder;
 
     public User createUser(User user) throws DataIntegrityViolationException {
@@ -44,10 +47,6 @@ public class UserService {
 
     public boolean isEmailExisting(String email) {
         return userRepository.existsUserByEmail(email);
-    }
-
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
     }
 
     // Returns specific User based on a JWT token in request
@@ -115,9 +114,67 @@ public class UserService {
             user.setPassword(encoder.encode(newPassword));
             userRepository.save(user);
         }, () -> {
-            throw new ResourceNotFoundException("User not found with id");
+            throw new ResourceNotFoundException("User not found with email: " + email);
         });
     }
 
+    public User patchUserById(Long id, User patch) {
+        Optional<User> optionalUser = findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
 
+            if (patch.getName() != null && !patch.getName().isEmpty() && !patch.getName().equals(user.getName())) {
+                user.setName(patch.getName());
+            }
+
+            if (patch.getSurname() != null && !patch.getSurname().isEmpty() && !patch.getSurname().equals(user.getSurname())) {
+                user.setSurname(patch.getSurname());
+            }
+
+            if (patch.getDob() != null && !patch.getDob().equals(user.getDob())) {
+                user.setDob(patch.getDob());
+            }
+
+            if (patch.getGender() != null && !patch.getGender().isEmpty() && !patch.getGender().equals(user.getGender())) {
+                user.setGender(patch.getGender());
+            }
+
+            if (patch.getPhoto() != null && !patch.getPhoto().isEmpty() && !patch.getPhoto().equals(user.getPhoto())) {
+                user.setPhoto(patch.getPhoto());
+            }
+
+            if (patch.getAvatar() != null && !patch.getAvatar().isEmpty() && !patch.getAvatar().equals(user.getAvatar())) {
+                user.setAvatar(patch.getAvatar());
+            }
+
+            if (patch.getAddress() != null && !patch.getAddress().isEmpty() && !patch.getAddress().equals(user.getAddress())) {
+                user.setAddress(patch.getAddress());
+            }
+
+            return userRepository.save(user);
+        } else {
+            throw new ResourceNotFoundException("User not found with id: " + id);
+        }
+    }
+
+    public Page<User> getAllUsersPage(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findAll(pageable);
+    }
+
+    public UserDetailsResponse getUserDetails(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return new UserDetailsResponse(
+                user.getId(),
+                user.getName(),
+                user.getSurname(),
+                user.getEmail(),
+                user.getAddress(),
+                user.getPhoto(),
+                user.getAvatar(),
+                user.getDob(),
+                user.getGender()
+        );
+    }
 }

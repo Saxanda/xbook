@@ -1,34 +1,24 @@
+import { useState } from 'react';
+import { Grid } from '@mui/material';
+import PostsFeed from '../components/Post/PostsFeed'
+import CreatePost from '../components/Post/CreatePost';
 
 
-// import { useEffect } from "react";
 
+export default function Home() {
+    const [refresh, setRefresh] = useState(false);
 
-
-export default function Home(){
-
-  //   const [postData, setPostData] = useState([]);
-
-  // useEffect(() => {
-  //   fetch("../testPostData.json")
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       setPostData(data);
-  //     })
-  //     .catch((error) => console.error("Error fetching data:", error));
-  // }, []);
-
-    return(
-        <>
-        {/* <Header/> */}
-         <h1>Homr page</h1>
-         {/* <Route
-            path="/post/:postId"
-            element={<PostPage postData={postData} />}
-          /> */}
-        
-
-        </>
-       
-
-    )
- }
+    const handlePostCreated = () => {
+        setRefresh(prev => !prev); 
+    };
+    return (
+        <section  className='home_posts_container'>
+            <Grid item xs={12} sm={8} md={6} className='create_post'>
+                <CreatePost onPostCreated={handlePostCreated} ></CreatePost>
+            </Grid>
+            <Grid item xs={12} sm={8} md={6}>
+                <PostsFeed refresh={refresh} handlePostCreated={handlePostCreated} ></PostsFeed>
+            </Grid>
+        </section>
+    );
+}

@@ -6,10 +6,13 @@ import app.dto.response.BookmarkResponse;
 import app.entity.Bookmark;
 import app.repository.BookmarkRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -19,22 +22,21 @@ public class BookmarkService {
 
     public BookmarkResponse createBookmark(BookmarkRequest bookmarkRequest) {
         Bookmark bookmark = bookmarkMapper.toBookmarkRequest(bookmarkRequest);
+        bookmark.setTimestamp(LocalDateTime.now());
         Bookmark savedBookmark = bookmarkRepository.save(bookmark);
         return bookmarkMapper.toBookmarkResponse(savedBookmark);
     }
 
-    public List<BookmarkResponse> getAllBookmarksByUserId(Long userId) {
-        List<Bookmark> bookmarks = bookmarkRepository.findByUserId(userId);
-        return bookmarks.stream()
-                .map(bookmarkMapper::toBookmarkResponse)
-                .collect(Collectors.toList());
+    public Page<BookmarkResponse> getPageAllBookmarksByUserId(Long userId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
+        return bookmarkRepository.findByUserId(userId, pageable)
+                .map(bookmarkMapper::toBookmarkResponse);
     }
 
-    public List<BookmarkResponse> getAllBookmarksByPostId(Long postId) {
-        List<Bookmark> bookmarks = bookmarkRepository.findByPostId(postId);
-        return bookmarks.stream()
-                .map(bookmarkMapper::toBookmarkResponse)
-                .collect(Collectors.toList());
+    public Page<BookmarkResponse> getPageAllBookmarksByPostId(Long postId, Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
+        return bookmarkRepository.findByPostId(postId, pageable)
+                .map(bookmarkMapper::toBookmarkResponse);
     }
 
     public boolean deleteBookmark(Long bookmarkId) {

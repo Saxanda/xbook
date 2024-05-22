@@ -6,6 +6,7 @@ import app.entity.User;
 import app.service.CommentService;
 import app.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -50,14 +53,25 @@ public class CommentController {
     }
 
     // Get all comments related to post
+//    @GetMapping("/post/{postId}")
+//    public ResponseEntity<List<CommentResponse>> getAllCommentsByPostId(@PathVariable Long postId) {
+//        List<CommentResponse> comments = commentService.getAllCommentsByPostId(postId);
+//        if (!comments.isEmpty()) {
+//            return ResponseEntity.ok(comments);
+//        }
+//        return ResponseEntity.notFound().build();
+//    }
+
     @GetMapping("/post/{postId}")
-    public ResponseEntity<List<CommentResponse>> getAllCommentsByPostId(@PathVariable Long postId) {
-        List<CommentResponse> comments = commentService.getAllCommentsByPostId(postId);
-        if (!comments.isEmpty()) {
-            return ResponseEntity.ok(comments);
-        }
-        return ResponseEntity.notFound().build();
+    @ResponseStatus(HttpStatus.OK)
+    public Page<CommentResponse> getPageAllCommentsByPostId(@PathVariable Long postId,
+                                                            @RequestParam(defaultValue = "0") Integer page,
+                                                            @RequestParam(defaultValue = "5") Integer size) {
+
+        return commentService.getPageAllCommentsByPostId(postId, page, size);
     }
+
+
 
     @PutMapping("/update/{commentId}")
     public ResponseEntity<CommentResponse> updateComment(@PathVariable Long commentId, @RequestBody CommentRequest commentRequest) {
