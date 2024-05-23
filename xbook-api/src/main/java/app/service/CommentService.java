@@ -17,8 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -40,7 +38,6 @@ public class CommentService {
         comment.setUser(user);
         comment.setPost(post);
         comment.setContent(request.getContent());
-        comment.setTimestamp(LocalDateTime.now());  // Set the timestamp
         Comment savedComment = commentRepository.save(comment);
 
         notificationService.commentNotification(savedComment);
@@ -61,8 +58,11 @@ public class CommentService {
 //                .collect(Collectors.toList());
 //    }
 
-    public Page<CommentResponse> getPageAllCommentsByPostId(Long postId, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").descending());
+    public Page<CommentResponse> getPageAllCommentsByPostId(Long postId, Integer page, Integer size, String sortBy, String sortDir) {
+        //Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").descending());
+
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
         Page<Comment> commentPage = commentRepository.findByPostId(postId, pageable);
         return commentPage.map(this::mapToCommentResponse);
     }
@@ -105,7 +105,7 @@ public class CommentService {
         return new CommentResponse(
                 comment.getId(),
                 comment.getContent(),
-                comment.getTimestamp(),
+                comment.getCreatedDate(),
                 userDetailsResponse,
                 comment.getPost().getId() // User's comments under the post
         );

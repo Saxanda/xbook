@@ -35,8 +35,10 @@ public class NotificationController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> getRecipientNotifications(@PathVariable Long recipientId,
                                                        @RequestParam(defaultValue = "0") Integer page,
-                                                       @RequestParam(defaultValue = "5") Integer size) {
-        Page<NotificationResponse> notifications = notificationService.getPageRecipientNotifications(recipientId, page, size);
+                                                       @RequestParam(defaultValue = "5") Integer size,
+                                                       @RequestParam(defaultValue = "createdDate") String sortBy,
+                                                       @RequestParam(defaultValue = "desc") String sortDir) {
+        Page<NotificationResponse> notifications = notificationService.getPageRecipientNotifications(recipientId, page, size, sortBy, sortDir);
 
         if (!notifications.hasContent()) {
             Map<String, String> response = new HashMap<>();

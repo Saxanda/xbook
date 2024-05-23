@@ -67,8 +67,8 @@ public class UserController {
     // Search users by name or surname
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDetailsResponse> searchUsers(@RequestParam(required = false) String name) {
-        return userService.searchUsersByName(name).stream()
+    public List<UserDetailsResponse> searchUsers(@RequestParam String input) {
+        return userService.searchUsersByInput(input).stream()
                 .map(userMapper::userDetailsResponse)
                 .collect(Collectors.toList());
     }

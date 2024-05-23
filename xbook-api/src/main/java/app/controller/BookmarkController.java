@@ -47,8 +47,10 @@ public class BookmarkController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Page<BookmarkResponse>> getPageAllBookmarksByUserId(@PathVariable Long userId,
                                                                               @RequestParam(defaultValue = "0") Integer page,
-                                                                              @RequestParam(defaultValue = "5") Integer size) {
-        Page<BookmarkResponse> response = bookmarkService.getPageAllBookmarksByUserId(userId, page, size);
+                                                                              @RequestParam(defaultValue = "5") Integer size,
+                                                                              @RequestParam(defaultValue = "createdDate") String sortBy,
+                                                                              @RequestParam(defaultValue = "desc") String sortDir) {
+        Page<BookmarkResponse> response = bookmarkService.getPageAllBookmarksByUserId(userId, page, size, sortBy, sortDir);
         return ResponseEntity.ok(response);
     }
 
@@ -56,8 +58,10 @@ public class BookmarkController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Page<BookmarkResponse>> getPageAllBookmarksByPostId(@PathVariable Long postId,
                                                                               @RequestParam(defaultValue = "0") Integer page,
-                                                                              @RequestParam(defaultValue = "5") Integer size) {
-        Page<BookmarkResponse> response = bookmarkService.getPageAllBookmarksByPostId(postId, page, size);
+                                                                              @RequestParam(defaultValue = "5") Integer size,
+                                                                              @RequestParam(defaultValue = "createdDate") String sortBy,
+                                                                              @RequestParam(defaultValue = "desc") String sortDir) {
+        Page<BookmarkResponse> response = bookmarkService.getPageAllBookmarksByPostId(postId, page, size, sortBy, sortDir);
         return ResponseEntity.ok(response);
     }
 

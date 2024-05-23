@@ -51,9 +51,11 @@ public class PostController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Page<PostResponse> getPageAllPosts(@RequestParam(defaultValue = "0") Integer page,
-                                              @RequestParam(defaultValue = "5") Integer size) {
+                                              @RequestParam(defaultValue = "5") Integer size,
+                                              @RequestParam(defaultValue = "createdDate") String sortBy,
+                                              @RequestParam(defaultValue = "desc") String sortDir) {
 
-        return postService.getPageAllPosts(page, size);
+        return postService.getPageAllPosts(page, size, sortBy, sortDir);
     }
 
     @GetMapping("/fetch/{postId}")

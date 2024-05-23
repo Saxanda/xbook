@@ -15,12 +15,11 @@ public class BookmarkResponse {
     private UserDetailsResponse bookmaker;
     private String body;
     private String media;
-    private LocalDateTime timestamp;
+    private LocalDateTime createdDate;
     private PostResponse originalPost;
     private int likesCount;
     private int commentsCount;
     private int repostsCount;
     private boolean isLiked;
     private boolean isBookmarked;
-
- }
+}

@@ -108,6 +108,10 @@ public class UserService {
         return userRepository.findByNameContaining(name);
     }
 
+    public List<User> searchUsersByInput(String input){
+        return userRepository.searchUsersByInput(input);
+    }
+
 
     public void updatePassword(String email, String newPassword) {
         userRepository.findUserByEmail(email).ifPresentOrElse(user -> {

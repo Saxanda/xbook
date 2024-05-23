@@ -18,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -37,7 +36,7 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Post post = postMapper.toPostRequest(postRequest);
         post.setUser(user);
-        post.setTimestamp(LocalDateTime.now());  // Explicitly setting the timestamp
+        //post.setTimestamp(LocalDateTime.now());  // Explicitly setting the timestamp
         if (originalPostId != null) {
             // This is a repost
             Post originalPost = postRepository.findById(originalPostId)
@@ -72,7 +71,8 @@ public class PostService {
         return new PostResponse(
                 post.getId(),
                 userDetailsResponse, // author to UserDetailsResponse constructor
-                post.getTimestamp(),
+                //post.getTimestamp(),
+                post.getCreatedDate(),
                 post.getTitle(),
                 post.getBody(),
                 post.getMedia(),
@@ -106,7 +106,8 @@ public class PostService {
         PostResponse originalPostResponse = new PostResponse(
                 originalPost.getId(),
                 originalAuthorDetails,
-                originalPost.getTimestamp(),
+                //originalPost.getTimestamp(),
+                originalPost.getCreatedDate(),
                 originalPost.getTitle(),
                 originalPost.getBody(),
                 originalPost.getMedia(),
@@ -124,7 +125,8 @@ public class PostService {
         return new PostResponse(
                 post.getId(),
                 currentAuthorDetails,
-                post.getTimestamp(),
+                //post.getTimestamp(),
+                post.getCreatedDate(),
                 post.getTitle(),
                 post.getBody(),
                 post.getMedia(),
@@ -142,7 +144,8 @@ public class PostService {
         return new PostResponse(
                 post.getId(),
                 userDetailsResponse,
-                post.getTimestamp(),
+                //post.getTimestamp(),
+                post.getCreatedDate(),
                 post.getTitle(),
                 post.getBody(),
                 post.getMedia(),
@@ -162,9 +165,10 @@ public class PostService {
 //                .collect(Collectors.toList());
 //    }
 
-    public Page<PostResponse> getPageAllPosts(Integer page, Integer size) {
-        // sorting by 'timestamp' in descending order
-        Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").descending());
+    public Page<PostResponse> getPageAllPosts(Integer page, Integer size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
         return postRepository.findAll(pageable)
                 .map(post -> getPostDetails(post.getId(), userService.getAuthCurrentUserId()));
     }

@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/comments")
@@ -66,11 +64,12 @@ public class CommentController {
     @ResponseStatus(HttpStatus.OK)
     public Page<CommentResponse> getPageAllCommentsByPostId(@PathVariable Long postId,
                                                             @RequestParam(defaultValue = "0") Integer page,
-                                                            @RequestParam(defaultValue = "5") Integer size) {
+                                                            @RequestParam(defaultValue = "5") Integer size,
+                                                            @RequestParam(defaultValue = "createdDate") String sortBy,
+                                                            @RequestParam(defaultValue = "desc") String sortDir) {
 
-        return commentService.getPageAllCommentsByPostId(postId, page, size);
+        return commentService.getPageAllCommentsByPostId(postId, page, size, sortBy, sortDir);
     }
-
 
 
     @PutMapping("/update/{commentId}")
