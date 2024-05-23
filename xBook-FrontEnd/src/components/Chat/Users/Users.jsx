@@ -72,12 +72,12 @@ export default function Users({ onClicked, trigger, secondTrigger ,triggerChange
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                setUsers(response.data);
-                changeUserArray(response.data)
+                setUsers(response.data.content);
+                changeUserArray(response.data.content)
                 setLoading(false);
                 if(emptyChat)
                     {
-                        const tempId = response.data[0].id;
+                        const tempId = response.data.content[0].id;
                         handleUserClick(0, tempId);
                         localStorage.setItem("lastActiveUserId", tempId)
                         setEmptyChat(false);

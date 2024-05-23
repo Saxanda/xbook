@@ -97,3 +97,4 @@ INSERT INTO comments (created_date, user_id, content, post_id)
 VALUES ('2024-05-19 22:50:23',1, 'This is a comment.', 1);
 INSERT INTO comments (created_date, user_id, content, post_id)
 VALUES ('2024-05-19 23:50:23',2, 'This is a comment.', 1);
+
