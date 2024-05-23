@@ -36,13 +36,13 @@ export default function ChatPage() {
             if(users.length > 0 && id!=-1)
                 {
                     try {
-                const response = await axios.get(`http://localhost:8080/api/chats/messages/${id}`, {
+                const response = await axios.get(`http://localhost:8080/api/chats/messages/${id}?page=0&size=20`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                setMessages(response.data);
-                console.log(response.data)
+                setMessages(response.data.content);
+                console.log(response.data.content)
                 setLoading(false);
                 setChatClear(false);
             } catch (error) {

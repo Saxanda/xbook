@@ -11,6 +11,7 @@ import app.exception.ResourceNotFoundException;
 import app.repository.BookmarkRepository;
 import app.repository.PostRepository;
 import app.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+
+
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +57,7 @@ public class PostService {
     }
 
     //Do not delete. This method helps to see all repost to original post
+
     public PostResponse getChainPostDetails(Long postId, Long currentUserId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
@@ -140,6 +145,7 @@ public class PostService {
         );
     }
 
+
     private PostResponse mapToBasicPostResponse(Post post, UserDetailsResponse userDetailsResponse) {
         return new PostResponse(
                 post.getId(),
@@ -168,28 +174,15 @@ public class PostService {
     public Page<PostResponse> getPageAllPosts(Integer page, Integer size, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
-
         return postRepository.findAll(pageable)
                 .map(post -> getPostDetails(post.getId(), userService.getAuthCurrentUserId()));
     }
 
     public PostResponse getPostById(Long postId) {
-        Optional<Post> optionalPost = postRepository.findById(postId);
-        return optionalPost
-                .map(post -> getPostDetails(post.getId(), userService.getAuthCurrentUserId()))
-                .orElse(null);
+        Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("Post not found with id: " + postId));
+        return getPostDetails(post.getId(), userService.getAuthCurrentUserId());
     }
 
-    //    public PostResponse updatePost(Long postId, PostRequest postRequest) {
-//        Optional<Post> optionalPost = postRepository.findById(postId);
-//        if (optionalPost.isPresent()) {
-//            Post post = optionalPost.get();
-//            postMapper.updatePostFromRequest(postRequest, post);
-//            Post updatedPost = postRepository.save(post);
-//            return postMapper.toPostResponse(updatedPost);
-//        }
-//        return null;
-//    }
     public PostResponse updatePost(Long postId, PostRequest postRequest) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         if (optionalPost.isEmpty()) {

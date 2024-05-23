@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
@@ -7,58 +8,101 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import RepeatIcon from '@mui/icons-material/Repeat';
 import CommentIcon from '@mui/icons-material/Comment';
 import { useNavigate } from 'react-router-dom';
+import CreateRepostModal from './CreateRepostModal';
+import { likePost } from './postApi';
 
-export default function PostFooter({ likes, comments, reposts, postId }) {
+import "./Posts.scss"
 
+export default function PostFooter({ likes, id, originalPost,comments,reposts,refresh, isLiked, addToBookmarks }) {
     const navigate = useNavigate();
 
+    const [isBookmarked, setIsBookmarked] = useState(false);
+    const [isRepostModalOpen, setRepostModalOpen] = useState(false);
+    const [liked, setLiked] = useState(isLiked);
+
+
+    const handleLikeButtonClick = async () => {
+        try {
+            const result = await likePost(id);
+            console.log('Post liked:', result);
+            setLiked(true);
+        } catch (error) {
+            console.error('Error handling like button click:', error);
+        }
+    };
+
     const handleCommentButtonClick = () => {
-        navigate(`/post/${postId}`);
+        navigate(`/post/${id}`);
+    };
+
+    const handleRepostButtonClick = () => {
+        setRepostModalOpen(true);
+    };
+
+    const handleFavoriteButtonClick = async () => {
+        setIsBookmarked((prevIsBookmarked) => !prevIsBookmarked);
+        try {
+            
+            await addToBookmarks(id);
+            console.log('Post added to bookmarks');
+        } catch (error) {
+            console.error('Error handling favorite button click:', error);
+        }
+    };
+
+    const handleRepostModalClose = () => {
+        setRepostModalOpen(false);
     };
 
     return (
-            <Paper >
-            <div className="postComponent_footer">
-                <div className="postComponent_footer_activiti">
-                <div className='postComponent_footer_activiti_info'>
-                    <Typography variant="body1">Likes {likes}</Typography>
-                    <div style={{ display: 'flex' , gap : "10px" }}>
-                        <Typography variant="body1">{comments} Comments </Typography>
-                        <Typography variant="body1">Reposts {reposts}</Typography>
+        <>
+            <Paper>
+                <div className="postComponent_footer">
+                    <div className="postComponent_footer_activiti">
+                        <div className='postComponent_footer_activiti_info'>
+                            <Typography variant="body1">Likes {likes}</Typography>
+                            <div style={{ display: 'flex', gap: "10px" }}>
+                                <Typography variant="body1">{comments} Comments </Typography>
+                                <Typography variant="body1">Reposts {reposts}</Typography>
+                            </div>
+                        </div>
+                        <div className="postComponent_footer_activiti_btns">
+                            <IconButton className='posts__button like' variant="contained" aria-label="like" onClick={handleLikeButtonClick}>
+                                <ThumbUpIcon 
+                                color={liked ? 'primary' : 'default'}
+                                />
+                            </IconButton>
+                            <IconButton className='posts__button favorite' variant="contained" aria-label="favorite" onClick={handleFavoriteButtonClick}>
+                                <FavoriteIcon color={isBookmarked ? "primary" : "default"} />
+                            </IconButton>
+                            <IconButton className='posts__button repost' variant="contained" aria-label="repost" onClick={handleRepostButtonClick}>
+                                <RepeatIcon />
+                            </IconButton>
+                            <IconButton className='posts__button comment' variant="contained" aria-label="comment" onClick={handleCommentButtonClick}>
+                                <CommentIcon />
+                            </IconButton>
+                        </div>
                     </div>
                 </div>
-                <div className="postComponent_footer_activiti_btns">
-                    <IconButton variant="contained" aria-label="like">
-                        <ThumbUpIcon />
-                    </IconButton>
-                    <IconButton variant="contained" aria-label="favorite">
-                        <FavoriteIcon />
-                    </IconButton>
-                    <IconButton variant="contained" aria-label="repost">
-                        <RepeatIcon />
-                    </IconButton>
-                    <IconButton variant="contained" aria-label="comment" onClick={handleCommentButtonClick}>
-                        <CommentIcon />
-                    </IconButton>
-                </div>
-                </div>
-            </div>
             </Paper>
-        );
+
+            <CreateRepostModal
+                open={isRepostModalOpen}
+                handleClose={handleRepostModalClose}
+                postId={originalPost !== null ? originalPost.id : id}
+                refresh={refresh}
+            />
+        </>
+    );
 }
 
 PostFooter.propTypes = {
     likes: PropTypes.number.isRequired,
-    reposts : PropTypes.number.isRequired,
-    postId : PropTypes.number.isRequired,
-    comments: PropTypes.arrayOf(
-        PropTypes.shape({
-            user: PropTypes.shape({
-                username: PropTypes.string.isRequired,
-                avatar: PropTypes.string.isRequired,
-                fullName: PropTypes.string.isRequired
-            }).isRequired,
-            text: PropTypes.string.isRequired,
-        })
-    ).isRequired
+    id: PropTypes.number.isRequired,
+    originalPost: PropTypes.object,
+    reposts :PropTypes.number,
+    comments :PropTypes.number,
+    refresh: PropTypes.func,
+    isLiked: PropTypes.bool,
+    addToBookmarks: PropTypes.func.isRequired 
 };
