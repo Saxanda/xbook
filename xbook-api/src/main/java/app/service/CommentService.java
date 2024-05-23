@@ -59,8 +59,6 @@ public class CommentService {
 //    }
 
     public Page<CommentResponse> getPageAllCommentsByPostId(Long postId, Integer page, Integer size, String sortBy, String sortDir) {
-        //Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").descending());
-
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Comment> commentPage = commentRepository.findByPostId(postId, pageable);
