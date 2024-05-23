@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -60,6 +62,18 @@ public class PostController {
     public ResponseEntity<PostResponse> getPostById(@PathVariable Long postId) {
         PostResponse post = postService.getPostById(postId);
         return ResponseEntity.ok(post);
+    }
+
+    @GetMapping("/get/{userId}")
+    public ResponseEntity<List<PostResponse>> getPostByUserId(@PathVariable Long userId,
+                                                              @RequestParam(defaultValue = "0") Integer page,
+                                                              @RequestParam(defaultValue = "5") Integer size) {
+
+        List<PostResponse> posts = postService.getAllUserPostsAsList(userId, page, size);
+        if (posts.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(posts);
     }
 
     @PutMapping("/update/{postId}")
