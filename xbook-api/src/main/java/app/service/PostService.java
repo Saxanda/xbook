@@ -11,6 +11,7 @@ import app.exception.ResourceNotFoundException;
 import app.repository.BookmarkRepository;
 import app.repository.PostRepository;
 import app.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +20,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,37 +57,37 @@ public class PostService {
     }
 
     //Do not delete. This method helps to see all repost to original post
-    public PostResponse getChainPostDetails(Long postId, Long currentUserId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
-        // Get information about author details
-        UserDetailsResponse userDetailsResponse = userService.getUserDetails(post.getUser().getId());
-        int likesCount = post.getLikes();
-        int commentsCount = post.getComments().size();
-        int repostsCount = postRepository.countByOriginalPostId(postId);
-        boolean isBookmarked = bookmarkRepository.existsByPostIdAndUserId(postId, currentUserId);
-
-        PostResponse originalPostResponse = null;
-        if (post.getType() == PostType.REPOST && post.getOriginalPost() != null) {
-            //originalPostResponse = mapToBasicPostResponse(post.getOriginalPost(), userDetailsResponse);//to Avoid Recursion for future
-            originalPostResponse = getPostDetails(post.getOriginalPost().getId(), currentUserId);
-        }
-        return new PostResponse(
-                post.getId(),
-                userDetailsResponse, // author to UserDetailsResponse constructor
-                post.getTimestamp(),
-                post.getTitle(),
-                post.getBody(),
-                post.getMedia(),
-                originalPostResponse, // Handling of originalPost
-                post.getType(),
-                likesCount,
-                likesCount > 0,
-                commentsCount,
-                repostsCount,
-                isBookmarked
-        );
-    }
+//    public PostResponse getChainPostDetails(Long postId, Long currentUserId) {
+//        Post post = postRepository.findById(postId)
+//                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+//        // Get information about author details
+//        UserDetailsResponse userDetailsResponse = userService.getUserDetails(post.getUser().getId());
+//        int likesCount = post.getLikes();
+//        int commentsCount = post.getComments().size();
+//        int repostsCount = postRepository.countByOriginalPostId(postId);
+//        boolean isBookmarked = bookmarkRepository.existsByPostIdAndUserId(postId, currentUserId);
+//
+//        PostResponse originalPostResponse = null;
+//        if (post.getType() == PostType.REPOST && post.getOriginalPost() != null) {
+//            //originalPostResponse = mapToBasicPostResponse(post.getOriginalPost(), userDetailsResponse);//to Avoid Recursion for future
+//            originalPostResponse = getPostDetails(post.getOriginalPost().getId(), currentUserId);
+//        }
+//        return new PostResponse(
+//                post.getId(),
+//                userDetailsResponse, // author to UserDetailsResponse constructor
+//                post.getTimestamp(),
+//                post.getTitle(),
+//                post.getBody(),
+//                post.getMedia(),
+//                originalPostResponse, // Handling of originalPost
+//                post.getType(),
+//                likesCount,
+//                likesCount > 0,
+//                commentsCount,
+//                repostsCount,
+//                isBookmarked
+//        );
+//    }
 
     public PostResponse getPostDetails(Long postId, Long currentUserId) {
         Post post = postRepository.findById(postId)
@@ -138,29 +141,38 @@ public class PostService {
         );
     }
 
-    private PostResponse mapToBasicPostResponse(Post post, UserDetailsResponse userDetailsResponse) {
-        return new PostResponse(
-                post.getId(),
-                userDetailsResponse,
-                post.getTimestamp(),
-                post.getTitle(),
-                post.getBody(),
-                post.getMedia(),
-                null, // No original post
-                post.getType(),
-                post.getLikes(),
-                false, // Not  liked
-                post.getComments().size(),
-                0, // No repost count
-                false  // Not  bookmark
-        );
-    }
-//    public List<PostResponse> getAllPosts() {
-//        List<Post> posts = postRepository.findAll();
-//        return posts.stream()
-//                .map(postMapper::toPostResponse)
-//                .collect(Collectors.toList());
+//    private PostResponse mapToBasicPostResponse(Post post, UserDetailsResponse userDetailsResponse) {
+//        return new PostResponse(
+//                post.getId(),
+//                userDetailsResponse,
+//                post.getTimestamp(),
+//                post.getTitle(),
+//                post.getBody(),
+//                post.getMedia(),
+//                null, // No original post
+//                post.getType(),
+//                post.getLikes(),
+//                false, // Not  liked
+//                post.getComments().size(),
+//                0, // No repost count
+//                false  // Not  bookmark
+//        );
 //    }
+
+    public List<PostResponse> getAllUserPostsAsList(Long userId, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
+        Page<Post> optionalPost = postRepository.findAllPostByUserId(userId, pageable);
+        if (optionalPost.isEmpty()) {
+            throw new EntityNotFoundException("Post not found from user id: " + userId);
+        }
+        Page<Post> postsPage = postRepository.findAllPostByUserId(userId, pageable);
+        // Get the list of posts created by user
+        return postsPage.getContent()
+                .stream()
+                .map(post -> getPostDetails(post.getId(), userService.getAuthCurrentUserId()))  // Convert each post to a PostResponse
+                .collect(Collectors.toList());
+    }
 
     public Page<PostResponse> getPageAllPosts(Integer page, Integer size) {
         // sorting by 'timestamp' in descending order
@@ -170,22 +182,10 @@ public class PostService {
     }
 
     public PostResponse getPostById(Long postId) {
-        Optional<Post> optionalPost = postRepository.findById(postId);
-        return optionalPost
-                .map(post -> getPostDetails(post.getId(), userService.getAuthCurrentUserId()))
-                .orElse(null);
+        Post post = postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("Post not found with id: " + postId));
+        return getPostDetails(post.getId(), userService.getAuthCurrentUserId());
     }
 
-    //    public PostResponse updatePost(Long postId, PostRequest postRequest) {
-//        Optional<Post> optionalPost = postRepository.findById(postId);
-//        if (optionalPost.isPresent()) {
-//            Post post = optionalPost.get();
-//            postMapper.updatePostFromRequest(postRequest, post);
-//            Post updatedPost = postRepository.save(post);
-//            return postMapper.toPostResponse(updatedPost);
-//        }
-//        return null;
-//    }
     public PostResponse updatePost(Long postId, PostRequest postRequest) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         if (optionalPost.isEmpty()) {

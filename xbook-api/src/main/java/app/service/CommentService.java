@@ -9,6 +9,7 @@ import app.entity.User;
 import app.repository.CommentRepository;
 import app.repository.PostRepository;
 import app.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -62,8 +63,16 @@ public class CommentService {
 //    }
 
     public Page<CommentResponse> getPageAllCommentsByPostId(Long postId, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").descending());
+        //Check if such post exist
+        postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("Post not found with id: " + postId));
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").ascending()); // New comment at the bottom
+
         Page<Comment> commentPage = commentRepository.findByPostId(postId, pageable);
+
+        if (commentPage.isEmpty()) {
+            throw new EntityNotFoundException("Post does not have any comment");
+        }
         return commentPage.map(this::mapToCommentResponse);
     }
 
@@ -89,15 +98,6 @@ public class CommentService {
         commentRepository.deleteById(commentId);
         return true;
     }
-
-//    public CommentResponse getCommentDetails(Long commentId) {
-//        Comment comment = commentRepository.findById(commentId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Comment with ID: " + commentId + " not found"));
-//        if (comment.getUser() == null) {
-//            throw new IllegalStateException("Comment is missing user details");
-//        }
-//        return mapToCommentResponse(comment);
-//    }
 
     private CommentResponse mapToCommentResponse(Comment comment) {
         User user = comment.getUser();
