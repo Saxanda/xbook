@@ -112,7 +112,7 @@ export default function CreatePostModal({ open, handleClose,onPostCreated }) {
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
             >
-                <Typography variant="h5" gutterBottom>Створити допис</Typography>
+                <Typography variant="h5" gutterBottom>Create post</Typography>
                 <IconButton onClick={close} style={{ position: 'absolute', top: '10px', right: '10px', padding: '0' }}>
                     <CloseIcon />
                 </IconButton>
@@ -122,7 +122,7 @@ export default function CreatePostModal({ open, handleClose,onPostCreated }) {
                 </div> */}
                 <form>
                     <TextField
-                        placeholder="Ваш текст тут..."
+                        placeholder="Your text here..."
                         fullWidth
                         multiline
                         variant="outlined"
@@ -145,7 +145,7 @@ export default function CreatePostModal({ open, handleClose,onPostCreated }) {
                     <Button
                         variant="contained" color="primary" style={{ width: '100%' }}
                         onClick={publish}
-                    >Публікувати</Button>
+                    >Post</Button>
                 </form>
             </Paper>
         </Modal>

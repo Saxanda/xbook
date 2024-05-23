@@ -11,16 +11,21 @@ import { useNavigate } from 'react-router-dom';
 import CreateRepostModal from './CreateRepostModal';
 import { likePost } from './postApi';
 
-export default function PostFooter({ likes, id, originalPost, comments, reposts, refresh, addToBookmarks }) {
-    const [isRepostModalOpen, setRepostModalOpen] = useState(false);
-    const [isBookmarked, setIsBookmarked] = useState(false);
+import "./Posts.scss"
 
+export default function PostFooter({ likes, id, originalPost,comments,reposts,refresh, isLiked, addToBookmarks }) {
     const navigate = useNavigate();
+
+    const [isBookmarked, setIsBookmarked] = useState(false);
+    const [isRepostModalOpen, setRepostModalOpen] = useState(false);
+    const [liked, setLiked] = useState(isLiked);
+
 
     const handleLikeButtonClick = async () => {
         try {
             const result = await likePost(id);
             console.log('Post liked:', result);
+            setLiked(true);
         } catch (error) {
             console.error('Error handling like button click:', error);
         }
@@ -62,16 +67,18 @@ export default function PostFooter({ likes, id, originalPost, comments, reposts,
                             </div>
                         </div>
                         <div className="postComponent_footer_activiti_btns">
-                            <IconButton variant="contained" aria-label="like" onClick={handleLikeButtonClick}>
-                                <ThumbUpIcon />
+                            <IconButton className='posts__button like' variant="contained" aria-label="like" onClick={handleLikeButtonClick}>
+                                <ThumbUpIcon 
+                                color={liked ? 'primary' : 'default'}
+                                />
                             </IconButton>
-                            <IconButton variant="contained" aria-label="favorite" onClick={handleFavoriteButtonClick}>
+                            <IconButton className='posts__button favorite' variant="contained" aria-label="favorite" onClick={handleFavoriteButtonClick}>
                                 <FavoriteIcon color={isBookmarked ? "primary" : "default"} />
                             </IconButton>
-                            <IconButton variant="contained" aria-label="repost" onClick={handleRepostButtonClick}>
+                            <IconButton className='posts__button repost' variant="contained" aria-label="repost" onClick={handleRepostButtonClick}>
                                 <RepeatIcon />
                             </IconButton>
-                            <IconButton variant="contained" aria-label="comment" onClick={handleCommentButtonClick}>
+                            <IconButton className='posts__button comment' variant="contained" aria-label="comment" onClick={handleCommentButtonClick}>
                                 <CommentIcon />
                             </IconButton>
                         </div>
@@ -93,8 +100,9 @@ PostFooter.propTypes = {
     likes: PropTypes.number.isRequired,
     id: PropTypes.number.isRequired,
     originalPost: PropTypes.object,
-    reposts: PropTypes.number,
-    comments: PropTypes.number,
-    refresh: PropTypes.func.isRequired,
+    reposts :PropTypes.number,
+    comments :PropTypes.number,
+    refresh: PropTypes.func,
+    isLiked: PropTypes.bool,
     addToBookmarks: PropTypes.func.isRequired 
 };

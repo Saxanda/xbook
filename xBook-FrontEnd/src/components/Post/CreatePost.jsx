@@ -16,15 +16,15 @@ export default function CreatePost({onPostCreated}) {
 
     return (
         <>
-            <Paper style={{ width: '100%', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: "border-box", gap: "10px" }}>
+            <Paper style={{ width: '100%', marginTop: "20px" , padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: "border-box", gap: "10px" }}>
                 <Avatar alt="User Avatar" src="/path/to/avatar.jpg" />
                 <Button
                     variant="contained"
                     color="primary"
                     onClick={handleOpen}
-                    style={{ width: "100%", backgroundColor: 'rgba(173, 173, 173, 0.3)', textAlign: 'left' }}
+                    style={{ width: "100%", backgroundColor: 'rgba(173, 173, 173, 0.5)', textAlign: 'left' }}
                 >
-                    Що у вас на думці?
+                    What's on your mind?
                 </Button>
             </Paper>
 

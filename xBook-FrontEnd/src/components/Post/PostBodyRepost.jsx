@@ -6,6 +6,8 @@ import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
+import './Posts.scss'
+
 export default function PosdBodyRepost({ originalPost, text}){
 
     const navigate = useNavigate();

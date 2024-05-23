@@ -1,4 +1,4 @@
-import React from 'react';
+
 import PropTypes from 'prop-types';
 import PostBody from "./PostBody";
 import PosdBodyRepost from './PostBodyRepost';
@@ -6,7 +6,8 @@ import PostFooter from "./PostFooter";
 import PostHeader from "./PostHeader";
 import Paper from '@mui/material/Paper';
 
-export default function Post({ postData, postComments, refresh, addToBookmarks }) {
+export default function Post({ postData, postComments, refresh, isPage, addToBookmarks }){
+
     if (!postData) {
         return null;
     }
@@ -16,27 +17,30 @@ export default function Post({ postData, postComments, refresh, addToBookmarks }
             <PostHeader 
                 author={postData.author}
                 date={postData.timestamp}
+                isPage={isPage}
             />
             {postData.type === 'REPOST' ? (
                 <PosdBodyRepost
                     originalPost={postData.originalPost}
                     text={postData.body}  
                 />
-            ) : (
-                <PostBody   
-                    text={postData.body}    
-                    media={[postData.media]}
+                ) : (
+                    <PostBody   
+                        text={postData.body}    
+                        media={[postData.media]}
+                    />
+                )}
+                <PostFooter
+                    likes={postData.likesCount} 
+                    comments={postData.commentsCount}
+                    reposts={postData.repostsCount}
+                    id={postData.id}
+                    originalPost={postData.originalPost}
+                    refresh ={refresh}
+                    isLiked={postData.liked}
+                    addToBookmarks={addToBookmarks}
                 />
-            )}
-            <PostFooter
-                likes={postData.likesCount}
-                comments={postData.commentsCount}
-                reposts={postData.repostsCount}
-                id={postData.id}
-                originalPost={postData.originalPost}
-                refresh={refresh}
-                addToBookmarks={addToBookmarks}
-            />
+            
             {postComments}
         </Paper>
     );
@@ -45,6 +49,7 @@ export default function Post({ postData, postComments, refresh, addToBookmarks }
 Post.propTypes = {
     postData: PropTypes.object.isRequired,
     postComments: PropTypes.node,
-    refresh: PropTypes.func.isRequired,
+    refresh: PropTypes.func,
+    isPage:PropTypes.bool,
     addToBookmarks: PropTypes.func.isRequired 
 };
