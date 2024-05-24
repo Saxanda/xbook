@@ -1,0 +1,34 @@
+// .bookmarkslist{
+//     display: grid;
+//   grid-template-columns: repeat(3, 1fr);
+//   grid-gap: 20px;
+//   padding: 20px;
+//   box-sizing: border-box; /* Ensure padding and border are included in the total width and height */
+//   height: 100px;
+// //   width: 200px;
+//     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+//     justify-content: center;
+    
+    
+// }   
+
+
+
+
+.bookmarksTitle {
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    display: flex;
+    justify-content: center;
+    
+}
+
+.content{
+    
+    justify-content: space-around   ;
+    padding-bottom: 30px;
+    flex-direction: column;
+}
+
+.buttonBookmarks{
+    margin-top: 15px;
+}
