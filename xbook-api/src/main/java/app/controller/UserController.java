@@ -64,7 +64,7 @@ public class UserController {
         return ResponseEntity.ok(userMapper.userDetailsResponse(updatedUser));
     }
 
-    // Search users by input
+    // Search users by input name or surname
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public List<UserDetailsResponse> searchUsers(@RequestParam String input) {
