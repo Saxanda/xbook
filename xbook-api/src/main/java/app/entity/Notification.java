@@ -11,8 +11,6 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @Entity
 @NoArgsConstructor
@@ -26,22 +24,16 @@ public class Notification extends AbstractEntity {
      * @param message    The message or description of the notification.
      * @param type       The type of notification.
      * @param post       The related post, if applicable.
-     * @param timestamp  The time when the notification was created.
      * @param readStatus The read status of the notification.
      */
-    public Notification(User sender, User recipient, String message, NotificationType type, Post post, LocalDateTime timestamp, boolean readStatus) {
+    public Notification(User sender, User recipient, String message, NotificationType type, Post post, boolean readStatus) {
         this.sender = sender;
         this.recipient = recipient;
         this.message = message;
         this.type = type;
         this.post = post;
-        this.timestamp = timestamp;
         this.readStatus = readStatus;
     }
-
-
-    @Column(nullable = false)
-    private LocalDateTime timestamp;
 
     @Column(nullable = false)
     private String message;
@@ -64,5 +56,4 @@ public class Notification extends AbstractEntity {
 
     @Column(nullable = false)
     private boolean readStatus;
-
 }

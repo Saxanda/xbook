@@ -51,4 +51,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> searchFriend(Long userId, String input, Pageable pageable);
 
     Page<User> findAll(Pageable pageable);
+
+    @Query(value = "SELECT u.* FROM users u " +
+            "WHERE u.is_activated = true AND " +
+            "(LOWER(REPLACE(CONCAT(u.name, ' ', u.surname), ' ', '')) LIKE LOWER(CONCAT('%', REPLACE(:input, ' ', ''), '%')) " +
+            "OR LOWER(REPLACE(CONCAT(u.surname, ' ', u.name), ' ', '')) LIKE LOWER(CONCAT('%', REPLACE(:input, ' ', ''), '%')));",
+            nativeQuery = true)
+    List<User> searchUsersByInput(@Param("input") String input);
 }

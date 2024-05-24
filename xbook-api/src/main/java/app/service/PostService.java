@@ -19,10 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +37,6 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         Post post = postMapper.toPostRequest(postRequest);
         post.setUser(user);
-        post.setTimestamp(LocalDateTime.now());  // Explicitly setting the timestamp
         if (originalPostId != null) {
             // This is a repost
             Post originalPost = postRepository.findById(originalPostId)
@@ -109,7 +105,7 @@ public class PostService {
         PostResponse originalPostResponse = new PostResponse(
                 originalPost.getId(),
                 originalAuthorDetails,
-                originalPost.getTimestamp(),
+                originalPost.getCreatedDate(),
                 originalPost.getTitle(),
                 originalPost.getBody(),
                 originalPost.getMedia(),
@@ -127,7 +123,7 @@ public class PostService {
         return new PostResponse(
                 post.getId(),
                 currentAuthorDetails,
-                post.getTimestamp(),
+                post.getCreatedDate(),
                 post.getTitle(),
                 post.getBody(),
                 post.getMedia(),
@@ -159,24 +155,17 @@ public class PostService {
 //        );
 //    }
 
-    public List<PostResponse> getAllUserPostsAsList(Long userId, int page, int size) {
+    public Page<PostResponse> getAllUserPostsAsList(Long userId, Integer page, Integer size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
-        Page<Post> optionalPost = postRepository.findAllPostByUserId(userId, pageable);
-        if (optionalPost.isEmpty()) {
-            throw new EntityNotFoundException("Post not found from user id: " + userId);
-        }
-        Page<Post> postsPage = postRepository.findAllPostByUserId(userId, pageable);
-        // Get the list of posts created by user
-        return postsPage.getContent()
-                .stream()
-                .map(post -> getPostDetails(post.getId(), userService.getAuthCurrentUserId()))  // Convert each post to a PostResponse
-                .collect(Collectors.toList());
+        return postRepository.findAllByUserId(userId, pageable)
+                .map(post -> getPostDetails(post.getId(), userService.getAuthCurrentUserId()));
     }
 
-    public Page<PostResponse> getPageAllPosts(Integer page, Integer size) {
-        // sorting by 'timestamp' in descending order
-        Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").descending());
+    public Page<PostResponse> getPageAllPosts(Integer page, Integer size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
         return postRepository.findAll(pageable)
                 .map(post -> getPostDetails(post.getId(), userService.getAuthCurrentUserId()));
     }

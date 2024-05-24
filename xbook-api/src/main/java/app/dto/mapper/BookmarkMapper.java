@@ -50,7 +50,7 @@ public class BookmarkMapper {
                 userDetails,
                 postResponse.getBody(),
                 postResponse.getMedia(),
-                bookmark.getTimestamp(),
+                bookmark.getCreatedDate(),
                 postResponse.getOriginalPost(),
                 postResponse.getLikesCount(),
                 postResponse.getCommentsCount(),

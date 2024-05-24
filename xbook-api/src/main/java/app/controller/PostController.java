@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -53,9 +51,10 @@ public class PostController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Page<PostResponse> getPageAllPosts(@RequestParam(defaultValue = "0") Integer page,
-                                              @RequestParam(defaultValue = "5") Integer size) {
-
-        return postService.getPageAllPosts(page, size);
+                                              @RequestParam(defaultValue = "5") Integer size,
+                                              @RequestParam(defaultValue = "createdDate") String sortBy,
+                                              @RequestParam(defaultValue = "desc") String sortDir) {
+        return postService.getPageAllPosts(page, size, sortBy, sortDir);
     }
 
     @GetMapping("/fetch/{postId}")
@@ -65,15 +64,14 @@ public class PostController {
     }
 
     @GetMapping("/get/{userId}")
-    public ResponseEntity<List<PostResponse>> getPostByUserId(@PathVariable Long userId,
-                                                              @RequestParam(defaultValue = "0") Integer page,
-                                                              @RequestParam(defaultValue = "5") Integer size) {
+    @ResponseStatus(HttpStatus.OK)
+    public Page<PostResponse> getPostByUserId(@PathVariable Long userId,
+                                              @RequestParam(defaultValue = "0") Integer page,
+                                              @RequestParam(defaultValue = "5") Integer size,
+                                              @RequestParam(defaultValue = "createdDate") String sortBy,
+                                              @RequestParam(defaultValue = "desc") String sortDir) {
 
-        List<PostResponse> posts = postService.getAllUserPostsAsList(userId, page, size);
-        if (posts.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(posts);
+        return postService.getAllUserPostsAsList(userId, page, size, sortBy, sortDir);
     }
 
     @PutMapping("/update/{postId}")
