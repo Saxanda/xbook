@@ -36,9 +36,10 @@ public class NotificationService {
         return notificationRepository.save(notification);
     }
 
-    public Page<NotificationResponse> getPageRecipientNotifications(Long recipientId, int page, int size) {
-        // Set up the Pageable object with sorting by 'timestamp' in descending order
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
+    public Page<NotificationResponse> getPageRecipientNotifications(Long recipientId, Integer page, Integer size, String sortBy, String sortDir) {
+
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         // Fetch the page of Notifications from the repository
         Page<Notification> notificationPage = notificationRepository.findByRecipient_Id(recipientId, pageable);
@@ -86,7 +87,6 @@ public class NotificationService {
                     "New post", // message
                     type,                   // type
                     post,                   // related post
-                    now,                    // timestamp
                     false                   // readStatus
             );
 
@@ -115,7 +115,6 @@ public class NotificationService {
                     "New Comment", // message
                     type,                   // type
                     comment.getPost(),      // related post
-                    now,                    // timestamp
                     false                   // readStatus
             );
 
@@ -144,7 +143,6 @@ public class NotificationService {
                     "Post liked", // message
                     type,                   // type
                     like.getPost(),      // related post
-                    now,                    // timestamp
                     false                   // readStatus
             );
 

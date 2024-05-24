@@ -11,6 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,8 +40,8 @@ public class FriendService {
         return friendRepository.findByUserIdAndFriendId(userId, friendId);
     }
 
-    public FriendshipStatus getFriendshipStatus(Long userId, Long friendId){
-        if(getOptionalFriend(userId, friendId).isPresent()) {
+    public FriendshipStatus getFriendshipStatus(Long userId, Long friendId) {
+        if (getOptionalFriend(userId, friendId).isPresent()) {
             return getOptionalFriend(userId, friendId).get().getStatus();
         } else {
             return FriendshipStatus.NONE;
@@ -99,17 +100,19 @@ public class FriendService {
         deleteFriend(getFriend(friendId, userId));
     }
 
-    public List<User> getAll(Long userId){
-    return userRepository.findFriendsById(userId);
+    public List<User> getAll(Long userId) {
+        return userRepository.findFriendsById(userId);
     }
 
-    public Page<User> getAllFriends(Long userId, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<User> getAllFriends(Long userId, Integer page, Integer size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
         return userRepository.findFriendsByUserId(userId, pageable);
     }
 
-    public Page<User> getAllFriendRequests(Long userId, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<User> getAllFriendRequests(Long userId, Integer page, Integer size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
         return userRepository.findFriendRequestsByUserId(userId, pageable);
     }
 

@@ -13,7 +13,8 @@ import java.time.LocalDateTime;
 public class PostResponse {
     private Long id;
     private UserDetailsResponse author; // User's Id
-    private LocalDateTime timestamp;
+    //private LocalDateTime timestamp;
+    private LocalDateTime createdDate;
     private String title;
     private String body;
     private String media;

@@ -104,8 +104,8 @@ public class UserService {
         }
     }
 
-    public List<User> searchUsersByName(String name) {
-        return userRepository.findByNameContaining(name);
+    public List<User> searchUsersByInput(String input) {
+        return userRepository.searchUsersByInput(input);
     }
 
 

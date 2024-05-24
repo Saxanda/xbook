@@ -4,7 +4,6 @@ import app.dto.mapper.UserMapper;
 import app.dto.request.PatchUserRequest;
 import app.dto.request.UpdateUserRequest;
 import app.dto.response.UserDetailsResponse;
-
 import app.dto.response.UserResponse;
 import app.entity.FriendshipStatus;
 import app.entity.User;
@@ -12,13 +11,11 @@ import app.service.FriendService;
 import app.service.UserService;
 import app.utils.ControllerUtils;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +37,6 @@ public class UserController {
 
     private final FriendService friendService;
     private final UserMapper userMapper;
-
 
     @GetMapping("{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable("id") Long id) {
@@ -67,8 +63,8 @@ public class UserController {
     // Search users by name or surname
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDetailsResponse> searchUsers(@RequestParam(required = false) String name) {
-        return userService.searchUsersByName(name).stream()
+    public List<UserDetailsResponse> searchUsersByInput(@RequestParam(required = false) String input) {
+        return userService.searchUsersByInput(input).stream()
                 .map(userMapper::userDetailsResponse)
                 .collect(Collectors.toList());
     }
