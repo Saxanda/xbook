@@ -60,16 +60,20 @@ public class FriendController {
     @ResponseStatus(HttpStatus.OK)
     public Page<UserDetailsResponse> getAllFriends(@PathVariable("userId") Long userId,
                                                    @RequestParam(defaultValue = "0") Integer page,
-                                                   @RequestParam(defaultValue = "5") Integer size) {
-        return friendService.getAllFriends(userId, page, size)
+                                                   @RequestParam(defaultValue = "5") Integer size,
+                                                   @RequestParam(defaultValue = "name") String sortBy,
+                                                   @RequestParam(defaultValue = "asc") String sortDir) {
+        return friendService.getAllFriends(userId, page, size, sortBy, sortDir)
                 .map(userMapper::userDetailsResponse);
     }
 
     @GetMapping("/requests")
     @ResponseStatus(HttpStatus.OK)
     public Page<UserDetailsResponse> getAllFriendRequests(@RequestParam(defaultValue = "0") Integer page,
-                                                          @RequestParam(defaultValue = "5") Integer size) {
-        return friendService.getAllFriendRequests(userService.getCurrentUserId(), page, size)
+                                                          @RequestParam(defaultValue = "5") Integer size,
+                                                          @RequestParam(defaultValue = "name") String sortBy,
+                                                          @RequestParam(defaultValue = "asc") String sortDir) {
+        return friendService.getAllFriendRequests(userService.getCurrentUserId(), page, size, sortBy, sortDir)
                 .map(userMapper::userDetailsResponse);
     }
 

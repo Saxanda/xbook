@@ -12,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-
 @Service
 @RequiredArgsConstructor
 public class BookmarkService {
@@ -22,19 +20,20 @@ public class BookmarkService {
 
     public BookmarkResponse createBookmark(BookmarkRequest bookmarkRequest) {
         Bookmark bookmark = bookmarkMapper.toBookmarkRequest(bookmarkRequest);
-        bookmark.setTimestamp(LocalDateTime.now());
         Bookmark savedBookmark = bookmarkRepository.save(bookmark);
         return bookmarkMapper.toBookmarkResponse(savedBookmark);
     }
 
-    public Page<BookmarkResponse> getPageAllBookmarksByUserId(Long userId, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
+    public Page<BookmarkResponse> getPageAllBookmarksByUserId(Long userId, Integer page, Integer size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
         return bookmarkRepository.findByUserId(userId, pageable)
                 .map(bookmarkMapper::toBookmarkResponse);
     }
 
-    public Page<BookmarkResponse> getPageAllBookmarksByPostId(Long postId, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
+    public Page<BookmarkResponse> getPageAllBookmarksByPostId(Long postId, Integer page, Integer size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
         return bookmarkRepository.findByPostId(postId, pageable)
                 .map(bookmarkMapper::toBookmarkResponse);
     }
