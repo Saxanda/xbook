@@ -32,6 +32,10 @@ public class NotificationService {
     private final FriendService friendService;
     private final TaskScheduler taskScheduler;
 
+    private final WebSocketService webSocketService;
+
+
+
     public Notification createNotification(Notification notification) {
         return notificationRepository.save(notification);
     }
@@ -91,6 +95,9 @@ public class NotificationService {
             );
 
             createNotification(notification);
+
+            NotificationResponse notificationResponse = notificationMapper.toNotificationResponse(notification);
+            webSocketService.sendNotificationResponseToUser(friend.getId(), notificationResponse);
         }
     }
 
@@ -119,6 +126,8 @@ public class NotificationService {
             );
 
             createNotification(notification);
+            NotificationResponse notificationResponse = notificationMapper.toNotificationResponse(notification);
+            webSocketService.sendNotificationResponseToUser(friend.getId(), notificationResponse);
         }
     }
 
@@ -147,6 +156,8 @@ public class NotificationService {
             );
 
             createNotification(notification);
+            NotificationResponse notificationResponse = notificationMapper.toNotificationResponse(notification);
+            webSocketService.sendNotificationResponseToUser(friend.getId(), notificationResponse);
         }
     }
 }
