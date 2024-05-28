@@ -51,15 +51,27 @@ public class PostController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Page<PostResponse> getPageAllPosts(@RequestParam(defaultValue = "0") Integer page,
-                                              @RequestParam(defaultValue = "5") Integer size) {
-
-        return postService.getPageAllPosts(page, size);
+                                              @RequestParam(defaultValue = "5") Integer size,
+                                              @RequestParam(defaultValue = "createdDate") String sortBy,
+                                              @RequestParam(defaultValue = "desc") String sortDir) {
+        return postService.getPageAllPosts(page, size, sortBy, sortDir);
     }
 
     @GetMapping("/fetch/{postId}")
     public ResponseEntity<PostResponse> getPostById(@PathVariable Long postId) {
         PostResponse post = postService.getPostById(postId);
         return ResponseEntity.ok(post);
+    }
+
+    @GetMapping("/get/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<PostResponse> getPostByUserId(@PathVariable Long userId,
+                                              @RequestParam(defaultValue = "0") Integer page,
+                                              @RequestParam(defaultValue = "5") Integer size,
+                                              @RequestParam(defaultValue = "createdDate") String sortBy,
+                                              @RequestParam(defaultValue = "desc") String sortDir) {
+
+        return postService.getAllUserPostsAsList(userId, page, size, sortBy, sortDir);
     }
 
     @PutMapping("/update/{postId}")

@@ -17,7 +17,7 @@ export const getPosts = async () => {
     try {
         const AUTH_TOKEN = getToken();
         const response = await axios.get(
-            `${API_BASE_URL}/api/v1/posts`,
+            `${API_BASE_URL}/api/v1/posts?page=0&size=20`,
             {
                 headers: {
                     "Content-Type": "application/json",

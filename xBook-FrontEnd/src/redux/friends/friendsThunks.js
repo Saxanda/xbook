@@ -2,11 +2,12 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const BASE_URL = 'http://localhost:8080/';
-const TOKEN = localStorage.getItem('token');
+const TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token");
 
 export const getFriends = createAsyncThunk(
     "friends/getFriends",
     async ({ page = 0, size = 2, userId,}, { rejectWithValue }) => {
+        console.log(TOKEN);
         const params = new URLSearchParams({ page, size });
         try {
             const response = await axios.get(`${BASE_URL}api/v1/friends/${userId}?${params}`, {

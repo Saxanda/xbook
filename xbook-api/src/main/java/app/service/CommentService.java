@@ -17,8 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -40,7 +38,6 @@ public class CommentService {
         comment.setUser(user);
         comment.setPost(post);
         comment.setContent(request.getContent());
-        comment.setTimestamp(LocalDateTime.now());  // Set the timestamp
         Comment savedComment = commentRepository.save(comment);
 
         notificationService.commentNotification(savedComment);
@@ -61,10 +58,24 @@ public class CommentService {
 //                .collect(Collectors.toList());
 //    }
 
-    public Page<CommentResponse> getPageAllCommentsByPostId(Long postId, Integer page, Integer size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").descending());
-        Page<Comment> commentPage = commentRepository.findByPostId(postId, pageable);
-        return commentPage.map(this::mapToCommentResponse);
+//    public Page<CommentResponse> getPageAllCommentsByPostId(Long postId, Integer page, Integer size) {
+//        //Check if such post exist
+//        postRepository.findById(postId).orElseThrow(() -> new EntityNotFoundException("Post not found with id: " + postId));
+//
+//        Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").ascending()); // New comment at the bottom
+//
+//        Page<Comment> commentPage = commentRepository.findByPostId(postId, pageable);
+//
+//        if (commentPage.isEmpty()) {
+//            throw new EntityNotFoundException("Post does not have any comment");
+//        }
+//        return commentPage.map(this::mapToCommentResponse);
+//    }
+
+    public Page<CommentResponse> getPageAllCommentsByPostId(Long postId, Integer page, Integer size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return commentRepository.findByPostId(postId, pageable).map(this::mapToCommentResponse);
     }
 
     public CommentResponse getCommentById(Long commentId) {
@@ -90,22 +101,13 @@ public class CommentService {
         return true;
     }
 
-//    public CommentResponse getCommentDetails(Long commentId) {
-//        Comment comment = commentRepository.findById(commentId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Comment with ID: " + commentId + " not found"));
-//        if (comment.getUser() == null) {
-//            throw new IllegalStateException("Comment is missing user details");
-//        }
-//        return mapToCommentResponse(comment);
-//    }
-
     private CommentResponse mapToCommentResponse(Comment comment) {
         User user = comment.getUser();
         UserDetailsResponse userDetailsResponse = userService.getUserDetails(user.getId());
         return new CommentResponse(
                 comment.getId(),
                 comment.getContent(),
-                comment.getTimestamp(),
+                comment.getCreatedDate(),
                 userDetailsResponse,
                 comment.getPost().getId() // User's comments under the post
         );

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class CommentResponse {
     private Long id;
     private String content;
-    private LocalDateTime localDateTime;
+    private LocalDateTime createdDate;
     private UserDetailsResponse author; // User's id which created comment under the post
     private Long postId;
 }
