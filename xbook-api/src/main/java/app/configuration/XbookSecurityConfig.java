@@ -53,6 +53,9 @@ public class XbookSecurityConfig {
                         .requestMatchers(
                                 AntPathRequestMatcher.antMatcher("/"),
                                 AntPathRequestMatcher.antMatcher("/index.html"),
+                                AntPathRequestMatcher.antMatcher("/gs-guide-websocket/**"),
+                                AntPathRequestMatcher.antMatcher("/app.js"),
+                                AntPathRequestMatcher.antMatcher("/main.css"),
                                 AntPathRequestMatcher.antMatcher("/static/**"),
                                 AntPathRequestMatcher.antMatcher("/assets/**"),
                                 AntPathRequestMatcher.antMatcher("/vite.svg"),

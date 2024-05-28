@@ -18,8 +18,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -33,10 +35,11 @@ public class MessageService {
     private final ChatService chatService;
     private final ModelMapper modelMapper;
 
-    public MessageResponse sendNewMessage(MessageRequest msgRq) {
-        User chatParticipant = chatService.getChatParticipant(msgRq.getChatId());
-        User authUser = userService.getAuthUser();
+    public MessageResponse createNewMessage(MessageRequest msgRq, User authUser) {
+        User chatParticipant = chatService.getChatParticipant(msgRq.getChatId(), authUser);
         Message message = convertToMessage(msgRq, authUser);
+        System.out.println("createNewMessage METHOD IS WORKING IN MessageService!!!");
+        System.out.println(message);
         Message savedMessage = messageRepo.save(message);
         chatService.updateLastModifiedDate(savedMessage.getChat(), savedMessage.getLastModifiedDate());
         return convertToMessageResponse(savedMessage, chatParticipant);
@@ -60,7 +63,7 @@ public class MessageService {
     }
 
     public List<MessageResponse> getChatMessages(Long chatId) {
-        User chatParticipant = chatService.getChatParticipant(chatId);
+        User chatParticipant = chatService.getChatParticipant(chatId, userService.getAuthUser());
 
         return chatRepo.findById(chatId)
                 .orElseThrow(() -> new ResourceNotFoundException("Chat is not found!"))
@@ -71,10 +74,9 @@ public class MessageService {
 
     public Page<MessageResponse> getPageChatMessages(Long chatId, Integer page, Integer size){
         Pageable pageable = PageRequest.of(page, size);
-        User chatParticipant = chatService.getChatParticipant(chatId);
+        User chatParticipant = chatService.getChatParticipant(chatId, userService.getAuthUser());
         return messageRepo.findByChatId(chatId, pageable)
                 .map(msg -> convertToMessageResponse(msg, chatParticipant));
-
     }
 
     public boolean deleteMessageById(Long messageId) {
@@ -87,10 +89,23 @@ public class MessageService {
     }
 
     public MessageResponse updateMessage(Long messageId, UpdateMessageRequest newContent) {
-        Message message = messageRepo.findById(messageId).orElseThrow(() -> new ResourceNotFoundException("Chat is not found!"));
-        User chatParticipant = chatService.getChatParticipant(message.getChat().getId());
+        Message message = messageRepo.findById(messageId).orElseThrow(() -> new ResourceNotFoundException("Message is not found!"));
+        User chatParticipant = chatService.getChatParticipant(message.getChat().getId(), userService.getAuthUser());
         message.setContent(newContent.getContent());
         message.setLastModifiedDate(LocalDateTime.now());
+        Message updatedMessage = messageRepo.save(message);
+        return convertToMessageResponse(updatedMessage, chatParticipant);
+    }
+
+    public Long countUnreadMessages(User user, Long chatId) {
+        List<Message> allSentMessages = messageRepo.getAllSentMessages(chatId);
+        return allSentMessages.stream().filter(m -> !m.getSender().equals(user)).count();
+    }
+
+    public MessageResponse updateStatus(Long messageId, MessageStatus status, User authUser) {
+        Message message = messageRepo.findById(messageId).orElseThrow(() -> new ResourceNotFoundException("Message is not found!"));
+        User chatParticipant = chatService.getChatParticipant(message.getChat().getId(), authUser);
+        message.setStatus(status);
         Message updatedMessage = messageRepo.save(message);
         return convertToMessageResponse(updatedMessage, chatParticipant);
     }
