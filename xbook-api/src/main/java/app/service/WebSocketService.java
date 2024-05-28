@@ -1,5 +1,6 @@
 package app.service;
 
+import app.dto.response.NotificationResponse;
 import app.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -14,15 +15,19 @@ import java.security.Principal;
 public class WebSocketService {
     private final SimpMessagingTemplate messagingTemplate;
 
+    public void sendNotificationResponseToUser(Long userId, NotificationResponse notificationResponse) {
+        messagingTemplate.convertAndSendToUser(userId.toString(), "/topic/notifications", notificationResponse);
+    }
+
     public void sendMessageNotification(User user, Object message) {
         System.out.println("Message Notification IS WORKING to user: " + user.getEmail());
         System.out.printf("Unread messages: %s \n", message);
-        sendMessageToUser(user, "/queue/notification", message);
+        sendMessageToUser(user, "/queue/message-notification", message);
     }
 
     public void updateMessageStatus(User user, Object message) {
         System.out.println("UpdateMessageStatus IS WORKING for user: " + user.getEmail());
-        sendMessageToUser(user, "/queue/messageStatus", message);
+        sendMessageToUser(user, "/queue/message-status", message);
     }
 
     public void sendNewMessage(User receiver, Object message) {

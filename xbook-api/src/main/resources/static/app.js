@@ -1,5 +1,5 @@
 //const stompClient = new StompJs.Client({
-//    brokerURL: 'ws://localhost:8080/gs-guide-websocket',
+//    brokerURL: 'ws://localhost:8080/websocket',
 //    connectHeaders: {
 //            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE2NTYxNzU2LCJleHAiOjE3MTcxNjY1NTZ9.Nfq9zHweRJlORkrK99UJbBrb8jp2xMhOal2YijyUoSQ'
 //    }
@@ -90,9 +90,9 @@
 
 
 const stompClient = new StompJs.Client({
-    brokerURL: 'ws://localhost:8080/gs-guide-websocket',
+    brokerURL: 'ws://localhost:8080/websocket',
     connectHeaders: {
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE2NTYxNzU2LCJleHAiOjE3MTcxNjY1NTZ9.Nfq9zHweRJlORkrK99UJbBrb8jp2xMhOal2YijyUoSQ'
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE2OTIyODA2LCJleHAiOjE3MTc1Mjc2MDZ9.Y7SRlQ0sOMo5FuUF8lJ7h0TyHFN94NRDNFWM_M0Xnt8'
     }
 });
 
@@ -104,12 +104,13 @@ stompClient.onConnect = (frame) => {
     stompClient.subscribe(
 //        "/user/john.doe@example.com/queue/messages", (message) => {
         "/user/alice.smith@example.com/queue/messages", (message) => {
-//        "/user/alice.smith@example.com/queue/notification", (message) => {
-//        "user/alice.smith@example.com/queue/messageStatus", (message) => {
+//        "/user/alice.smith@example.com/queue/message-notification", (message) => {
+//        "/user/alice.smith@exampcle.com/queue/message-status", (message) => {
+//        "/user/1/topic/notifications", (message) => {
             console.log("Subscribe is WORKING!!!");
             console.log(message);
             console.log(message.body);
-            showGreeting(JSON.parse(message.body).content);
+//            showGreeting(JSON.parse(message.body).content);
         }
     );
 };
@@ -147,11 +148,12 @@ function disconnect() {
 function sendName() {
     console.log("sendName function is working!");
     const headers = {
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE2NTYxNzU2LCJleHAiOjE3MTcxNjY1NTZ9.Nfq9zHweRJlORkrK99UJbBrb8jp2xMhOal2YijyUoSQ'
+//    Token of user 'john.doe@example.com'
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE2OTIyODA2LCJleHAiOjE3MTc1Mjc2MDZ9.Y7SRlQ0sOMo5FuUF8lJ7h0TyHFN94NRDNFWM_M0Xnt8'
     };
     stompClient.publish({
         destination: "/app/chat",
-//        destination: "app/updateMessageStatus/1",
+//        destination: "/app/update-message-status/1",
         body: JSON.stringify({
             'chatId': 1,
             'contentType': 'text',

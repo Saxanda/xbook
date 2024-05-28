@@ -61,19 +61,25 @@ public class MessageController {
         }
         webSocketService.sendNewMessage(sender, messageResponse);
     }
-    @MessageMapping("/updateMessageStatus/{messageId}")
+
+    @MessageMapping("/update-message-status/{messageId}")
+    @Transactional
     public void updateMessageStatus(@DestinationVariable Long messageId, String newStatus, SimpMessageHeaderAccessor headerAccessor) {
+        System.out.printf("MessageId: %s", messageId);
+        System.out.printf("NewStatus: %s", newStatus);
         Principal sender = headerAccessor.getUser();
         System.out.printf("\nSender of a message in updateMessageStatus function: %s", sender.getName());
         User authUser = userService.getAuthUser(sender);
 
         MessageResponse messageResponse = messageService.updateStatus(messageId, MessageStatus.valueOf(newStatus), authUser);
+        System.out.println("Message Response:");
+        System.out.println(messageResponse);
         User receiver = chatService.getChatParticipant(messageResponse.getChat().getId(), authUser);
 
         webSocketService.updateMessageStatus(receiver, messageResponse);
 
         Long unreadMessage = messageService.countUnreadMessages(authUser, messageResponse.getChat().getId());
-        log.info("User" + authUser.getEmail() + "have" + unreadMessage + " messages!");
+        log.info("User " + authUser.getEmail() + "has " + unreadMessage + " unread messages!");
         webSocketService.sendMessageNotification(authUser, unreadMessage);
     }
 
