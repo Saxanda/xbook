@@ -13,11 +13,11 @@ const getToken = () => {
 
 
 //-------------post---------------------
-export const getPosts = async () => {
+export const getPosts = async (page) => {
     try {
         const AUTH_TOKEN = getToken();
         const response = await axios.get(
-            `${API_BASE_URL}/api/v1/posts?page=0&size=20`,
+            `${API_BASE_URL}/api/v1/posts?page=${page}&size=5&sortBy=createdDate&sortDir=desc`,
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -55,11 +55,8 @@ export const getOnePost = async (postId) => {
 export const createPost = async (postData, originalPost) => {
     try {
         const AUTH_TOKEN = getToken();
-
-        // Формуємо базовий URL
         let url = `${API_BASE_URL}/api/v1/posts/post`;
 
-        // Якщо originalPost переданий, додаємо його як параметр у URL
         if (originalPost) {
             url += `?originalPostId=${originalPost}`;
         }
@@ -81,15 +78,33 @@ export const createPost = async (postData, originalPost) => {
         throw error;
     }
 };
+export const deletePost = async(postId)=>{
+    try {
+        const AUTH_TOKEN = getToken();
+        const response = await axios.delete(
+            `${API_BASE_URL}/api/v1/posts/delete/${postId}`,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${AUTH_TOKEN}`,
+                    'accept': '*/*'
+                }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting the post:', error);
+        throw error;
+    }
+
+}
 //------------like----------------------
 export const likePost = async (postId) => {
     try {
         const AUTH_TOKEN = getToken();
-        const UZER_ID = jwtDecode(AUTH_TOKEN).sub
-        const userId = UZER_ID;
         const response = await axios.post(
             `${API_BASE_URL}/api/v1/likes/like`,
-            { userId, postId },
+            {postId },
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -104,6 +119,26 @@ export const likePost = async (postId) => {
         throw error;
     }
 };
+export const deleteLike = async(postId) =>{
+    try {
+        const AUTH_TOKEN = getToken();
+        console.log('Deleting like for postId:', postId);
+        const response = await axios.delete(
+            `${API_BASE_URL}/api/v1/likes/delete/${postId}`,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${AUTH_TOKEN}`,
+                    'accept': '*/*'
+                }
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error liking the post:', error);
+        throw error;
+    }
+}
 //-------------coment---------------------
 export const getPostComments = async (postId) => {
     try {

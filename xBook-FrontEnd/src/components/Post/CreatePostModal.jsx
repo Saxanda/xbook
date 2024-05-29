@@ -7,25 +7,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { createPost } from './postApi';
-// import { getUserIsLogin } from './postApi';
+import AuthorInfo from './sideComponents/AuthorInfo';
 
 export default function CreatePostModal({ open, handleClose,onPostCreated }) {
     const [newText, setNewText] = useState('');
     const [selectedImages, setSelectedImages] = useState([]);
     const [imgURLs, setImgURLs] = useState([]);
     const [isDraggingOver, setIsDraggingOver] = useState(false);
-    // const [author, setAuthor] = useState({});
-    // const fetchUser = async () => {
-    //     try {
-    //         const uzer = await getUserIsLogin();
-    //         setAuthor(uzer);
-    //         return uzer
-    //     } catch (error) {
-    //         console.error('Error fetching user:', error);
-    //     }
-    // };
-    // fetchUser();
-
 
     
     const handleTextChange = (event) => {
@@ -116,10 +104,7 @@ export default function CreatePostModal({ open, handleClose,onPostCreated }) {
                 <IconButton onClick={close} style={{ position: 'absolute', top: '10px', right: '10px', padding: '0' }}>
                     <CloseIcon />
                 </IconButton>
-                {/* <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-                    <Avatar alt="User Avatar" src={author.avatar} />
-                    <Typography style={{ marginLeft: '10px' }}>{author.name} {author.surname}</Typography>
-                </div> */}
+                <AuthorInfo></AuthorInfo>
                 <form>
                     <TextField
                         placeholder="Your text here..."
