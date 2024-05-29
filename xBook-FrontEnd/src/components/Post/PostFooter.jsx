@@ -9,23 +9,31 @@ import RepeatIcon from '@mui/icons-material/Repeat';
 import CommentIcon from '@mui/icons-material/Comment';
 import { useNavigate } from 'react-router-dom';
 import CreateRepostModal from './CreateRepostModal';
-import { likePost } from './postApi';
+import { likePost, deleteLike } from './postApi';
 
 import "./Posts.scss"
 
-export default function PostFooter({ likes, id, originalPost,comments,reposts,refresh, isLiked, addToBookmarks }) {
+export default function PostFooter({ likes, id, originalPost,comments,reposts,refresh, isLiked, bookmarked, addToBookmarks }) {
     const navigate = useNavigate();
 
-    const [isBookmarked, setIsBookmarked] = useState(false);
+    const [isBookmarked, setIsBookmarked] = useState(bookmarked);
     const [isRepostModalOpen, setRepostModalOpen] = useState(false);
     const [liked, setLiked] = useState(isLiked);
 
 
     const handleLikeButtonClick = async () => {
         try {
-            const result = await likePost(id);
-            console.log('Post liked:', result);
-            setLiked(true);
+            if (!liked) {
+                const result = await likePost(id);
+                console.log('Post liked:', result);
+                setLiked(true);
+                refresh();
+            } else {
+                const result = await deleteLike(id);
+                console.log('Like removed:', result);
+                setLiked(false);
+                refresh();
+            }
         } catch (error) {
             console.error('Error handling like button click:', error);
         }
@@ -104,5 +112,6 @@ PostFooter.propTypes = {
     comments :PropTypes.number,
     refresh: PropTypes.func,
     isLiked: PropTypes.bool,
-    addToBookmarks: PropTypes.func.isRequired 
+    addToBookmarks: PropTypes.func.isRequired,
+    bookmarked:PropTypes.bool,
 };
