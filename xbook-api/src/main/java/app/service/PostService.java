@@ -4,11 +4,17 @@ import app.dto.mapper.PostMapper;
 import app.dto.request.PostRequest;
 import app.dto.response.PostResponse;
 import app.dto.response.UserDetailsResponse;
+import app.entity.Comment;
+import app.entity.Like;
+import app.entity.Notification;
 import app.entity.Post;
 import app.entity.PostType;
 import app.entity.User;
 import app.exception.ResourceNotFoundException;
 import app.repository.BookmarkRepository;
+import app.repository.CommentRepository;
+import app.repository.LikeRepository;
+import app.repository.NotificationRepository;
 import app.repository.PostRepository;
 import app.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,9 +35,12 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
+    private final NotificationRepository notificationRepository;
     private final PostMapper postMapper;
     private final UserService userService;
     private final BookmarkRepository bookmarkRepository;
+    private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
 
     public PostResponse createPost(PostRequest postRequest, Long userId, Long originalPostId) {
         User user = userRepository.findById(userId)
@@ -192,6 +202,17 @@ public class PostService {
     }
 
     public void deletePost(Long postId) {
+        // Remove all like related to the post
+        List<Like> likes = likeRepository.findAllByPostId(postId);
+        likeRepository.deleteAll(likes);
+        // Remove all comments related to the post
+        List<Comment> comments = commentRepository.findAllByPostId(postId);
+        commentRepository.deleteAll(comments);
+
+        // to remove all notifications related to this post
+        List<Notification> notifications = notificationRepository.findByPostId(postId);
+        notificationRepository.deleteAll(notifications);
+
         postRepository.deleteById(postId);
     }
 
