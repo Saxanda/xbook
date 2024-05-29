@@ -1,13 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Post from '../Post/Post';
-import { Grid, Typography } from '@mui/material/';
+import { Grid, Typography, CircularProgress } from '@mui/material/';
 import { getPosts } from '../Post/postApi';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
+// import InfiniteScroll from 'react-infinite-scroll-component';
 
 export default function PostsFeed({refresh,handlePostCreated }){
     const [postData, setPostData] = useState([]);
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const observer = useRef();
+    const lastPostElementRef = useRef();
 
     const [userId, setUserId] = useState(null);
 
@@ -19,22 +25,47 @@ export default function PostsFeed({refresh,handlePostCreated }){
             setUserId(userIdFromToken);
         }
     }, [])
+//-------------------------------------------------------
+const fetchPosts = async (page, reset = false) => {
+    setLoading(true);
+    try {
+        const  data  = await getPosts(page);
+        if (reset) {
+            setPostData(data.content);
+            setPage(0);
+        } else {
+            setPostData(prevPosts => [...prevPosts, ...data.content]);
+        }
+        setHasMore(!data.last);
+        console.log("curent page : " + page);
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+    } finally {
+        setLoading(false);
+    }
+};
 
-
+useEffect(() => {
+    fetchPosts(0, true);
+}, [refresh]);
+useEffect(() => {
+    if (page > 0) fetchPosts(page);
+}, [page]);
+    
 
     useEffect(() => {
-        const fetchData = async () => {
-        try {
-            const data = await getPosts();
-            setPostData(data.content);
-        } catch (error) {
-            console.error('Error fetching posts:', error);
+        if (loading) return;
+        if (observer.current) observer.current.disconnect();
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore) {
+                setPage(prevPage => prevPage + 1);
+            }
+        });
+        if (lastPostElementRef.current) {
+            observer.current.observe(lastPostElementRef.current);
         }
-        };
-
-
-        fetchData();
-    },[refresh]);
+    }, [loading, hasMore]);
+//-------------------------------------------------------
 
     const getAuthToken = () => {
         return sessionStorage.getItem('token') || localStorage.getItem('token');
@@ -54,18 +85,21 @@ export default function PostsFeed({refresh,handlePostCreated }){
         } catch (error) {
             console.error('Error adding post to bookmarks:', error);
         }
-    };
-
-    
+    };   
 
     return(
         <Grid container spacing={3}>
-            {postData.map(post => (
-                <Grid item xs={12} key={post.id}>
+            {postData.map((post, index) => (
+                <Grid item xs={12} key={post.id} ref={postData.length === index + 1 ? lastPostElementRef : null}>
                     <Post postData={post} refresh={handlePostCreated} addToBookmarks={addToBookmarks} />
                 </Grid>
             ))}
-            {postData.length === 0 && (
+            {loading && (
+                <Grid item xs={12} style={{ textAlign: 'center' }}>
+                    <CircularProgress />
+                </Grid>
+            )}
+            {!loading && postData.length === 0 && (
                 <Grid item xs={12}>
                     <Typography variant="body1">No posts to display.</Typography>
                 </Grid>

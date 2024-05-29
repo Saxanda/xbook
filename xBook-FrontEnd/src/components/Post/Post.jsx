@@ -16,8 +16,9 @@ export default function Post({ postData, postComments, refresh, isPage, addToBoo
         <Paper elevation={3} className='postComponent'>
             <PostHeader 
                 author={postData.author}
-                date={postData.timestamp}
+                date={postData.createdDate}
                 isPage={isPage}
+                postId={postData.id}
             />
             {postData.type === 'REPOST' ? (
                 <PosdBodyRepost
@@ -38,6 +39,7 @@ export default function Post({ postData, postComments, refresh, isPage, addToBoo
                     originalPost={postData.originalPost}
                     refresh ={refresh}
                     isLiked={postData.liked}
+                    bookmarked={postData.bookmarked}
                     addToBookmarks={addToBookmarks}
                 />
             

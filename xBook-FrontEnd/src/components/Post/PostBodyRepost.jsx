@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import './Posts.scss'
 
 export default function PosdBodyRepost({ originalPost, text}){
-
     const navigate = useNavigate();
 
     const handleCommentButtonClick = () => {
@@ -21,16 +20,17 @@ export default function PosdBodyRepost({ originalPost, text}){
                 {text}
             </Typography>
             <Paper onClick={handleCommentButtonClick}>
+                
                 <PostMediaGrid   
                     media={[originalPost.media]}
                 />
                 <PostHeader
                     author={originalPost.author}
-                    date={originalPost.timestamp}
+                    date={originalPost.createdDate}
                     isRepost= {true}
                 ></PostHeader>
                 <Typography variant="body1" gutterBottom className='postComponent_body_text' style={{ paddingLeft: '5px' }}>
-                    {originalPost.text}
+                    {originalPost.body}
                 </Typography>
             </Paper>
         </div>

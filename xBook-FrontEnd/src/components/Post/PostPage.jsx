@@ -1,5 +1,5 @@
 // import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useState, useEffect} from 'react';
 import Post from "./Post";
 import Paper from '@mui/material/Paper';
 import { useParams } from 'react-router-dom';
