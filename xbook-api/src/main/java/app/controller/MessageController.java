@@ -3,8 +3,8 @@ package app.controller;
 import app.dto.message.MessageRequest;
 import app.dto.message.MessageResponse;
 import app.dto.message.UpdateMessageRequest;
+import app.entity.Message;
 import app.entity.User;
-import app.security.JwtUserDetails;
 import app.service.ChatService;
 import app.service.MessageService;
 import app.service.UserService;
@@ -13,16 +13,17 @@ import app.utils.MessageStatus;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Optional;
 
 @Log4j2
 @Controller
@@ -83,18 +84,16 @@ public class MessageController {
         webSocketService.sendMessageNotification(authUser, unreadMessage);
     }
 
-//    @PostMapping("/send")
-//    public MessageResponse sendMessage(@RequestBody MessageRequest msgRq) {
-//        return messageService.sendNewMessage(msgRq);
-//    }
-//
-//    @DeleteMapping("/delete/{id}")
-//    public boolean deleteMessage(@PathVariable("id") Long messageId) {
-//        return messageService.deleteMessageById(messageId);
-//    }
-//    @PostMapping("/update/{id}")
-//    public MessageResponse updateMessage(@PathVariable("id") Long messageId, @RequestBody UpdateMessageRequest newContent) {
-//        return messageService.updateMessage(messageId, newContent);
-//    }
+    @DeleteMapping("/api/messages/delete/{id}")
+    public ResponseEntity<Void> deleteMessage(@PathVariable("id") Long messageId) {
+        if (messageService.deleteMessageById(messageId)) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        };
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
+    @PostMapping("/api/messages/update/{id}")
+    public MessageResponse editMessage(@PathVariable("id") Long messageId, @RequestBody UpdateMessageRequest newContent) {
+        return messageService.editMessage(messageId, newContent);
+    }
 }
