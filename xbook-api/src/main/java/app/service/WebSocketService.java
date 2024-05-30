@@ -16,6 +16,9 @@ public class WebSocketService {
     private final SimpMessagingTemplate messagingTemplate;
 
     public void sendNotificationResponseToUser(Long userId, NotificationResponse notificationResponse) {
+        System.out.printf("\nSendNotificationResponseToUser in WebSocket is WORKING to user with id " + userId);
+        System.out.println("NotificationResponse:");
+        System.out.println(notificationResponse);
         messagingTemplate.convertAndSendToUser(userId.toString(), "/topic/notifications", notificationResponse);
     }
 

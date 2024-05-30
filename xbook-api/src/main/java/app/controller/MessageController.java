@@ -3,7 +3,6 @@ package app.controller;
 import app.dto.message.MessageRequest;
 import app.dto.message.MessageResponse;
 import app.dto.message.UpdateMessageRequest;
-import app.entity.Message;
 import app.entity.User;
 import app.service.ChatService;
 import app.service.MessageService;
@@ -20,10 +19,12 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.security.Principal;
-import java.util.Optional;
 
 @Log4j2
 @Controller
@@ -54,8 +55,7 @@ public class MessageController {
             Long unreadMessage = messageService.countUnreadMessages(receiver, msgRq.getChatId());
             webSocketService.sendNewMessage(receiver, messageResponse);
             webSocketService.sendMessageNotification(receiver, unreadMessage);
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             MessageResponse res = messageService.updateStatus(messageResponse.getId(), MessageStatus.FAILED, authUser);
             webSocketService.sendNewMessage(sender, res);
             log.error("Failed to send message " + ex);
@@ -63,9 +63,9 @@ public class MessageController {
         webSocketService.sendNewMessage(sender, messageResponse);
     }
 
-    @MessageMapping("/update-message-status/{messageId}")
+    @MessageMapping("/update-message-status/{id}")
     @Transactional
-    public void updateMessageStatus(@DestinationVariable Long messageId, String newStatus, SimpMessageHeaderAccessor headerAccessor) {
+    public void updateMessageStatus(@DestinationVariable("id") Long messageId, String newStatus, SimpMessageHeaderAccessor headerAccessor) {
         System.out.printf("MessageId: %s", messageId);
         System.out.printf("NewStatus: %s", newStatus);
         Principal sender = headerAccessor.getUser();
@@ -85,15 +85,18 @@ public class MessageController {
     }
 
     @DeleteMapping("/api/messages/delete/{id}")
-    public ResponseEntity<Void> deleteMessage(@PathVariable("id") Long messageId) {
+    public ResponseEntity<?> deleteMessage(@PathVariable("id") Long messageId) {
         if (messageService.deleteMessageById(messageId)) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        };
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        ;
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The message with id " + messageId + " doesn`t exist!");
     }
 
     @PostMapping("/api/messages/update/{id}")
-    public MessageResponse editMessage(@PathVariable("id") Long messageId, @RequestBody UpdateMessageRequest newContent) {
-        return messageService.editMessage(messageId, newContent);
+    public ResponseEntity<MessageResponse> editMessage(@PathVariable("id") Long messageId, @RequestBody UpdateMessageRequest newContent) {
+        MessageResponse messageResponse = messageService.editMessage(messageId, newContent);
+        return ResponseEntity.ok().body(messageResponse);
+
     }
 }

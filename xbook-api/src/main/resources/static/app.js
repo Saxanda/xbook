@@ -14,7 +14,7 @@ stompClient.onConnect = (frame) => {
 //        "/user/john.doe@example.com/queue/messages", (message) => {
         "/user/alice.smith@example.com/queue/messages", (message) => {
 //        "/user/alice.smith@example.com/queue/message-notification", (message) => {
-//        "/user/alice.smith@exampcle.com/queue/message-status", (message) => {
+//        "/user/alice.smith@example.com/queue/message-status", (message) => {
 //        "/user/1/topic/notifications", (message) => {
             console.log("Subscribe is WORKING!!!");
             console.log(message);
@@ -62,7 +62,8 @@ function sendName() {
     };
     stompClient.publish({
         destination: "/app/chat",
-//        destination: "/app/update-message-status/1",
+//        destination: "/app/update-message-status/3",
+//        destination: "/app/update-message-status/3",
         body: JSON.stringify({
             'chatId': 1,
             'contentType': 'text',
