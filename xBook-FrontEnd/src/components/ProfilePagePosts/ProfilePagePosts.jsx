@@ -6,15 +6,12 @@ import Button from '@mui/material/Button';
 import EmailIcon from '@mui/icons-material/Email';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
-import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { modalEditProfile } from '../../redux/profile/profileSlice';
+import ProfilePostsList from '../ProfilePostsList/ProfilePostsList';
 
 export default function ProfilePagePosts(){
-    const dispatch = useDispatch()
-    let urlID = useParams().id;
-    urlID = parseInt(urlID);
-    const {obj} = useSelector(state => state.profile.profileData)   
+    const {obj} = useSelector(state => state.profile.profileData)
     
     const modalEditProfileOpen = () => {
         dispatch(modalEditProfile(true));
@@ -64,7 +61,7 @@ export default function ProfilePagePosts(){
                             {
                                 obj.gender ?
                             <li className='userInfo__item'>
-                                {obj.gender === "men" || obj.gender === "male"? 
+                                {obj.gender === "man" || obj.gender === "male"? 
                                     <MaleIcon color='action'  sx={{marginRight: "12px"}}/>
                                     :
                                     <FemaleIcon color='action'  sx={{marginRight: "12px"}}/>
@@ -94,12 +91,13 @@ export default function ProfilePagePosts(){
                     </div>
                 </div>
                 <div>
-                    <div style={{maxWidth: "500px", width: "300px", height: "128px", backgroundColor: "grey", marginBottom: "16px"}}>
+                    {/* <div style={{maxWidth: "500px", width: "300px", height: "128px", backgroundColor: "grey", marginBottom: "16px"}}>
                     </div>
                     <div style={{maxWidth: "500px", width: "300px", height: "93px", backgroundColor: "grey", marginBottom: "16px"}}>
                     </div>
                     <div style={{maxWidth: "500px", width: "300px", height: "500px", backgroundColor: "grey"}}>
-                    </div>
+                    </div> */}
+                    <ProfilePostsList />
                 </div>
             </div>
         </>

@@ -1,13 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import initialValue from "./initialValue";
+import builders from "../builder";
 import axios from 'axios';
 
-const TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token");
 const BASE_URL = 'http://localhost:8080/';
 
 export const userProfile = createAsyncThunk(
     "profile/userProfile",
     async ({id,user}, {rejectWithValue}) => {
+        const TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token");
         try {
             const response = await axios.get(`${BASE_URL}api/v1/users/${id}`, {
                 headers: {
@@ -25,12 +26,32 @@ export const userProfile = createAsyncThunk(
 export const editUser = createAsyncThunk(
     "profile/editUser",
     async ({ id, userObj}, { rejectWithValue }) => {
+        const TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token");
         try {
             const response = await axios.patch(`${BASE_URL}api/v1/users/${id}`, userObj, {
                 headers: {
                     Authorization: `Bearer ${TOKEN}`,
                 },
             });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const getUserPosts = createAsyncThunk(
+    "profile/getUserPosts",
+    async ({page = 0, size = 2, userId}, {rejectWithValue}) => {
+        const TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token");
+        const params = new URLSearchParams({ page, size });
+        try {
+            const response = await axios.get(`${BASE_URL}api/v1/posts/get/${userId}?${params}`, {
+                headers: {
+                    Authorization: `Bearer ${TOKEN}`,
+                },
+            });
+            console.log("USERPROFILEPOSTS THUNK: ",response);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -50,34 +71,9 @@ const profileSlice = createSlice({
         }
     },
     extraReducers : (builder) => {
-        builder
-            .addCase(userProfile.pending, state => {
-                state.profileData.status = "pending"
-                state.profileData.error = null;
-            })
-            .addCase(userProfile.fulfilled, (state, action) => {
-                state.profileData.status = "fullfield";
-                state.profileData.obj = action.payload;
-                state.profileData.error = null;
-            })
-            .addCase(userProfile.rejected, (state, action) => {
-                state.profileData.status = "rejected"
-                state.profileData.error = action.payload;
-            })
-        builder
-            .addCase(editUser.pending, state => {
-                state.editUserData.status = "pending"
-                state.editUserData.error = null;
-            })
-            .addCase(editUser.fulfilled, (state, action) => {
-                state.editUserData.status = "fullfield";
-                state.editUserData.obj = action.payload;
-                state.editUserData.error = null;
-            })
-            .addCase(editUser.rejected, (state, action) => {
-                state.editUserData.status = "rejected"
-                state.editUserData.error = action.payload;
-            })
+        builders(builder, userProfile, 'profileData');
+        builders(builder, editUser, 'editUserData');
+        builders(builder, getUserPosts, 'userPosts');
     }
 });
 

@@ -182,7 +182,7 @@ export default function ModalEditProfile() {
                   onBlur={formik.handleBlur}
                   error={formik.touched.gender && Boolean(formik.errors.gender)}
                 >
-                  <MenuItem value={"man"}>Men</MenuItem>
+                  <MenuItem value={"man"}>Man</MenuItem>
                   <MenuItem value={"woman"}>Woman</MenuItem>
                   <MenuItem value={"other"}>Other</MenuItem>
                 </Select>
