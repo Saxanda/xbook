@@ -82,7 +82,7 @@ public class ChatService {
     private ChatResponseWithLastMessage convertToChatResponse(Chat chat) {
         ChatResponseWithLastMessage chatResponseWithLastMessage = modelMapper.map(chat, ChatResponseWithLastMessage.class);
 
-        User chatParticipant = getChatParticipant(chat.getId());
+        User chatParticipant = getChatParticipant(chat.getId(), userService.getAuthUser());
         UserInChatRepresentation participant = modelMapper.map(chatParticipant, UserInChatRepresentation.class);
         chatResponseWithLastMessage.setChatParticipant(participant);
 
@@ -112,11 +112,13 @@ public class ChatService {
         return lastMessage;
     }
 
-    public User getChatParticipant(Long chatId) {
-        User authUser = userService.getAuthUser();
+    public User getChatParticipant(Long chatId, User authUser) {
+//        User authUser = userService.getAuthUser();
         Chat chat = chatRepo.findById(chatId).orElseThrow(() -> new ResourceNotFoundException("Chat is not found!"));
-
+        System.out.println(chat);
         List<User> chatParticipants = chat.getChatParticipants();
+        System.out.println(chatParticipants);
+
         if (!chatParticipants.contains(authUser)) throw new ResourceNotFoundException("User is not found!");
 
         return getParticipant(chatParticipants, authUser)
