@@ -2,8 +2,10 @@ import PropTypes from 'prop-types';
 import Grid from '@mui/material/Grid';
 
 export default function PostMediaGrid({ media }) {
-
-    if (media.length === 1) {
+    if(media[0] === null){
+        return (null)
+    }
+    else if (media.length === 1) {
         // Якщо лише одна картинка, вона займає весь контейнер та центрується
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>

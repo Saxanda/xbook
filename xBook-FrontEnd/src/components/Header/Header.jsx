@@ -94,7 +94,7 @@ export default function Header() {
 
     axios
       .get(
-        `http://localhost:8080/api/v1/users/search?name=${searchQuery}`,
+        `http://localhost:8080/api/v1/users/search?input=${searchQuery}`,
         config
       )
       .then((response) => {

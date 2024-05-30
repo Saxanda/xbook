@@ -13,6 +13,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -21,6 +23,7 @@ import java.util.List;
 @Table(name = "posts")
 
 @EqualsAndHashCode(callSuper = false)
+@OnDelete(action = OnDeleteAction.CASCADE)
 public class Post extends AbstractEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -45,6 +48,7 @@ public class Post extends AbstractEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "original_post_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Post originalPost; // In case there is a repost
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)

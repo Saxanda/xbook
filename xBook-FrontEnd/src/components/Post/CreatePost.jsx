@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Avatar, Button, Paper } from '@mui/material';
+import { Button, Paper } from '@mui/material';
 import CreatePostModal from './CreatePostModal';
 import PropTypes from 'prop-types';
+import AuthorAvatar from './sideComponents/AuthorAvatar';
 
 export default function CreatePost({onPostCreated}) {
     const [open, setOpen] = useState(false);
@@ -17,7 +18,7 @@ export default function CreatePost({onPostCreated}) {
     return (
         <>
             <Paper style={{ width: '100%', marginTop: "20px" , padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: "border-box", gap: "10px" }}>
-                <Avatar alt="User Avatar" src="/path/to/avatar.jpg" />
+                <AuthorAvatar/>
                 <Button
                     variant="contained"
                     color="primary"
