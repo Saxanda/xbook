@@ -61,8 +61,12 @@ public class LikeController {
         User user = userService.getAuthUser();
         Long userId = user.getId();  // Extract user ID from security context
 
-        likeService.removeLikeByPost(postId, userId);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Like removed from post with id:" + postId);
+        try {
+            likeService.removeLikeByPost(postId, userId);
+            return ResponseEntity.ok("Like removed from post with id: " + postId);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }
 
