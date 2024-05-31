@@ -11,7 +11,7 @@ export default function Post({ postData, postComments, refresh, isPage, addToBoo
     }
 
     return (
-        <Paper elevation={3} className='postComponent'>
+        <Paper elevation={3} className='postComponent' margin={"5px"}>
             <PostHeader 
                 author={postData.author}
                 date={postData.createdDate}

@@ -1,3 +1,15 @@
+
 .home_sidebar_container{
-    min-width: 300px;
+    margin-top: 20px;
+    width: 400px;
+}
+.friend-item {
+    margin-top: 10px;
+    cursor: pointer;
+    &:hover {
+        background-color: #f0f0f0; // Зміна фону при наведенні
+    }
+}
+.home_sidebar_add{
+    width: 60%;
 }

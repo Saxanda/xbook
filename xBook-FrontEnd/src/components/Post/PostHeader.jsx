@@ -34,6 +34,9 @@ const navigate = useNavigate();
 const handleBack = () => {
 navigate(-1); 
 };
+const redirectToProfile = () => {
+    navigate(`/profile/${author.id}`);
+};
 const handleDeletePost = async () => {
     console.log(postId);
     const result = await deletePost(postId);
@@ -45,7 +48,7 @@ const handleDeletePost = async () => {
         <div className="postComponent_header">
             <div className="postComponent_header_userinfo">
                 <Stack direction="row" spacing={2} alignItems="center">
-                    <Avatar src={author.avatar} alt="User Avatar" />
+                    <Avatar src={author.avatar} alt="User Avatar" onClick={redirectToProfile}/>
                     <div>
                         <Typography variant="h6">{author.name} {author.surname}</Typography>
                         <Typography variant="body2" color="textSecondary">{formatDate(date)}</Typography>
