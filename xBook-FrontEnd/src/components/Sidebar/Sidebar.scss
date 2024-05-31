@@ -5,16 +5,12 @@
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
 
-.sattings{
-    width: 30px;
-    height: 30px;
-    cursor: pointer; 
-  }
-
 .savedObject{
     display: flex;
     align-items: center;
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    margin-top: 15px;
+    
     
     cursor: pointer;
     padding: 2px;
@@ -29,12 +25,11 @@
   }
   
   .sidebar {
-    position: relative;
     width: 320px;
     padding: 20px;
-    background-color: #ffffff;
-    border-right: 1px solid rgba(0, 0, 0, 0.153);
-    box-shadow: 0 0px 0px rgba(0, 0, 0, .1), 0 2px 4px rgba(0, 0, 0, .1);  
+    // background-color: #ffffff;
+    // border-right: 1px solid rgba(0, 0, 0, 0.153);
+    // box-shadow: 0 0px 0px rgba(0, 0, 0, .1), 0 2px 4px rgba(0, 0, 0, .1);  
     user-select: none; 
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   }
@@ -69,8 +64,6 @@
     padding: 0;
     flex-grow: 1;
     padding-bottom: 15px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.153);
-    border-top: 1px solid rgba(0, 0, 0, 0.153);
   }
   
   .sidebar li {
@@ -95,17 +88,12 @@
   }
   
   
-  @media (max-width: 768px) {
+  @media screen and (max-width: 899px) {
     .bookmark-card {
-      width: calc(50% - 20px);
-      
+      width: auto;
     }
-  }
-  
-  @media (max-width: 480px) {
-    .bookmark-card {
-      width: 100%;
-      
-    }
-  }
-  
+
+    .sidebar{
+      display: none;
+     } 
+}

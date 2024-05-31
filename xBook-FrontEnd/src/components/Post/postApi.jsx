@@ -26,7 +26,7 @@ export const getPosts = async (page) => {
                 }
             }
         );
-        console.log(response.data);
+        // console.log(response.data);
         return response.data;
     } catch (error) {
         console.error('Error fetching data:', error);

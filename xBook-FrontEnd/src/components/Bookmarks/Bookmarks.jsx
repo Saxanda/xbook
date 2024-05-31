@@ -12,7 +12,6 @@ const Bookmarks = ({ userId }) => {
     const fetchBookmarks = async () => {
         try {
             const token = getAuthToken();
-            console.log(userId);
             const response = await axios.get(`http://localhost:8080/api/v1/bookmarks/user/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
