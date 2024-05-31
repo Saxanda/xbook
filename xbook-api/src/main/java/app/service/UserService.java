@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,6 +54,10 @@ public class UserService {
     public User getAuthUser() {
         JwtUserDetails principal = (JwtUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return principal.getUser();
+    }
+
+    public User getAuthUser(Principal user) {
+        return userRepository.findUserByEmail(user.getName()).orElseThrow(() -> new ResourceNotFoundException("User with email " + user.getName() + " is not found!"));
     }
 
 

@@ -10,16 +10,13 @@ import CommentIcon from '@mui/icons-material/Comment';
 import { useNavigate } from 'react-router-dom';
 import CreateRepostModal from './CreateRepostModal';
 import { likePost, deleteLike } from './postApi';
-
 import "./Posts.scss"
 
-export default function PostFooter({ likes, id, originalPost,comments,reposts,refresh, isLiked, bookmarked, addToBookmarks }) {
+export default function PostFooter({ likes, id, originalPost, comments, reposts, refresh, isLiked, bookmarked, addToBookmarks, removeFromBookmarks }) {
     const navigate = useNavigate();
-
     const [isBookmarked, setIsBookmarked] = useState(bookmarked);
     const [isRepostModalOpen, setRepostModalOpen] = useState(false);
     const [liked, setLiked] = useState(isLiked);
-
 
     const handleLikeButtonClick = async () => {
         try {
@@ -48,11 +45,15 @@ export default function PostFooter({ likes, id, originalPost,comments,reposts,re
     };
 
     const handleFavoriteButtonClick = async () => {
-        setIsBookmarked((prevIsBookmarked) => !prevIsBookmarked);
         try {
-            
-            await addToBookmarks(id);
-            console.log('Post added to bookmarks');
+            if (isBookmarked) {
+                await removeFromBookmarks(id);
+                console.log('Post removed from bookmarks');
+            } else {
+                await addToBookmarks(id);
+                console.log('Post added to bookmarks');
+            }
+            setIsBookmarked((prevIsBookmarked) => !prevIsBookmarked);
         } catch (error) {
             console.error('Error handling favorite button click:', error);
         }
@@ -76,9 +77,7 @@ export default function PostFooter({ likes, id, originalPost,comments,reposts,re
                         </div>
                         <div className="postComponent_footer_activiti_btns">
                             <IconButton className='posts__button like' variant="contained" aria-label="like" onClick={handleLikeButtonClick}>
-                                <ThumbUpIcon 
-                                color={liked ? 'primary' : 'default'}
-                                />
+                                <ThumbUpIcon color={liked ? 'primary' : 'default'} />
                             </IconButton>
                             <IconButton className='posts__button favorite' variant="contained" aria-label="favorite" onClick={handleFavoriteButtonClick}>
                                 <FavoriteIcon color={isBookmarked ? "primary" : "default"} />
@@ -108,10 +107,12 @@ PostFooter.propTypes = {
     likes: PropTypes.number.isRequired,
     id: PropTypes.number.isRequired,
     originalPost: PropTypes.object,
-    reposts :PropTypes.number,
-    comments :PropTypes.number,
+    reposts: PropTypes.number,
+    comments: PropTypes.number,
     refresh: PropTypes.func,
     isLiked: PropTypes.bool,
     addToBookmarks: PropTypes.func.isRequired,
-    bookmarked:PropTypes.bool,
+    removeFromBookmarks: PropTypes.func.isRequired,
+    bookmarked: PropTypes.bool,
+    bookmarkId: PropTypes.string,
 };
