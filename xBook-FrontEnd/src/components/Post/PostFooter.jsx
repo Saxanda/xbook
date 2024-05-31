@@ -17,6 +17,7 @@ export default function PostFooter({ likes, id, originalPost, comments, reposts,
     const [isBookmarked, setIsBookmarked] = useState(bookmarked);
     const [isRepostModalOpen, setRepostModalOpen] = useState(false);
     const [liked, setLiked] = useState(isLiked);
+    const [likeCount,setLikeCount] = useState(likes);
 
     const handleLikeButtonClick = async () => {
         try {
@@ -24,12 +25,12 @@ export default function PostFooter({ likes, id, originalPost, comments, reposts,
                 const result = await likePost(id);
                 console.log('Post liked:', result);
                 setLiked(true);
-                refresh();
+                setLikeCount(likeCount+1) ;
             } else {
                 const result = await deleteLike(id);
                 console.log('Like removed:', result);
                 setLiked(false);
-                refresh();
+                setLikeCount(likeCount-1) ;
             }
         } catch (error) {
             console.error('Error handling like button click:', error);
@@ -69,7 +70,9 @@ export default function PostFooter({ likes, id, originalPost, comments, reposts,
                 <div className="postComponent_footer">
                     <div className="postComponent_footer_activiti">
                         <div className='postComponent_footer_activiti_info'>
-                            <Typography variant="body1">Likes {likes}</Typography>
+                            <Typography variant="body1">
+                                {`Likes ${likeCount}`}
+                            </Typography>
                             <div style={{ display: 'flex', gap: "10px" }}>
                                 <Typography variant="body1">{comments} Comments </Typography>
                                 <Typography variant="body1">Reposts {reposts}</Typography>

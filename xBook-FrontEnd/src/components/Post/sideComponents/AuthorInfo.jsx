@@ -1,6 +1,7 @@
 import { getUserIsLogin } from "../postApi";
-import { Typography, Avatar, CircularProgress } from '@mui/material';
+import { Typography, CircularProgress } from '@mui/material';
 import { useEffect, useState } from "react";
+import AuthorAvatar from "./AuthorAvatar";
 
 export default function AuthorInfo() {
     const [author, setAuthor] = useState(null);
@@ -37,7 +38,7 @@ export default function AuthorInfo() {
 
     return (
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-            <Avatar alt="User Avatar" src={author.avatar} />
+            <AuthorAvatar/>
             <Typography style={{ marginLeft: '10px' }}>
                 {author.name} {author.surname}
             </Typography>
