@@ -8,6 +8,7 @@ import Window from '../../components/Chat/Window/Window';
 
 import testImage from '../../../public/image/send_image_black.png';
 import { useDispatch, useSelector } from 'react-redux';
+import API_BASE_URL from '../../helpers/apiConfig';
 
 export default function ChatPage() {
     const [users, setUsers] = useState([]); 
@@ -36,7 +37,7 @@ export default function ChatPage() {
             if(users.length > 0 && id!=-1)
                 {
                     try {
-                const response = await axios.get(`http://localhost:8080/api/chats/messages/${id}?page=0&size=20`, {
+                const response = await axios.get(`${API_BASE_URL}/api/chats/messages/${id}?page=0&size=20`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -72,7 +73,7 @@ export default function ChatPage() {
             if (inputText !== "") {
                 try {
                     const response = await axios.post(
-                        `http://localhost:8080/api/messages/update/${messageId}`,
+                        `${API_BASE_URL}/api/messages/update/${messageId}`,
                         {
                             content: inputText,
                         },
@@ -96,7 +97,7 @@ export default function ChatPage() {
             if (inputText !== "") {
             try {
                 const response = await axios.post(
-                    'http://localhost:8080/api/messages/send',
+                    `${API_BASE_URL}/api/messages/send`,
                     {
                         chatId: id,
                         contentType: 'text',

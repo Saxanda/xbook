@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
+import API_BASE_URL from '../../helpers/apiConfig';
 
 
-const API_BASE_URL = 'http://localhost:8080';
+
 const getToken = () => {
     let token = sessionStorage.getItem('token');
     if (!token) {

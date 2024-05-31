@@ -4,6 +4,7 @@ import Sidebar from '../Sidebar/Sidebar';
 import axios from 'axios';
 import './Bookmarks.scss'
 import BookmarksList from '../BookmarksList/BookmarksList'
+import API_BASE_URL from '../../helpers/apiConfig';
 
 const Bookmarks = ({ userId }) => {
     const [bookmarks, setBookmarks] = useState([]);
@@ -12,7 +13,7 @@ const Bookmarks = ({ userId }) => {
     const fetchBookmarks = async () => {
         try {
             const token = getAuthToken();
-            const response = await axios.get(`http://localhost:8080/api/v1/bookmarks/user/${userId}`, {
+            const response = await axios.get(`${API_BASE_URL}/api/v1/bookmarks/user/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -36,7 +37,7 @@ const Bookmarks = ({ userId }) => {
         try {
             
             const token = getAuthToken();
-            await axios.delete(`http://localhost:8080/api/v1/bookmarks/${bookmarkId}`, {
+            await axios.delete(`${API_BASE_URL}/api/v1/bookmarks/${bookmarkId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

@@ -31,6 +31,7 @@ import {
   clearHeaderState,
 } from "../../redux/headerSlice";
 import { jwtDecode } from "jwt-decode";
+import API_BASE_URL from "../../helpers/apiConfig";
 
 const pages = [
   { name: "Home", path: "/" },
@@ -94,7 +95,7 @@ export default function Header() {
 
     axios
       .get(
-        `http://localhost:8080/api/v1/users/search?input=${searchQuery}`,
+        `${API_BASE_URL}/api/v1/users/search?input=${searchQuery}`,
         config
       )
       .then((response) => {
