@@ -26,7 +26,7 @@ export const getPosts = async (page) => {
                 }
             }
         );
-        console.log(response.data);
+        // console.log(response.data);
         return response.data;
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -225,6 +225,29 @@ export const getUserIsLogin = async () => {
         return response.data;
     } catch (error) {
         console.error('Error fetching user login status:', error);
+        throw error;
+    }
+}
+//--------------friend----------------
+export const getFriends = async () => {
+    try {
+        const AUTH_TOKEN = getToken();
+        const USER_ID = jwtDecode(AUTH_TOKEN).sub;
+
+        const response = await axios.get(
+            `${API_BASE_URL}/api/v1/friends/${USER_ID}?size=5`,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${AUTH_TOKEN}`,
+                    'accept': '*/*'
+                }
+            }
+        );
+        return response.data;
+
+    } catch (error) {
+        console.error('Error fetching friends:', error);
         throw error;
     }
 }

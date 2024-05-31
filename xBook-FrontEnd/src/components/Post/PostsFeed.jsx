@@ -5,16 +5,14 @@ import { getPosts } from '../Post/postApi';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
-// import InfiniteScroll from 'react-infinite-scroll-component';
 
-export default function PostsFeed({refresh,handlePostCreated }){
+export default function PostsFeed({ refresh, handlePostCreated, }) {
     const [postData, setPostData] = useState([]);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
     const observer = useRef();
     const lastPostElementRef = useRef();
-
     const [userId, setUserId] = useState(null);
 
     useEffect(() => {
@@ -24,34 +22,34 @@ export default function PostsFeed({refresh,handlePostCreated }){
             const userIdFromToken = decodedToken.sub || decodedToken.id;
             setUserId(userIdFromToken);
         }
-    }, [])
-//-------------------------------------------------------
-const fetchPosts = async (page, reset = false) => {
-    setLoading(true);
-    try {
-        const  data  = await getPosts(page);
-        if (reset) {
-            setPostData(data.content);
-            setPage(0);
-        } else {
-            setPostData(prevPosts => [...prevPosts, ...data.content]);
-        }
-        setHasMore(!data.last);
-        console.log("curent page : " + page);
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-    } finally {
-        setLoading(false);
-    }
-};
+    }, []);
 
-useEffect(() => {
-    fetchPosts(0, true);
-}, [refresh]);
-useEffect(() => {
-    if (page > 0) fetchPosts(page);
-}, [page]);
-    
+    const fetchPosts = async (page, reset = false) => {
+        setLoading(true);
+        try {
+            const data = await getPosts(page);
+            if (reset) {
+                setPostData(data.content);
+                setPage(0);
+            } else {
+                setPostData(prevPosts => [...prevPosts, ...data.content]);
+            }
+            setHasMore(!data.last);
+            console.log("current page: " + page);
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchPosts(0, true);
+    }, [refresh]);
+
+    useEffect(() => {
+        if (page > 0) fetchPosts(page);
+    }, [page]);
 
     useEffect(() => {
         if (loading) return;
@@ -65,7 +63,6 @@ useEffect(() => {
             observer.current.observe(lastPostElementRef.current);
         }
     }, [loading, hasMore]);
-//-------------------------------------------------------
 
     const getAuthToken = () => {
         return sessionStorage.getItem('token') || localStorage.getItem('token');
@@ -85,13 +82,33 @@ useEffect(() => {
         } catch (error) {
             console.error('Error adding post to bookmarks:', error);
         }
-    };   
+    };
 
-    return(
+    const removeFromBookmarks = async (postId) => {
+        try {
+            const token = getAuthToken();
+            const { data: bookmarksData } = await axios.get(`http://localhost:8080/api/v1/bookmarks/post/${postId}`, {
+                           headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const bookmarkData = bookmarksData.content[0];
+            const response = await axios.delete(`http://localhost:8080/api/v1/bookmarks/${bookmarkData.bookmarkId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log('Post removed from bookmarks:', response.data);
+        } catch (error) {
+            console.error('Error deleting a post from bookmarks:', error);
+        }
+    };
+
+    return (
         <Grid container spacing={3}>
             {postData.map((post, index) => (
                 <Grid item xs={12} key={post.id} ref={postData.length === index + 1 ? lastPostElementRef : null}>
-                    <Post postData={post} refresh={handlePostCreated} addToBookmarks={addToBookmarks} />
+                    <Post postData={post} refresh={handlePostCreated} addToBookmarks={addToBookmarks} removeFromBookmarks={removeFromBookmarks} />
                 </Grid>
             ))}
             {loading && (
@@ -110,5 +127,6 @@ useEffect(() => {
 
 PostsFeed.propTypes = {
     refresh: PropTypes.bool.isRequired,
-    handlePostCreated: PropTypes.func
+    handlePostCreated: PropTypes.func,
+    bookmarkId:PropTypes.string,
 };
