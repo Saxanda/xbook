@@ -19,6 +19,7 @@ export default function Post({ postData, postComments, refresh, isPage, addToBoo
                 date={postData.createdDate}
                 isPage={isPage}
                 postId={postData.id}
+                refresh={refresh}
             />
             {postData.type === 'REPOST' ? (
                 <PosdBodyRepost

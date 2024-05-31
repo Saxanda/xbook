@@ -1,5 +1,6 @@
 import AuthorProfileNav from "./AuthorProfileNav"
 import "./Sidbars.scss"
+import { getFriends } from "../../redux/friends/friendsThunks";
 
 export default function NavigationSideBar(){
     return(

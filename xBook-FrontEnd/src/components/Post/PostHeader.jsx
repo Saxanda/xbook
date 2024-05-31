@@ -14,7 +14,7 @@ import { deletePost } from './postApi';
 
 import './Posts.scss'
 
-export default function PostHeader({ author, date, isRepost, isPage,postId}) {
+export default function PostHeader({ author, date, isRepost, isPage,postId, refresh}) {
     const [userId, setUserId] = useState(null);
 
     useEffect(() => {
@@ -38,7 +38,7 @@ const handleDeletePost = async () => {
     console.log(postId);
     const result = await deletePost(postId);
     console.log('post deleted:', result);
-    // refresh();
+    refresh();
 };
 
     return (
@@ -77,5 +77,6 @@ PostHeader.propTypes = {
     date: PropTypes.string.isRequired,
     isRepost:PropTypes.bool,
     isPage:PropTypes.bool,
-    postId:PropTypes.number
+    postId:PropTypes.number,
+    refresh:PropTypes.func
 };
