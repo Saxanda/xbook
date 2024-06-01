@@ -84,19 +84,17 @@ public class MessageController {
         webSocketService.sendMessageNotification(authUser, unreadMessage);
     }
 
-    @DeleteMapping("/api/messages/delete/{id}")
+    @DeleteMapping("/api/v1/messages/delete/{id}")
     public ResponseEntity<?> deleteMessage(@PathVariable("id") Long messageId) {
         if (messageService.deleteMessageById(messageId)) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        ;
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The message with id " + messageId + " doesn`t exist!");
     }
 
-    @PostMapping("/api/messages/update/{id}")
+    @PostMapping("/api/v1/messages/update/{id}")
     public ResponseEntity<MessageResponse> editMessage(@PathVariable("id") Long messageId, @RequestBody UpdateMessageRequest newContent) {
         MessageResponse messageResponse = messageService.editMessage(messageId, newContent);
         return ResponseEntity.ok().body(messageResponse);
-
     }
 }
