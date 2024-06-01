@@ -5,8 +5,10 @@ import app.dto.response.BookmarkResponse;
 import app.dto.response.PostResponse;
 import app.dto.response.UserDetailsResponse;
 import app.entity.Bookmark;
+import app.repository.BookmarkRepository;
 import app.repository.UserRepository;
 import app.service.PostService;
+import app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,14 +16,19 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class BookmarkMapper {
     private final UserRepository userRepository;
-    private final PostService postService; // Use PostService for detailed post data.
+    private final UserService userService;
+    private final PostService postService;
+    private final BookmarkRepository bookmarkRepository;
 
     public Bookmark toBookmarkRequest(BookmarkRequest bookmarkRequest) {
         if (bookmarkRequest == null) {
             return null;
         }
+        //Check if post exist
+        postService.getPostById(bookmarkRequest.getPostId());
+
         Bookmark bookmark = new Bookmark();
-        bookmark.setUserId(bookmarkRequest.getUserId());
+        bookmark.setUserId(userService.getAuthCurrentUserId());
         bookmark.setPostId(bookmarkRequest.getPostId());
         return bookmark;
     }
