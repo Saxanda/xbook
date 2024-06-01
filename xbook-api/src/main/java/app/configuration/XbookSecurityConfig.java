@@ -84,5 +84,4 @@ public class XbookSecurityConfig {
                 .components(new Components().addSecuritySchemes
                         ("Bearer Authentication", createAPIKeyScheme()));
     }
-
 }

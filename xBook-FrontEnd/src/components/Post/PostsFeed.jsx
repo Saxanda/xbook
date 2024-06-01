@@ -1,14 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Post from '../Post/Post';
-import { Grid, Typography } from '@mui/material/';
+import { Grid, Typography, CircularProgress } from '@mui/material/';
 import { getPosts } from '../Post/postApi';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
 
-export default function PostsFeed({refresh,handlePostCreated }){
+export default function PostsFeed({ refresh, handlePostCreated, }) {
     const [postData, setPostData] = useState([]);
-
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const observer = useRef();
+    const lastPostElementRef = useRef();
     const [userId, setUserId] = useState(null);
 
     useEffect(() => {
@@ -18,23 +22,47 @@ export default function PostsFeed({refresh,handlePostCreated }){
             const userIdFromToken = decodedToken.sub || decodedToken.id;
             setUserId(userIdFromToken);
         }
-    }, [])
+    }, []);
 
-
-
-    useEffect(() => {
-        const fetchData = async () => {
+    const fetchPosts = async (page, reset = false) => {
+        setLoading(true);
         try {
-            const data = await getPosts();
-            setPostData(data.content);
+            const data = await getPosts(page);
+            if (reset) {
+                setPostData(data.content);
+                setPage(0);
+            } else {
+                setPostData(prevPosts => [...prevPosts, ...data.content]);
+            }
+            setHasMore(!data.last);
+            console.log("current page: " + page);
         } catch (error) {
             console.error('Error fetching posts:', error);
+        } finally {
+            setLoading(false);
         }
-        };
+    };
 
+    useEffect(() => {
+        fetchPosts(0, true);
+    }, [refresh]);
 
-        fetchData();
-    },[refresh]);
+    useEffect(() => {
+        if (page > 0) fetchPosts(page);
+    }, [page]);
+
+    useEffect(() => {
+        if (loading) return;
+        if (observer.current) observer.current.disconnect();
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore) {
+                setPage(prevPage => prevPage + 1);
+            }
+        });
+        if (lastPostElementRef.current) {
+            observer.current.observe(lastPostElementRef.current);
+        }
+    }, [loading, hasMore]);
 
     const getAuthToken = () => {
         return sessionStorage.getItem('token') || localStorage.getItem('token');
@@ -56,16 +84,39 @@ export default function PostsFeed({refresh,handlePostCreated }){
         }
     };
 
-    
+    const removeFromBookmarks = async (postId) => {
+        try {
+            const token = getAuthToken();
+            const { data: bookmarksData } = await axios.get(`http://localhost:8080/api/v1/bookmarks/post/${postId}`, {
+                           headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const bookmarkData = bookmarksData.content[0];
+            const response = await axios.delete(`http://localhost:8080/api/v1/bookmarks/${bookmarkData.bookmarkId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log('Post removed from bookmarks:', response.data);
+        } catch (error) {
+            console.error('Error deleting a post from bookmarks:', error);
+        }
+    };
 
-    return(
+    return (
         <Grid container spacing={3}>
-            {postData.map(post => (
-                <Grid item xs={12} key={post.id}>
-                    <Post postData={post} refresh={handlePostCreated} addToBookmarks={addToBookmarks} />
+            {postData.map((post, index) => (
+                <Grid item xs={12} key={post.id} ref={postData.length === index + 1 ? lastPostElementRef : null}>
+                    <Post postData={post} refresh={handlePostCreated} addToBookmarks={addToBookmarks} removeFromBookmarks={removeFromBookmarks} />
                 </Grid>
             ))}
-            {postData.length === 0 && (
+            {loading && (
+                <Grid item xs={12} style={{ textAlign: 'center' }}>
+                    <CircularProgress />
+                </Grid>
+            )}
+            {!loading && postData.length === 0 && (
                 <Grid item xs={12}>
                     <Typography variant="body1">No posts to display.</Typography>
                 </Grid>
@@ -76,5 +127,6 @@ export default function PostsFeed({refresh,handlePostCreated }){
 
 PostsFeed.propTypes = {
     refresh: PropTypes.bool.isRequired,
-    handlePostCreated: PropTypes.func
+    handlePostCreated: PropTypes.func,
+    bookmarkId:PropTypes.string,
 };

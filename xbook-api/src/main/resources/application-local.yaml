@@ -34,4 +34,4 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: socialxbook@gmail.com
-    password: "xury imwo eruf pmxy" #Ask for password
+    password: 123  #Ask for password

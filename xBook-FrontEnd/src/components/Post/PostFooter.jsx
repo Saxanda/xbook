@@ -9,23 +9,30 @@ import RepeatIcon from '@mui/icons-material/Repeat';
 import CommentIcon from '@mui/icons-material/Comment';
 import { useNavigate } from 'react-router-dom';
 import CreateRepostModal from './CreateRepostModal';
-import { likePost } from './postApi';
-
+import { likePost, deleteLike } from './postApi';
 import "./Posts.scss"
 
-export default function PostFooter({ likes, id, originalPost,comments,reposts,refresh, isLiked, addToBookmarks }) {
+export default function PostFooter({ likes, id, originalPost, comments, reposts, refresh, isLiked, bookmarked, addToBookmarks, removeFromBookmarks }) {
     const navigate = useNavigate();
-
-    const [isBookmarked, setIsBookmarked] = useState(false);
+    const [isBookmarked, setIsBookmarked] = useState(bookmarked);
     const [isRepostModalOpen, setRepostModalOpen] = useState(false);
     const [liked, setLiked] = useState(isLiked);
+    const [likeCount,setLikeCount] = useState(likes);
 
 
     const handleLikeButtonClick = async () => {
         try {
-            const result = await likePost(id);
-            console.log('Post liked:', result);
-            setLiked(true);
+            if (!liked) {
+                const result = await likePost(id);
+                console.log('Post liked:', result);
+                setLiked(true);
+                setLikeCount(likeCount+1) ;
+            } else {
+                const result = await deleteLike(id);
+                console.log('Like removed:', result);
+                setLiked(false);
+                setLikeCount(likeCount-1) ;
+            }
         } catch (error) {
             console.error('Error handling like button click:', error);
         }
@@ -40,11 +47,15 @@ export default function PostFooter({ likes, id, originalPost,comments,reposts,re
     };
 
     const handleFavoriteButtonClick = async () => {
-        setIsBookmarked((prevIsBookmarked) => !prevIsBookmarked);
         try {
-            
-            await addToBookmarks(id);
-            console.log('Post added to bookmarks');
+            if (isBookmarked) {
+                await removeFromBookmarks(id);
+                console.log('Post removed from bookmarks');
+            } else {
+                await addToBookmarks(id);
+                console.log('Post added to bookmarks');
+            }
+            setIsBookmarked((prevIsBookmarked) => !prevIsBookmarked);
         } catch (error) {
             console.error('Error handling favorite button click:', error);
         }
@@ -60,7 +71,9 @@ export default function PostFooter({ likes, id, originalPost,comments,reposts,re
                 <div className="postComponent_footer">
                     <div className="postComponent_footer_activiti">
                         <div className='postComponent_footer_activiti_info'>
-                            <Typography variant="body1">Likes {likes}</Typography>
+                            <Typography variant="body1">
+                                {`Likes ${likeCount}`}
+                            </Typography>
                             <div style={{ display: 'flex', gap: "10px" }}>
                                 <Typography variant="body1">{comments} Comments </Typography>
                                 <Typography variant="body1">Reposts {reposts}</Typography>
@@ -68,9 +81,7 @@ export default function PostFooter({ likes, id, originalPost,comments,reposts,re
                         </div>
                         <div className="postComponent_footer_activiti_btns">
                             <IconButton className='posts__button like' variant="contained" aria-label="like" onClick={handleLikeButtonClick}>
-                                <ThumbUpIcon 
-                                color={liked ? 'primary' : 'default'}
-                                />
+                                <ThumbUpIcon color={liked ? 'primary' : 'default'} />
                             </IconButton>
                             <IconButton className='posts__button favorite' variant="contained" aria-label="favorite" onClick={handleFavoriteButtonClick}>
                                 <FavoriteIcon color={isBookmarked ? "primary" : "default"} />
@@ -100,9 +111,12 @@ PostFooter.propTypes = {
     likes: PropTypes.number.isRequired,
     id: PropTypes.number.isRequired,
     originalPost: PropTypes.object,
-    reposts :PropTypes.number,
-    comments :PropTypes.number,
+    reposts: PropTypes.number,
+    comments: PropTypes.number,
     refresh: PropTypes.func,
     isLiked: PropTypes.bool,
-    addToBookmarks: PropTypes.func.isRequired 
+    addToBookmarks: PropTypes.func.isRequired,
+    removeFromBookmarks: PropTypes.func.isRequired,
+    bookmarked: PropTypes.bool,
+    bookmarkId: PropTypes.string,
 };

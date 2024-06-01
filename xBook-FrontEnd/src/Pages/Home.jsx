@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Hidden } from '@mui/material';
 import PostsFeed from '../components/Post/PostsFeed'
 import CreatePost from '../components/Post/CreatePost';
-
+import ComunitiSideBar from '../components/UpdateNavigations/ComunitiSideBar';
+import NavigationSideBar from '../components/UpdateNavigations/NavigationSideBar';
 
 
 export default function Home() {
@@ -12,13 +13,19 @@ export default function Home() {
         setRefresh(prev => !prev); 
     };
     return (
-        <section  className='home_posts_container'>
-            <Grid item xs={12} sm={8} md={6} className='create_post'>
-                <CreatePost onPostCreated={handlePostCreated} ></CreatePost>
-            </Grid>
-            <Grid item xs={12} sm={8} md={6}>
-                <PostsFeed refresh={refresh} handlePostCreated={handlePostCreated} ></PostsFeed>
-            </Grid>
-        </section>
+        <div className="home_container">
+            <Hidden className="home_sidebar_container" mdDown>
+                <NavigationSideBar></NavigationSideBar>
+            </Hidden>
+            <section  className='home_posts_container' >
+                <Grid item xs={12} sm={8} md={6} className='create_post'>
+                    <CreatePost onPostCreated={handlePostCreated} ></CreatePost>
+                </Grid>
+                <Grid item xs={12} sm={8} md={6}>
+                    <PostsFeed refresh={refresh} handlePostCreated={handlePostCreated} ></PostsFeed>
+                </Grid>
+            </section>
+            <ComunitiSideBar/>
+        </div>
     );
 }

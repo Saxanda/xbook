@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
-import { Box, TextField, Avatar} from '@mui/material';
+import { Box, TextField} from '@mui/material';
 import Comment from './Comment';
 import { useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import SendIcon from '@mui/icons-material/Send';
 import InputAdornment from '@mui/material/InputAdornment';
 import { createComment } from './postApi';
+import AuthorAvatar from './sideComponents/AuthorAvatar';
 
 export default function PostComments({ comments, postId,refresh }) {
     const [newComment, setNewComment] = useState('');
@@ -45,7 +46,7 @@ export default function PostComments({ comments, postId,refresh }) {
                         backgroundColor: "white",
                         borderTop: "1px solid rgba(0, 0, 0, 0.1)"
                         }}>
-                <Avatar src={"https://n1s1.hsmedia.ru/5a/71/08/5a7108a17f3e61267b8f796f1450feed/1280x1280_0xjqJeoj1t_3175775419840025932.jpg"} alt={"SKUF"} />
+                <AuthorAvatar/>
                     <TextField
                         fullWidth
                         multiline

@@ -50,12 +50,13 @@ public class LikeService {
 
     public void removeLikeByPost(Long postId, Long userId) {
         // Check if the like exists and belongs to this user
-        Like like = likeRepository.findByUserIdAndPostId(postId, userId)
+        Like like = likeRepository.findByUserIdAndPostId(userId, postId)
                 .orElseThrow(() -> new IllegalArgumentException("Like not found or does not belong to user"));
         Post post = like.getPost();
-        post.setLikes(post.getLikes() - 1);
-        postRepository.save(post);
+        if (post.getLikes() > 0) {
+            post.setLikes(post.getLikes() - 1);
+            postRepository.save(post);
+        }
         likeRepository.delete(like);
-
     }
 }
