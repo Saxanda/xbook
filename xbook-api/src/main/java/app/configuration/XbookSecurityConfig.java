@@ -1,7 +1,5 @@
 package app.configuration;
 
-
-import app.repository.UserRepository;
 import app.security.JwtAuthenticationEntryPoint;
 import app.security.JwtFilter;
 import io.swagger.v3.oas.models.Components;
@@ -19,8 +17,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.firewall.HttpFirewall;
-import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -53,31 +49,21 @@ public class XbookSecurityConfig {
                 .and()
                 .authorizeRequests(authorize -> authorize
                         .requestMatchers(
-                                AntPathRequestMatcher.antMatcher("/"),
-                                AntPathRequestMatcher.antMatcher("/index.html"),
-                                AntPathRequestMatcher.antMatcher("/websocket/**"),
-                                AntPathRequestMatcher.antMatcher("/app.js"),
-                                AntPathRequestMatcher.antMatcher("/main.css"),
-                                AntPathRequestMatcher.antMatcher("/static/**"),
-                                AntPathRequestMatcher.antMatcher("/assets/**"),
-                                AntPathRequestMatcher.antMatcher("/vite.svg"),
-                                AntPathRequestMatcher.antMatcher("/h2-console/**"),
-                                AntPathRequestMatcher.antMatcher("/confirm-email**"),
-                                AntPathRequestMatcher.antMatcher("/swagger-ui/**"),
-                                AntPathRequestMatcher.antMatcher("/v3/api-docs/**"),
                                 AntPathRequestMatcher.antMatcher("/api/v1/auth/**")
                         ).permitAll()
-                        .anyRequest().authenticated());
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/**")).authenticated()
+                        .anyRequest().permitAll());
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(clientUrl));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH","OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setAllowCredentials(true); //to handle cookies or authentication
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -98,5 +84,4 @@ public class XbookSecurityConfig {
                 .components(new Components().addSecuritySchemes
                         ("Bearer Authentication", createAPIKeyScheme()));
     }
-
 }
