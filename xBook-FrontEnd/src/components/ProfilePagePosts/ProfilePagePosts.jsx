@@ -9,12 +9,20 @@ import FemaleIcon from '@mui/icons-material/Female';
 import { useSelector } from 'react-redux';
 import { modalEditProfile } from '../../redux/profile/profileSlice';
 import ProfilePostsList from '../ProfilePostsList/ProfilePostsList';
+import CreatePost from '../Post/CreatePost';
+import { useState } from 'react';
 
 export default function ProfilePagePosts(){
     const {obj} = useSelector(state => state.profile.profileData)
     
     const modalEditProfileOpen = () => {
         dispatch(modalEditProfile(true));
+    };
+
+    const [refresh, setRefresh] = useState(false);
+
+    const handlePostCreated = () => {
+        setRefresh(prev => !prev); 
     };
 
     return(
@@ -90,14 +98,9 @@ export default function ProfilePagePosts(){
                         }
                     </div>
                 </div>
-                <div>
-                    {/* <div style={{maxWidth: "500px", width: "300px", height: "128px", backgroundColor: "grey", marginBottom: "16px"}}>
-                    </div>
-                    <div style={{maxWidth: "500px", width: "300px", height: "93px", backgroundColor: "grey", marginBottom: "16px"}}>
-                    </div>
-                    <div style={{maxWidth: "500px", width: "300px", height: "500px", backgroundColor: "grey"}}>
-                    </div> */}
-                    <ProfilePostsList />
+                <div style={{display: 'flex', flexDirection: "column", gap: "20px"}}>
+                    { obj.user === "myUser" ? <CreatePost onPostCreated={handlePostCreated} /> : null}
+                    <ProfilePostsList refresh={refresh} handlePostCreated={handlePostCreated} />
                 </div>
             </div>
         </>

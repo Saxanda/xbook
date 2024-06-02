@@ -87,7 +87,7 @@ export default function ProfilePage() {
         dispatch(userProfile(newObj));
         dispatch(getFriends({userId: urlID}));
         dispatch(getUserPosts({page: 0, userId: urlID}))
-        dispatch(getUserPostsContent({page: 0, userId: urlID}))
+        // dispatch(getUserPostsContent({page: 0, userId: urlID}))
     };
 
     const modalEditProfileOpen = () => {
@@ -344,7 +344,7 @@ export default function ProfilePage() {
                           }
                       </ul>
                     </Box>
-                    <div style={{backgroundColor: "#F0F2F5", height: "100%", paddingTop: "20px"}}>
+                    <div style={{backgroundColor: "#F0F2F5", height: "100%"}}>
                             <Outlet />
                     </div>
                 </div>
