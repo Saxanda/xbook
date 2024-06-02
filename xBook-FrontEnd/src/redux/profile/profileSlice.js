@@ -59,6 +59,25 @@ export const getUserPosts = createAsyncThunk(
     }
 );
 
+export const getUserPostsContent = createAsyncThunk(
+    "profile/getUserPostsContent",
+    async ({page = 0, size = 2, userId}, {rejectWithValue}) => {
+        const TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token");
+        const params = new URLSearchParams({ page, size });
+        try {
+            const response = await axios.get(`${BASE_URL}api/v1/posts/get/${userId}?${params}`, {
+                headers: {
+                    Authorization: `Bearer ${TOKEN}`,
+                },
+            });
+            console.log("USERPROFILEPOSTS THUNK: ",response);
+            return response.data.content;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
 const profileSlice = createSlice({
     name: "profile",
     initialState: initialValue,
@@ -74,6 +93,20 @@ const profileSlice = createSlice({
         builders(builder, userProfile, 'profileData');
         builders(builder, editUser, 'editUserData');
         builders(builder, getUserPosts, 'userPosts');
+        // builders(builder, getUserPostsContent, 'userPostsContent');
+        builder
+            .addCase(getUserPostsContent.pending, (state) => {
+                state.userPostsContent.status = 'loading';
+            })
+            .addCase(getUserPostsContent.fulfilled, (state, action) => {
+                state.userPostsContent.status = 'succeeded';
+                // Додавання нових постів до наявних
+                state.userPostsContent.obj = [...state.userPostsContent.obj, ...action.payload];
+            })
+            .addCase(getUserPostsContent.rejected, (state, action) => {
+                state.userPostsContent.status = 'failed';
+                state.userPostsContent.error = action.error.message;
+            });
     }
 });
 

@@ -13,7 +13,7 @@ import { jwtDecode } from "jwt-decode";
 import { getPhoto } from "../../features/getPhoto";
 import ModalEditProfile from "../../components/ModalEditProfile/ModalEditProfile";
 import DeleteFriendModal from "../../components/ModalDeleteFriend/DeleteFriendModal";
-import { userProfile, modalEditProfile, resetEditProfileState, editUser, getUserPosts} from "../../redux/profile/profileSlice";
+import { userProfile, modalEditProfile, resetEditProfileState, editUser, getUserPosts, getUserPostsContent} from "../../redux/profile/profileSlice";
 import { modalDeleteFriend} from "../../redux/friends/friendsSlice";
 import { getFriends, sendFriendRequest, friendData, requests} from "../../redux/friends/friendsThunks";
 import { createHandleScroll } from "../../features/createScroll";
@@ -42,12 +42,12 @@ export default function ProfilePage() {
     const [sended, setSended] = useState(false);
     const inputBackgroundPhoto = useRef();
     const inputAvatarPhoto = useRef();
-    const scrollContainerRef = useRef(null);
-    const postsStatus = useSelector(state => state.profile.userPosts.status);
+    // const scrollContainerRef = useRef(null);
+    // const postsStatus = useSelector(state => state.profile.userPosts.status);
     // const {pageNumber} = useSelector(state => state.profile.userPosts.obj.pageable.pageNumber);
-    const pageable = useSelector(state => state.profile.userPosts.obj.pageable);
-    const pageNumber = pageable ? pageable.pageNumber : 0;
-    const {totalPages} = useSelector(state => state.profile.userPosts.obj)
+    // const pageable = useSelector(state => state.profile.userPosts.obj.pageable);
+    // const pageNumber = pageable ? pageable.pageNumber : 0;
+    // const {totalPages} = useSelector(state => state.profile.userPosts.obj)
     // console.log(page);
 
     useEffect(() => {
@@ -87,6 +87,7 @@ export default function ProfilePage() {
         dispatch(userProfile(newObj));
         dispatch(getFriends({userId: urlID}));
         dispatch(getUserPosts({page: 0, userId: urlID}))
+        dispatch(getUserPostsContent({page: 0, userId: urlID}))
     };
 
     const modalEditProfileOpen = () => {
@@ -160,18 +161,18 @@ export default function ProfilePage() {
       clickLinkPosts();
     }
 
-    const getMorePosts = () => {
-      if (postsStatus !== 'pending' && pageNumber < totalPages) {
-        console.log("SCROLL");
-        dispatch(getUserPosts({ page: pageNumber + 1, userId: urlID }));
-      }
-    };
+    // const getMorePosts = () => {
+    //   if (postsStatus !== 'pending' && pageNumber < totalPages) {
+    //     console.log("SCROLL");
+    //     dispatch(getUserPosts({ page: pageNumber + 1, userId: urlID }));
+    //   }
+    // };
     
-    const handleScroll = createHandleScroll({
-      scrollRef: scrollContainerRef,
-      status: postsStatus,
-      fetchMore: getMorePosts,
-    });
+    // const handleScroll = createHandleScroll({
+    //   scrollRef: scrollContainerRef,
+    //   status: postsStatus,
+    //   fetchMore: getMorePosts,
+    // });
     
     
     return (
@@ -183,7 +184,7 @@ export default function ProfilePage() {
             <>
             <DeleteFriendModal />
             <ModalEditProfile />
-            <div style={{backgroundColor: "#F0F2F5"}} onScroll={() => handleScroll()} ref={scrollContainerRef}>
+            <div style={{backgroundColor: "#F0F2F5"}} >
                 <div className='profileImageWrapper'>
                       <div className="profileHeader__cover">
                           <img className="profileHeader__photo" src={obj.photo ? obj.photo : '/profilePage/default_background.jpg'} alt="header photo" />

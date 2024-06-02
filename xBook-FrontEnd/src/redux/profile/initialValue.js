@@ -16,7 +16,13 @@ const initialValue = {
         obj: {},
         status: null,
         error: null,
+    },
+    userPostsContent: {
+        obj: [],
+        status: null,
+        error: null,
     }
+
 }
 
 export default initialValue;
