@@ -33,7 +33,6 @@ export default function PostPage() {
                 setLoading(false);
             }
         };
-
         fetchPost();
     }, [postId,refresh]);
 
@@ -53,6 +52,7 @@ export default function PostPage() {
                         isPage={true}
                         postData={post} 
                         postComments={<PostComments comments={comments} postId={postId} refresh={handleCommentCreated}
+                        
                         />} 
                     />
                 </Paper>

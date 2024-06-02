@@ -78,6 +78,6 @@ export default function PostComments({ comments, postId,refresh }) {
 
 PostComments.propTypes = {
     comments: PropTypes.array,
-    postId: PropTypes.number,
+    postId: PropTypes.string,
     refresh: PropTypes.func
 };

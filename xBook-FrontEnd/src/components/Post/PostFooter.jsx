@@ -114,8 +114,8 @@ PostFooter.propTypes = {
     comments: PropTypes.number,
     refresh: PropTypes.func,
     isLiked: PropTypes.bool,
-    addToBookmarks: PropTypes.func.isRequired,
-    removeFromBookmarks: PropTypes.func.isRequired,
+    addToBookmarks: PropTypes.func,
+    removeFromBookmarks: PropTypes.func,
     bookmarked: PropTypes.bool,
     bookmarkId: PropTypes.string,
 };

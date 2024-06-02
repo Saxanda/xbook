@@ -35,18 +35,21 @@ export default function ComunitiSideBar(){
     }, [currentAdIndex]);
 
     return(
-        <Hidden className="home_sidebar_container" lgDown>
-            <Box elevation={3} className="home_sidebar_container">
-                <Paper display="flex" flexDirection="column" className='home_sidebar_add'>
-                    <Link href={currentAd.link} target="_blank" rel="noopener noreferrer">
-                        <img src={currentAd.imageUrl} alt="Ad" style={{ width: '100%', height: 'auto' }} />
-                    </Link>
-                    <Typography variant="body2" align="center" mt={1}>
-                        {currentAd.text}
-                    </Typography>
-                </Paper>
-            </Box>
-        </Hidden>
+        
+            <Hidden  lgDown>
+                <Box elevation={3} className="home_sidebar_container">
+                    <Paper style={{ display: 'flex', flexDirection: 'column' }} className='home_sidebar_add'>
+                        <Link href={currentAd.link} target="_blank" rel="noopener noreferrer">
+                            <img src={currentAd.imageUrl} alt="Ad" style={{ width: '100%', height: 'auto' }} />
+                        </Link>
+                        <Typography variant="body2" align="center" mt={1}>
+                            {currentAd.text}
+                        </Typography>
+                    </Paper>
+                </Box>
+            </Hidden>
+        
+        
         
     )
 }
