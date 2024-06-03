@@ -8,15 +8,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
-import { NavLink, Outlet, useParams, useLocation} from 'react-router-dom';
+import { Link, Outlet, useParams, useLocation} from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 import { getPhoto } from "../../features/getPhoto";
 import ModalEditProfile from "../../components/ModalEditProfile/ModalEditProfile";
 import DeleteFriendModal from "../../components/ModalDeleteFriend/DeleteFriendModal";
-import { userProfile, modalEditProfile, resetEditProfileState, editUser, getUserPosts, getUserPostsContent} from "../../redux/profile/profileSlice";
+import { userProfile, modalEditProfile, resetEditProfileState, editUser, getUserPosts} from "../../redux/profile/profileSlice";
 import { modalDeleteFriend} from "../../redux/friends/friendsSlice";
 import { getFriends, sendFriendRequest, friendData, requests} from "../../redux/friends/friendsThunks";
-import { createHandleScroll } from "../../features/createScroll";
 import { useDispatch, useSelector } from "react-redux";
 import { Box } from "@mui/material";
 
@@ -42,13 +41,6 @@ export default function ProfilePage() {
     const [sended, setSended] = useState(false);
     const inputBackgroundPhoto = useRef();
     const inputAvatarPhoto = useRef();
-    // const scrollContainerRef = useRef(null);
-    // const postsStatus = useSelector(state => state.profile.userPosts.status);
-    // const {pageNumber} = useSelector(state => state.profile.userPosts.obj.pageable.pageNumber);
-    // const pageable = useSelector(state => state.profile.userPosts.obj.pageable);
-    // const pageNumber = pageable ? pageable.pageNumber : 0;
-    // const {totalPages} = useSelector(state => state.profile.userPosts.obj)
-    // console.log(page);
 
     useEffect(() => {
         if (token) {
@@ -87,7 +79,6 @@ export default function ProfilePage() {
         dispatch(userProfile(newObj));
         dispatch(getFriends({userId: urlID}));
         dispatch(getUserPosts({page: 0, userId: urlID}))
-        // dispatch(getUserPostsContent({page: 0, userId: urlID}))
     };
 
     const modalEditProfileOpen = () => {
@@ -161,20 +152,6 @@ export default function ProfilePage() {
       clickLinkPosts();
     }
 
-    // const getMorePosts = () => {
-    //   if (postsStatus !== 'pending' && pageNumber < totalPages) {
-    //     console.log("SCROLL");
-    //     dispatch(getUserPosts({ page: pageNumber + 1, userId: urlID }));
-    //   }
-    // };
-    
-    // const handleScroll = createHandleScroll({
-    //   scrollRef: scrollContainerRef,
-    //   status: postsStatus,
-    //   fetchMore: getMorePosts,
-    // });
-    
-    
     return (
         <>
         {
@@ -187,7 +164,7 @@ export default function ProfilePage() {
             <div style={{backgroundColor: "#F0F2F5"}} >
                 <div className='profileImageWrapper'>
                       <div className="profileHeader__cover">
-                          <img className="profileHeader__photo" src={obj.photo ? obj.photo : '/profilePage/default_background.jpg'} alt="header photo" />
+                          <img className="profileHeader__photo" src={obj.photo ? obj.photo : '/profilePage/default_background.jpg'} alt="background photo" />
                           {
                           obj.user === "myUser" ?
                           
@@ -250,7 +227,7 @@ export default function ProfilePage() {
                               }
                           </div>
                       </div>
-                    <Box sx={{backgroundColor: "white"}}>
+                    <Box sx={{backgroundColor: "white", borderBottomLeftRadius: "12px", borderBottomRightRadius: "12px"}}>
                       <div className='profileHeader__profile'>
                           <div className='profileHeader__info'>
                               <div className='profileHeader__userInfo'>
@@ -271,7 +248,6 @@ export default function ProfilePage() {
                                       <Button 
                                       variant="contained" 
                                       sx={{
-                                        //   backgroundColor: '#0866FF',
                                         '@media (min-width: 876px)': {
                                             marginRight: '16px'
                                         }
@@ -325,21 +301,21 @@ export default function ProfilePage() {
                       </div>
                       <ul className='profileNav'>
                           <li className={linkPosts === "unfocus" ? 'profileNav__link' : 'profileNav__link  profileNav__link--active'}  onClick={clickLinkPosts}>
-                              <NavLink className='profileNav__item' to="">
+                              <Link className='profileNav__item' to="">
                                   <Typography variant='subtitle1'>Posts</Typography>
-                              </NavLink>
+                              </Link>
                           </li>
                           <li className={linkFriends === "unfocus" ? 'profileNav__link' : 'profileNav__link  profileNav__link--active'} onClick={clickLinkFriends}>
-                              <NavLink className='profileNav__item' to="friends">
+                              <Link className='profileNav__item' to="friends">
                                   <Typography variant='subtitle1'>Friends</Typography>
-                              </NavLink>
+                              </Link>
                           </li>
                           {
                               obj.user === "myUser" &&
                               <li className={linkRequests === "unfocus" ? 'profileNav__link' : 'profileNav__link  profileNav__link--active'} onClick={clickLinkRequests}>
-                                  <NavLink className='profileNav__item' to="requests">
+                                  <Link className='profileNav__item' to="requests">
                                       <Typography variant='subtitle1'>Requests</Typography>
-                                  </NavLink>
+                                  </Link>
                               </li>
                           }
                       </ul>

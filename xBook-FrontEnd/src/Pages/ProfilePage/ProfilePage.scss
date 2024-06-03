@@ -129,9 +129,9 @@
     display: flex;
     justify-content: center;
 
-    @media (min-width: 876px) {
-        justify-content: normal;
-    }
+    // @media (min-width: 876px) {
+    //     justify-content: normal;
+    // }
 
     &__link {
         padding: 12px;

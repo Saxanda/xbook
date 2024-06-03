@@ -3,108 +3,104 @@ import axios from "axios";
 
 const BASE_URL = 'http://localhost:8080/';
 
+const getToken = () => localStorage.getItem("token") || sessionStorage.getItem("token");
+
 export const getFriends = createAsyncThunk(
     "friends/getFriends",
-    async ({ page = 0, size = 2, userId,}, { rejectWithValue }) => {
-        const TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token");
+    async ({ page = 0, size = 2, userId }, { rejectWithValue }) => {
         const params = new URLSearchParams({ page, size });
         try {
             const response = await axios.get(`${BASE_URL}api/v1/friends/${userId}?${params}`, {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                 },
             });
-            console.log("GET FRIENDS THUNK: ",response);
+            console.log("GET FRIENDS THUNK: ", response);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
     }
-)
+);
 
 export const deleteFriend = createAsyncThunk(
     "friends/deleteFriend",
-    async ({ friendId}, { rejectWithValue }) => {
-        const TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token");
+    async ({ friendId }, { rejectWithValue }) => {
         try {
             const response = await axios.delete(`${BASE_URL}api/v1/friends/delete-friend/${friendId}`, {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                 },
             });
-            console.log("DELETE FRIEND THUNK: ",response);
+            console.log("DELETE FRIEND THUNK: ", response);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
     }
-)
+);
 
 export const sendFriendRequest = createAsyncThunk(
     "friends/sendFriendRequest",
-    async ({friendId}, { rejectWithValue }) => {
-        const TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token");
+    async ({ friendId }, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${BASE_URL}api/v1/friends/add-friend/${friendId}`, {friendId}, {
+            const response = await axios.post(`${BASE_URL}api/v1/friends/add-friend/${friendId}`, { friendId }, {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                 },
             });
-            console.log("SEND REQUEST THUNK: ",response);
+            console.log("SEND REQUEST THUNK: ", response);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
     }
-)
+);
 
 export const acceptFriendRequest = createAsyncThunk(
     "friends/acceptFriendRequest",
-    async ({userId, friendId}, { rejectWithValue }) => {
-        const TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token");
+    async ({ userId, friendId }, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${BASE_URL}api/v1/friends/accept-friend/${friendId}`, {userId, friendId}, {
+            const response = await axios.post(`${BASE_URL}api/v1/friends/accept-friend/${friendId}`, { userId, friendId }, {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                 },
             });
-            console.log("ACCEPT REQUEST THUNK: ",response);
+            console.log("ACCEPT REQUEST THUNK: ", response);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
     }
-)
+);
 
 export const rejectFriendRequest = createAsyncThunk(
     "friends/rejectFriendRequest",
-    async ({ friendId}, { rejectWithValue }) => {
-        const TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token");
+    async ({ friendId }, { rejectWithValue }) => {
         try {
             const response = await axios.delete(`${BASE_URL}api/v1/friends/reject-friend/${friendId}`, {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                 }
             });
-            console.log("REJECT REQUEST THUNK: ",response);
+            console.log("REJECT REQUEST THUNK: ", response);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
     }
-)
+);
 
 export const friendData = createAsyncThunk(
     'friends/friend',
     async ({ id }, { rejectWithValue }) => {
-        const TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token");
         try {
             const response = await axios.get(`${BASE_URL}api/v1/users/${id}`, {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                 },
             });
-            console.log("FRIEND DATA THUNK: ",response);
+            console.log("FRIEND DATA THUNK: ", response);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -114,19 +110,18 @@ export const friendData = createAsyncThunk(
 
 export const requests = createAsyncThunk(
     'friends/requests',
-    async ({ page = 0, size = 2}, { rejectWithValue }) => {
-        const TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token");
+    async ({ page = 0, size = 2 }, { rejectWithValue }) => {
         const params = new URLSearchParams({ page, size });
         try {
             const response = await axios.get(`${BASE_URL}api/v1/friends/requests?${params}`, {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                 },
             });
-            console.log("ALL REQUEST THUNK: ",response);
+            console.log("ALL REQUEST THUNK: ", response);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
     }
-)
+);

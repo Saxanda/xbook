@@ -96,14 +96,14 @@ export default function ProfilePostsLists({ refresh, handlePostCreated }) {
         <>
             {postsData.length > 0 ? 
                 <InfiniteScroll
+                    style={{marginTop: "20px"}}
                     dataLength={postsData.length}
                     next={handlePagination}
                     hasMore={hasMore}
-                    loader={<h4>Loading...</h4>}
-                    endMessage={
-                        <p style={{ textAlign: 'center' }}>
-                            <b>Yay! You have seen it all</b>
-                        </p>
+                    loader={
+                        <div style={{display: "flex", alignItems: "center", justifyContent: "center", padding: "10px 0 10px 0"}}>
+                            <CircularProgress />
+                        </div>
                     }
                 >
                     <ul className='postsList'>
