@@ -16,7 +16,6 @@ export const userProfile = createAsyncThunk(
                     Authorization: `Bearer ${getToken()}`,
                 },
             });
-            console.log("USERPROFILE THUNK: ", response);
             return {...response.data, user: user};
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -50,7 +49,6 @@ export const getUserPosts = createAsyncThunk(
                     Authorization: `Bearer ${getToken()}`,
                 },
             });
-            console.log("USERPROFILEPOSTS THUNK: ", response);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);

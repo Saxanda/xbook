@@ -15,7 +15,6 @@ export const getFriends = createAsyncThunk(
                     Authorization: `Bearer ${getToken()}`,
                 },
             });
-            console.log("GET FRIENDS THUNK: ", response);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -32,7 +31,6 @@ export const deleteFriend = createAsyncThunk(
                     Authorization: `Bearer ${getToken()}`,
                 },
             });
-            console.log("DELETE FRIEND THUNK: ", response);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -49,7 +47,6 @@ export const sendFriendRequest = createAsyncThunk(
                     Authorization: `Bearer ${getToken()}`,
                 },
             });
-            console.log("SEND REQUEST THUNK: ", response);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -66,7 +63,6 @@ export const acceptFriendRequest = createAsyncThunk(
                     Authorization: `Bearer ${getToken()}`,
                 },
             });
-            console.log("ACCEPT REQUEST THUNK: ", response);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -83,7 +79,6 @@ export const rejectFriendRequest = createAsyncThunk(
                     Authorization: `Bearer ${getToken()}`,
                 }
             });
-            console.log("REJECT REQUEST THUNK: ", response);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -100,7 +95,6 @@ export const friendData = createAsyncThunk(
                     Authorization: `Bearer ${getToken()}`,
                 },
             });
-            console.log("FRIEND DATA THUNK: ", response);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
@@ -118,7 +112,6 @@ export const requests = createAsyncThunk(
                     Authorization: `Bearer ${getToken()}`,
                 },
             });
-            console.log("ALL REQUEST THUNK: ", response);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);

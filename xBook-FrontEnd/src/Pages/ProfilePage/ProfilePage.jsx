@@ -44,9 +44,7 @@ export default function ProfilePage() {
 
     useEffect(() => {
         if (token) {
-            console.log("USER TOKEN: ", token);
             const decodedToken = jwtDecode(token);
-            console.log(decodedToken);
             setID(parseInt(decodedToken.sub));
         }
     }, [token]);

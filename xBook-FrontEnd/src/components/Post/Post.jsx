@@ -14,11 +14,11 @@ export default function Post({ postData, postComments, refresh, isPage, addToBoo
 
     return (
         <Paper elevation={3} className='postComponent'>
-            {/* <PostHeader 
+            <PostHeader 
                 author={postData.author}
-                date={postData.timestamp}
+                date={postData.createdDate}
                 isPage={isPage}
-            /> */}
+            />
             {postData.type === 'REPOST' ? (
                 <PosdBodyRepost
                     originalPost={postData.originalPost}

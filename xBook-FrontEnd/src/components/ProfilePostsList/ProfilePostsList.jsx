@@ -20,7 +20,6 @@ export default function ProfilePostsLists({ refresh, handlePostCreated }) {
     const [hasMore, setHasMore] = useState(true);
 
     const totalPosts = useSelector(state => state.profile.userPosts.obj?.totalElements);
-    console.log("totalPosts : ", totalPosts);
     const userId = useSelector(state => state.profile.profileData.obj.id)
 
     useEffect(() => {

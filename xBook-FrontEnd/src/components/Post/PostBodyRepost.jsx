@@ -24,11 +24,11 @@ export default function PosdBodyRepost({ originalPost, text}){
                 <PostMediaGrid   
                     media={[originalPost.media]}
                 />
-                {/* <PostHeader
+                <PostHeader
                     author={originalPost.author}
-                    date={originalPost.timestamp}
+                    date={originalPost.createdDate}
                     isRepost= {true}
-                ></PostHeader> */}
+                ></PostHeader>
                 <Typography variant="body1" gutterBottom className='postComponent_body_text' style={{ paddingLeft: '5px' }}>
                     {originalPost.text}
                 </Typography>
