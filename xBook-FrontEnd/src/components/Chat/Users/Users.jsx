@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import UsersItem from "../UserItem/UserItem";
 import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 
-export default function Users({ onClicked, trigger, secondTrigger ,triggerChange, changeUserArray, token }) {
+export default function Users({ onClicked, trigger, secondTrigger ,triggerChange, changeUserArray, token, urlID }) {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [lastActiveUser, setLastActiveUser] = useState(0);
@@ -11,6 +12,15 @@ export default function Users({ onClicked, trigger, secondTrigger ,triggerChange
     const [emptyChat, setEmptyChat] = useState(false);
 
     const [inputText, setInputText] = useState('');
+    const navigate = useNavigate();
+    useEffect(() =>{
+        if(urlID === -1) 
+            {
+                setLastActiveUser(-1);
+                localStorage.setItem('lastActiveUser', -1);
+                localStorage.setItem('lastActiveChatID', -1);
+            }
+    }, [urlID])
 
     const deleteChat = async (id) => { // удаление чата
         if(users.length <=1) setLastActiveUser(-1)
@@ -27,8 +37,8 @@ export default function Users({ onClicked, trigger, secondTrigger ,triggerChange
                    triggerChange();
                 }
             else{
-                console.log(localStorage.getItem("lastActiveUserId"));
-                console.log(id);
+                //console.log(localStorage.getItem("lastActiveUserId"));
+                //console.log(id);
                 triggerChange();
             }
         } catch (error) {
@@ -112,6 +122,7 @@ export default function Users({ onClicked, trigger, secondTrigger ,triggerChange
         console.log("id: " + id + " index: " + index);
         localStorage.setItem('lastActiveUser', index);
         localStorage.setItem('lastActiveUserId', id);
+        navigate(`/chats/${id}`);
     };
 
     if (loading) {

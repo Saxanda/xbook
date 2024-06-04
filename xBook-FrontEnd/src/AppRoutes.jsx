@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import PrivateRoutes from "./helpers/PrivateRoutes";
 import LoginPage from "./Pages/LoginPage";
 import Home from "./Pages/Home";
@@ -24,7 +24,8 @@ export default function AppRoutes() {
           <Route path="/" element={<Home />} />
           <Route path="/post/:postId" element={<PostPage />} />
           <Route path="/bookmarks" element={<BookmarksPage />} />
-          <Route path="/chats" element={<Chats />} />
+          <Route path="/chats" element={<Navigate to="/chats/-1" />} />
+          <Route path="/chats/:id/*" element={<Chats />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/profile/:id/*" element={<ProfilePage />}>
             <Route path="" element={<ProfilePagePosts />} />

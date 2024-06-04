@@ -9,6 +9,9 @@ import Window from '../../components/Chat/Window/Window';
 import testImage from '../../../public/image/send_image_black.png';
 import { useDispatch, useSelector } from 'react-redux';
 
+
+import { NavLink, Outlet, useParams, useLocation} from 'react-router-dom';
+
 export default function ChatPage() {
     const [users, setUsers] = useState([]); 
     const [loading, setLoading] = useState(true);
@@ -28,6 +31,11 @@ export default function ChatPage() {
     const [deleteTrigger, setDeleteTrigger] = useState(false);
     const dispatch = useDispatch();
 
+    let urlID = useParams().id;
+    urlID = parseInt(urlID);
+
+    
+
     const [token, setToken] = useState(localStorage.getItem("token") || sessionStorage.getItem("token"));
     
     useEffect(() => { // Загрузка чата
@@ -36,7 +44,7 @@ export default function ChatPage() {
             if(users.length > 0 && id!=-1)
                 {
                     try {
-                const response = await axios.get(`http://localhost:8080/api/chats/messages/${id}?page=0&size=20`, {
+                const response = await axios.get(`http://localhost:8080/api/chats/messages/${urlID}?page=0&size=20`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -156,6 +164,7 @@ export default function ChatPage() {
                         triggerChange={deleteTriggerChange}
                         changeUserArray={changeUserArray}
                         token={token}
+                        urlID={urlID}
                     />
                 </li>
 
