@@ -14,7 +14,7 @@ import { deletePost } from './postApi';
 
 import './Posts.scss'
 
-export default function PostHeader({ author, date, isRepost, isPage,postId}) {
+export default function PostHeader({ author, date, isRepost, isPage,postId, refresh}) {
     const [userId, setUserId] = useState(null);
 
     useEffect(() => {
@@ -34,18 +34,21 @@ const navigate = useNavigate();
 const handleBack = () => {
 navigate(-1); 
 };
+const redirectToProfile = () => {
+    navigate(`/profile/${author.id}`);
+};
 const handleDeletePost = async () => {
     console.log(postId);
     const result = await deletePost(postId);
     console.log('post deleted:', result);
-    // refresh();
+    refresh();
 };
 
     return (
         <div className="postComponent_header">
             <div className="postComponent_header_userinfo">
                 <Stack direction="row" spacing={2} alignItems="center">
-                    <Avatar src={author.avatar} alt="User Avatar" />
+                    <Avatar src={author.avatar} alt="User Avatar" onClick={redirectToProfile}/>
                     <div>
                         <Typography variant="h6">{author.name} {author.surname}</Typography>
                         <Typography variant="body2" color="textSecondary">{formatDate(date)}</Typography>
@@ -77,5 +80,6 @@ PostHeader.propTypes = {
     date: PropTypes.string.isRequired,
     isRepost:PropTypes.bool,
     isPage:PropTypes.bool,
-    postId:PropTypes.number
+    postId:PropTypes.number,
+    refresh:PropTypes.func
 };

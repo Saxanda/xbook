@@ -12,7 +12,6 @@ const Bookmarks = ({ userId }) => {
     const fetchBookmarks = async () => {
         try {
             const token = getAuthToken();
-            console.log(userId);
             const response = await axios.get(`http://localhost:8080/api/v1/bookmarks/user/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -60,7 +59,9 @@ const Bookmarks = ({ userId }) => {
 
     return (
         <div className="container" style={{ display: 'flex' }}>
+            <div className='BookmarksSidebar'>
             <Sidebar onCategoryClick={handleCategoryClick} />
+            </div>
             <div className='Bookmarks'>
             <BookmarksList bookmarks={filteredBookmarks} deleteBookmark={deleteBookmark} getAuthToken={getAuthToken} userId={userId}/>               
             </div>

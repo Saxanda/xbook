@@ -2,7 +2,11 @@ package app.controller;
 
 import app.dto.request.BookmarkRequest;
 import app.dto.response.BookmarkResponse;
+import app.entity.Bookmark;
+import app.entity.User;
+import app.repository.BookmarkRepository;
 import app.service.BookmarkService;
+import app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -17,17 +21,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/bookmarks")
 public class BookmarkController {
 
     private final BookmarkService bookmarkService;
+    private final BookmarkRepository bookmarkRepository;
+    private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<BookmarkResponse> createBookmark(@RequestBody BookmarkRequest bookmarkRequest) {
-        BookmarkResponse bookmarkResponse = bookmarkService.createBookmark(bookmarkRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(bookmarkResponse);
+    public ResponseEntity<String> createBookmark(@RequestBody BookmarkRequest bookmarkRequest) {
+        //Check if bookmark exist
+        Optional<Bookmark> existingBookmark = bookmarkRepository.
+                findByPostIdAndUserId(bookmarkRequest.getPostId(), userService.getAuthCurrentUserId());
+
+        if (existingBookmark.isPresent()) {
+            return ResponseEntity.ok().body("User already has a bookmark on this post");
+        }
+        bookmarkService.createBookmark(bookmarkRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Post is bookmarked");
     }
 
 //    Get methods without pagination (old version).
@@ -63,12 +78,16 @@ public class BookmarkController {
         return bookmarkService.getPageAllBookmarksByPostId(postId, page, size, sortBy, sortDir);
     }
 
-    @DeleteMapping("/{bookmarkId}")
-    public ResponseEntity<Void> deleteBookmark(@PathVariable Long bookmarkId) {
-        boolean isDeleted = bookmarkService.deleteBookmark(bookmarkId);
-        if (isDeleted) {
-            return ResponseEntity.ok().build();
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Void> deleteBookmark(@PathVariable Long postId) {
+        User user = userService.getAuthUser();
+        Long userId = user.getId();  // Extract user ID from security context
+        Optional<Bookmark> bookmark = bookmarkRepository.findByPostIdAndUserId(postId, userId);
+
+        if (bookmark.isPresent()) {
+            bookmarkService.deleteBookmark(bookmark.get().getId());
+            return ResponseEntity.ok().build(); // Bookmark deleted
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.notFound().build(); // Return 404 if not found
     }
 }
