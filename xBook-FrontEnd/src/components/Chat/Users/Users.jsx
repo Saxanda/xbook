@@ -25,7 +25,7 @@ export default function Users({ onClicked, trigger, secondTrigger ,triggerChange
     const deleteChat = async (id) => { // удаление чата
         if(users.length <=1) setLastActiveUser(-1)
         try {
-            const response = await axios.delete(`http://localhost:8080/api/chats/delete/${id}`, {
+            const response = await axios.delete(`http://localhost:8080/api/v1/chats/delete/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -77,7 +77,7 @@ export default function Users({ onClicked, trigger, secondTrigger ,triggerChange
         };
         const fetchChats = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/chats', {
+                const response = await axios.get('http://localhost:8080/api/v1/chats', {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -143,7 +143,7 @@ export default function Users({ onClicked, trigger, secondTrigger ,triggerChange
         
         try {
             const response = await axios.post(
-                `http://localhost:8080/api/chats/create/${inputText}`,
+                `http://localhost:8080/api/v1/chats/create/${inputText}`,
                 {
                     email: inputText,
                 },

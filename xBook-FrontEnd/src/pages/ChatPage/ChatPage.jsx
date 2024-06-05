@@ -9,8 +9,9 @@ import Window from '../../components/Chat/Window/Window';
 import testImage from '../../../public/image/send_image_black.png';
 import { useDispatch, useSelector } from 'react-redux';
 
-
 import { NavLink, Outlet, useParams, useLocation} from 'react-router-dom';
+
+import { Client } from '@stomp/stompjs';
 
 export default function ChatPage() {
     const [users, setUsers] = useState([]); 
@@ -25,62 +26,97 @@ export default function ChatPage() {
     const [firstUserId, setFirstUserId] = useState((0));
     const [messages, setMessages] = useState([]);
     const [trigger, setTrigger] = useState(false);
-
     const [chatClear, setChatClear] = useState(false);
-
     const [deleteTrigger, setDeleteTrigger] = useState(false);
-    const dispatch = useDispatch();
+    const [token, setToken] = useState(localStorage.getItem("token") || sessionStorage.getItem("token"));
 
+    const dispatch = useDispatch();
     let urlID = useParams().id;
     urlID = parseInt(urlID);
 
+    useEffect(() => {
+        const stompClient = new Client({
+            brokerURL: 'ws://localhost:8080/websocket',
+            connectHeaders: {
+                Authorization: `Bearer ${token}`
+            },
+            debug: function (str) {
+                console.log(str);
+            },
+            reconnectDelay: 5000,
+            heartbeatIncoming: 4000,
+            heartbeatOutgoing: 4000
+        });
+    
+        stompClient.onConnect = (frame) => {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe("/user/alice.smith@example.com/queue/messages", (message) => {
+                console.log("Subscribe is WORKING!!!");
+                console.log(message);
+                console.log(message.body);
+            });
+        };
+    
+        stompClient.activate();
+    }, [])
+
     
 
-    const [token, setToken] = useState(localStorage.getItem("token") || sessionStorage.getItem("token"));
-    
-    useEffect(() => { // Загрузка чата
+    function sendName() {
+        console.log("sendName function is working!");
+        const headers = {
+            Authorization: `Bearer ${token}`
+        };
+        stompClient.publish({
+            destination: "/app/chat",
+            body: JSON.stringify({
+                'chatId': 1,
+                'contentType': 'text',
+                'content': $("#name").val()
+            }),
+            headers: headers
+        });
+    }
+
+    useEffect(() => { 
         const fetchMessages = async () => {
-            //console.log("success" + id)
-            if(users.length > 0 && id!=-1)
-                {
-                    try {
-                const response = await axios.get(`http://localhost:8080/api/chats/messages/${urlID}?page=0&size=20`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setMessages(response.data.content);
-                console.log(response.data.content)
-                setLoading(false);
-                setChatClear(false);
-            } catch (error) {
-                console.error('Error fetching messages:', error);
-                setChatClear(true);
-            }
-                }
-                else{
+            if(users.length > 0 && id !== -1) {
+                try {
+                    const response = await axios.get(`http://localhost:8080/api/v1/chats/messages/${urlID}?page=0&size=20`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    setMessages(response.data.content);
+                    setLoading(false);
+                    setChatClear(false);
+                } catch (error) {
+                    console.error('Error fetching messages:', error);
                     setChatClear(true);
                 }
-            
+            } else {
+                setChatClear(true);
+            }
         };
 
         fetchMessages();
     }, [token, id, trigger, deleteTrigger, users]);
 
-    const handleIdChange = (index) => { //saving the chat selected by the user
+    const handleIdChange = (index) => {
         setID(index);
         localStorage.setItem('lastActiveChatID', index); 
     };
+
     const changeUserArray = (users) => {
         setUsers(users);
-    }
-    const handleMessageSend = async () => { // Sending and editing a message
-        if(isRedact) //editin
-        {
+    };
+
+    const handleMessageSend = async () => {
+        if(isRedact) {
             if (inputText !== "") {
                 try {
                     const response = await axios.post(
-                        `http://localhost:8080/api/messages/update/${messageId}`,
+                        `http://localhost:8080/api/v1/messages/update/${messageId}`,
                         {
                             content: inputText,
                         },
@@ -90,58 +126,55 @@ export default function ChatPage() {
                             },
                         }
                     );
-                    
                     deleteTriggerChange();
                     setInputText('');
                 } catch (error) {
                     console.error('Error sending message:', error);
                 }
             }
-            setIsRedact(false)
-        }
-        else // sending
-        {
+            setIsRedact(false);
+        } else {
             if (inputText !== "") {
-            try {
-                const response = await axios.post(
-                    'http://localhost:8080/api/messages/send',
-                    {
-                        chatId: id,
-                        contentType: 'text',
-                        content: inputText,
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
+                try {
+                    const response = await axios.post(
+                        'http://localhost:8080/api/v1/messages/send',
+                        {
+                            chatId: id,
+                            contentType: 'text',
+                            content: inputText,
                         },
-                    }
-                );
-                triggerChange();
-                setInputText('');
-                localStorage.setItem('lastActiveUser', 0);
-                localStorage.setItem('lastActiveUserId', 0);
-            } catch (error) {
-                console.error('Error sending message:', error);
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
+                    triggerChange();
+                    setInputText('');
+                    localStorage.setItem('lastActiveUser', 0);
+                    localStorage.setItem('lastActiveUserId', 0);
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                }
             }
-        }
         }
     };
 
-    const changeMessage = (id, text) => { // Enable editing
+    const changeMessage = (id, text) => {
         setInputText(text);
         setIsRedact(true);
         setMessageId(id);
-    }
+    };
 
-    const triggerChange = () => { // trigger
+    const triggerChange = () => {
         setTrigger(prevTrigger => !prevTrigger);
     };
 
-    const deleteTriggerChange = () => { // second trigger
+    const deleteTriggerChange = () => {
         setDeleteTrigger(prevTrigger => !prevTrigger);
     };
 
-    const handleKeyDown = (event) => { // Sending/editing a message when pressing Enter
+    const handleKeyDown = (event) => {
         if (event.key === 'Enter') {
             handleMessageSend();
         }
@@ -171,11 +204,11 @@ export default function ChatPage() {
                 {messages && (
                     <li className="chat__window">
                         <Window 
-                        data={messages} 
-                        token={token} 
-                        trigger={deleteTriggerChange}
-                        redactButton={changeMessage}
-                        chatClear={chatClear} 
+                            data={messages} 
+                            token={token} 
+                            trigger={deleteTriggerChange}
+                            redactButton={changeMessage}
+                            chatClear={chatClear} 
                         />
                         <div className="chat__container_message-input">
                             <input
