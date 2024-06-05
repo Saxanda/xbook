@@ -54,6 +54,7 @@ export default function Header() {
   const searchQuery = useSelector((state) => state.header.searchQuery);
 
   let testUser = sessionStorage.getItem("token") || localStorage.getItem("token");
+  console.log(testUser)
   const settings = [
     { name: "Profile", path: `/profile/${parseInt(jwtDecode(testUser).sub)}` },
     { name: "Logout", path: "/logout" },

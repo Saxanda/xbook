@@ -1,6 +1,32 @@
 .Bookmarks{
     display: flex;
     justify-content: center;
-    width: 70%;
-    
+    width: 49%; 
+    margin-right:230px ;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+        display: none;
+
+        -ms-overflow-style: none; 
+    scrollbar-width: none; 
+    }
+}
+
+
+.BookmarksSidebar{
+    padding-top: 30px;
+}
+
+.container{
+    justify-content: center;
+    height: 90vh;
+}
+
+
+@media screen and (max-width: 899px) {
+   
+    .Bookmarks{
+       margin-right:0px ;
+       width: 100%; 
+     } 
 }

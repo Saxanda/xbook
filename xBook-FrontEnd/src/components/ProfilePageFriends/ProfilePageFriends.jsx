@@ -53,7 +53,7 @@ export default function ProfilePageFriends() {
             </Box>
             {
                 content && content.length !== 0 ?
-                <> 
+                <Box sx={{display: "flex", flexDirection: "column"}}>  
                     <ul className='friendsList'>
                         {content.map(friend => (
                             <li key={friend.id}>
@@ -61,14 +61,19 @@ export default function ProfilePageFriends() {
                             </li>
                         ))}
                     </ul>
-                    <Pagination 
-                    count={totalPages} 
-                    page={pageNumber + 1} 
-                    color="primary" 
-                    sx={{marginTop: "30px"}}
-                    onChange={handlePaginationClick}
-                    />
-                </>
+                    {
+                        totalPages > 1 ?
+                        <Pagination 
+                        count={totalPages} 
+                        page={pageNumber + 1} 
+                        color="primary" 
+                        sx={{marginTop: "30px", alignSelf: "center"}}
+                        onChange={handlePaginationClick}
+                        />
+                        :
+                        null
+                    }
+                </Box>
                 :
                 <Typography variant='h5'sx={{my: "100px", alignSelf: "center"}}>
                     <Box sx={{color: "text.secondary", textTransform: "uppercase"}}>NO FRIENDS</Box>

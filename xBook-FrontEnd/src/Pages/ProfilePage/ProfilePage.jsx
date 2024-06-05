@@ -8,12 +8,12 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
-import { NavLink, Outlet, useParams, useLocation} from 'react-router-dom';
+import { Link, Outlet, useParams, useLocation} from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 import { getPhoto } from "../../features/getPhoto";
 import ModalEditProfile from "../../components/ModalEditProfile/ModalEditProfile";
 import DeleteFriendModal from "../../components/ModalDeleteFriend/DeleteFriendModal";
-import { userProfile, modalEditProfile, resetEditProfileState, editUser} from "../../redux/profile/profileSlice";
+import { userProfile, modalEditProfile, resetEditProfileState, editUser, getUserPosts} from "../../redux/profile/profileSlice";
 import { modalDeleteFriend} from "../../redux/friends/friendsSlice";
 import { getFriends, sendFriendRequest, friendData, requests} from "../../redux/friends/friendsThunks";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,7 +45,6 @@ export default function ProfilePage() {
     useEffect(() => {
         if (token) {
             const decodedToken = jwtDecode(token);
-            console.log(decodedToken);
             setID(parseInt(decodedToken.sub));
         }
     }, [token]);
@@ -75,8 +74,9 @@ export default function ProfilePage() {
             id: urlID,
           };
         }
-        dispatch(getFriends({userId: urlID}));
         dispatch(userProfile(newObj));
+        dispatch(getFriends({userId: urlID}));
+        dispatch(getUserPosts({page: 0, userId: urlID}))
     };
 
     const modalEditProfileOpen = () => {
@@ -129,39 +129,40 @@ export default function ProfilePage() {
         setLinkRequests("unfocus");
       };
     
-      const clickLinkFriends = () => {
-        setLinkPosts("unfocus");
-        setLinkFriends("focus");
-        setLinkRequests("unfocus");
-      };
-      const clickLinkRequests = () => {
-        setLinkPosts("unfocus");
-        setLinkFriends("unfocus");
-        setLinkRequests("focus");
-      };
+    const clickLinkFriends = () => {
+      setLinkPosts("unfocus");
+      setLinkFriends("focus");
+      setLinkRequests("unfocus");
+    };
+    const clickLinkRequests = () => {
+      setLinkPosts("unfocus");
+      setLinkFriends("unfocus");
+      setLinkRequests("focus");
+    };
     
-      if (word === "profile" && linkPosts !== "focus") {
-        clickLinkPosts();
-      } else if (linkFriends !== "focus" && word === "friends") {
-        clickLinkFriends();
-      } else if (linkRequests !== "focus" && word === "requests") {
-        clickLinkRequests();
-      } else if (word !== "friends" && linkFriends === "focus") {
-        clickLinkPosts();
-      }
-    
+    if (word === "profile" && linkPosts !== "focus") {
+      clickLinkPosts();
+    } else if (linkFriends !== "focus" && word === "friends") {
+      clickLinkFriends();
+    } else if (linkRequests !== "focus" && word === "requests") {
+      clickLinkRequests();
+    } else if (word !== "friends" && linkFriends === "focus") {
+      clickLinkPosts();
+    }
+
     return (
         <>
         {
             status === "rejected" ?
             <h1>Error: {error}</h1>
             :
-            <div style={{backgroundColor: "#F0F2F5"}}>
-                <DeleteFriendModal />
-                <ModalEditProfile />
+            <>
+            <DeleteFriendModal />
+            <ModalEditProfile />
+            <div style={{backgroundColor: "#F0F2F5"}} >
                 <div className='profileImageWrapper'>
                       <div className="profileHeader__cover">
-                          <img className="profileHeader__photo" src={obj.photo ? obj.photo : '/profilePage/default_background.jpg'} alt="header photo" />
+                          <img className="profileHeader__photo" src={obj.photo ? obj.photo : '/profilePage/default_background.jpg'} alt="background photo" />
                           {
                           obj.user === "myUser" ?
                           
@@ -224,7 +225,7 @@ export default function ProfilePage() {
                               }
                           </div>
                       </div>
-                    <Box sx={{backgroundColor: "white"}}>
+                    <Box sx={{backgroundColor: "white", borderBottomLeftRadius: "12px", borderBottomRightRadius: "12px"}}>
                       <div className='profileHeader__profile'>
                           <div className='profileHeader__info'>
                               <div className='profileHeader__userInfo'>
@@ -245,7 +246,6 @@ export default function ProfilePage() {
                                       <Button 
                                       variant="contained" 
                                       sx={{
-                                        //   backgroundColor: '#0866FF',
                                         '@media (min-width: 876px)': {
                                             marginRight: '16px'
                                         }
@@ -299,30 +299,31 @@ export default function ProfilePage() {
                       </div>
                       <ul className='profileNav'>
                           <li className={linkPosts === "unfocus" ? 'profileNav__link' : 'profileNav__link  profileNav__link--active'}  onClick={clickLinkPosts}>
-                              <NavLink className='profileNav__item' to="">
+                              <Link className='profileNav__item' to="">
                                   <Typography variant='subtitle1'>Posts</Typography>
-                              </NavLink>
+                              </Link>
                           </li>
                           <li className={linkFriends === "unfocus" ? 'profileNav__link' : 'profileNav__link  profileNav__link--active'} onClick={clickLinkFriends}>
-                              <NavLink className='profileNav__item' to="friends">
+                              <Link className='profileNav__item' to="friends">
                                   <Typography variant='subtitle1'>Friends</Typography>
-                              </NavLink>
+                              </Link>
                           </li>
                           {
                               obj.user === "myUser" &&
                               <li className={linkRequests === "unfocus" ? 'profileNav__link' : 'profileNav__link  profileNav__link--active'} onClick={clickLinkRequests}>
-                                  <NavLink className='profileNav__item' to="requests">
+                                  <Link className='profileNav__item' to="requests">
                                       <Typography variant='subtitle1'>Requests</Typography>
-                                  </NavLink>
+                                  </Link>
                               </li>
                           }
                       </ul>
                     </Box>
-                    <div style={{backgroundColor: "#F0F2F5", height: "100%", paddingTop: "20px"}}>
+                    <div style={{backgroundColor: "#F0F2F5", height: "100%"}}>
                             <Outlet />
                     </div>
                 </div>
             </div>
+            </>
         }
         </>
     )

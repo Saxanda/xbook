@@ -39,22 +39,27 @@ export default function ProfileFriendRequests() {
             </Box>
             {
                 content && content.length !== 0 ?
-            <>            
+            <Box sx={{display: "flex", flexDirection: "column", marginTop: "20px"}}>            
                 <ul className='requestsList'>
                     {content.map(friend => (
                         <li className='requestList__item' key={friend.id}>
                             <ProfileRequestCard friend={friend} />
                         </li>
                     ))}
-                </ul> 
-                <Pagination 
-                count={totalPages} 
-                page={pageNumber + 1} 
-                color="primary" 
-                sx={{marginTop: "30px"}}
-                onChange={handlePaginationClick}
-                />    
-            </>
+                </ul>
+                {
+                    totalPages > 1 ?
+                    <Pagination 
+                    count={totalPages} 
+                    page={pageNumber + 1} 
+                    color="primary" 
+                    sx={{marginTop: "30px", alignSelf: "center"}}
+                    onChange={handlePaginationClick}
+                    />
+                    :
+                    null    
+                }
+            </Box>
             :
             <Typography variant='h5'sx={{my: "100px", alignSelf: "center"}}>
                 <Box sx={{color: "text.secondary", textTransform: "uppercase"}}>No requests</Box>
