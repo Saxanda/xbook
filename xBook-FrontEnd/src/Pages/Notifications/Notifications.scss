@@ -1,9 +1,8 @@
 .notifications_container {
-  max-width: 940px;
-  margin: 0 auto;
-  .notifications_title,
-  .notifications_empty {
-    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    align-items: center;
+  &.notification_span {
+    @media (min-width: 431px) and (max-width: 768px) {
+      width: 280px;
+      max-width: 768px;
+    }
   }
 }

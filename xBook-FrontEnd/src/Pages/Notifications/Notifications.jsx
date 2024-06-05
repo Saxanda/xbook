@@ -8,18 +8,14 @@ import {
   Box,
   Popover,
   IconButton,
-  // Portal,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import axios from "axios";
-// import Post from "../components/Post/Post";
-// import { getOnePost } from "../components/Post/postApi";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import AuthorAvatar from "../../components/Post/sideComponents/AuthorAvatar";
 
-import "./Notifications";
-// import { Margin } from "@mui/icons-material";
+import "./Notifications.scss";
 
 export default function Notifications() {
   const navigate = useNavigate();
@@ -139,12 +135,6 @@ export default function Notifications() {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  // Функція для встановлення обраного IconButton
-  // const handleIconButtonClick = (notification) => {
-  //   // setSelectedIconButton(notification.id);
-  //   handleClickOpen(notification);
-  // };
-
   useEffect(() => {
     getPosts();
     getNotifications();
@@ -159,11 +149,8 @@ export default function Notifications() {
     <Box
       sx={{
         padding: 2,
-        width: "100%",
+        // width: "100%",
         maxWidth: "628px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "20px",
         margin: "0 auto",
       }}
     >
@@ -174,13 +161,7 @@ export default function Notifications() {
           No Notifications
         </Typography>
       ) : (
-        <Grid
-          container
-          className="notifications_container"
-          spacing={2}
-          justifyContent={"center"}
-          marginTop={"3px"}
-        >
+        <Grid container spacing={2} justifyContent={"center"} marginTop={"3px"}>
           <Typography
             variant="h5"
             className="notifications_title"
@@ -197,6 +178,9 @@ export default function Notifications() {
               >
                 <CardContent style={{ position: "relative" }}>
                   <AuthorAvatar className="notifications_avatar" />
+                  <Typography variant="body2" color="textSecondary">
+                    {}
+                  </Typography>
                   <Typography variant="h6" gutterBottom>
                     {notification.message +
                       " " +
@@ -205,34 +189,33 @@ export default function Notifications() {
                       " " +
                       notification.sender.surname}
                   </Typography>
-
-                  <Typography variant="body2" color="textSecondary">
-                    {}
-                  </Typography>
-
                   <Typography variant="body2" color="textSecondary">
                     Date:{" "}
                     {formatDate(notification.createdDate) +
                       ", " +
                       formatTime(notification.createdDate)}
                   </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    style={{ position: "absolute", top: "-5px", right: "5%" }}
-                  >
-                    <span
-                      style={{
-                        display: "inline-block",
-                        width: "10px",
-                        height: "10px",
-                        borderRadius: "50%",
-                        backgroundColor: notification.readStatus
-                          ? "green"
-                          : "red",
-                      }}
-                    ></span>
-                  </Typography>
+                  <Box
+                    className="notification_span"
+                    component="div"
+                    m={1}
+                    style={{
+                      position: "absolute",
+                      top: "3%",
+                      right: "6%",
+                      width: "10px",
+                      height: "10px",
+                      borderRadius: "50%",
+                      backgroundColor: notification.readStatus
+                        ? "green"
+                        : "red",
+                      "@media (min-width: 431px) and (max-width: 768px)": {
+                        width: "8px",
+                        height: "8px",
+                        right: "8%",
+                      },
+                    }}
+                  />
                   <IconButton
                     onClick={(event) => handleClick(event, notification)}
                     className="notification_button"
@@ -288,9 +271,6 @@ export default function Notifications() {
           >
             Go to post
           </Button>
-          {/* <Button onClick={handleClose} color="secondary">
-            Cancel
-          </Button> */}
         </Box>
       </Popover>
     </Box>
