@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import './Forgot.scss';
+import API_BASE_URL from '../../helpers/apiConfig';
 
 const ForgotPasswordForm = () => {
   const [email, setEmail] = useState(localStorage.getItem('email') || '');
@@ -13,7 +14,7 @@ const ForgotPasswordForm = () => {
 
     try {
       
-      const response = await axios.post('http://localhost:8080/api/v1/auth/reset-password', { email: email });
+      const response = await axios.post(`${API_BASE_URL}/api/v1/auth/reset-password`, { email: email });
       const token = response.data.token;
       setResetToken(token); 
       setMessage('A password reset link has been sent by email.');

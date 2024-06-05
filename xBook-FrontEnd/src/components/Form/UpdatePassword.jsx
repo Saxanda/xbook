@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../../helpers/apiConfig';
 
 const UpdatePasswordForm = ({ resetToken, redirectToLogin }) => {
   const [newPassword, setNewPassword] = useState('');
@@ -16,7 +17,7 @@ const UpdatePasswordForm = ({ resetToken, redirectToLogin }) => {
 
     try {
       const email = localStorage.getItem('email') || ''; 
-      await axios.put(`http://localhost:8080/api/v1/auth/update-password/${resetToken}`, { newPassword, email });
+      await axios.put(`${API_BASE_URL}/api/v1/auth/update-password/${resetToken}`, { newPassword, email });
       setMessage('Password changed');
       redirectToLogin();
     } catch (error) {

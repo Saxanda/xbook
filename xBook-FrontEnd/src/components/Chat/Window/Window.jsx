@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import WindowMessage from "../WindowMessage/WindowMessage";
 import axios from 'axios';
-
+import API_BASE_URL from '../../../helpers/apiConfig';
 
 export default function Window({ data, token, trigger, redactButton, chatClear }) {
     const [messages, setMessages] = useState([]);
@@ -24,7 +24,7 @@ export default function Window({ data, token, trigger, redactButton, chatClear }
 
     const deleteMessage = async (id) =>{
         try {
-            const response = await axios.delete(`http://localhost:8080/api/messages/delete/${id}`, {
+            const response = await axios.delete(`${API_BASE_URL}/api/messages/delete/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
