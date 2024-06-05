@@ -18,6 +18,7 @@ import Modal from "../Modal/ModalLogin";
 import axios from "axios";
 import "../Login/Login.scss";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "../../helpers/apiConfig";
 
 export default function SignInForm() {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ export default function SignInForm() {
     onSubmit: async (values) => {
       try {
         await axios.post(
-          "http://localhost:8080/api/v1/auth/registration",
+          `${API_BASE_URL}/api/v1/auth/registration`,
           values,
           {
             "Content-Type": "application/json",
@@ -66,7 +67,6 @@ export default function SignInForm() {
         setShowModal(true);
       } catch (error) {
         setError("Something went wrong. User Registation failed");
-        // console.error('Error:', error);
       }
     },
   });
