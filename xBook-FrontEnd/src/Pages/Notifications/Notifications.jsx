@@ -65,6 +65,31 @@ export default function Notifications() {
     }
   };
 
+  // позначення всіх повідомленьяк прочитаних
+  const handleMarkAllAsRead = async () => {
+    try {
+      const AUTH_TOKEN = getToken();
+      const promises = notifications.map((notification) =>
+        axios.put(
+          `${API_BASE_URL}/api/v1/notifications/${notification.id}/read`,
+          {},
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${AUTH_TOKEN}`,
+              accept: "*/*",
+            },
+          }
+        )
+      );
+      await Promise.all(promises);
+      triggerChange();
+      console.log("All messages marked as read");
+    } catch (error) {
+      console.error("Error marking all messages as read:", error);
+    }
+  };
+
   // Функція навігації до посту
   const handleToPage = (id) => {
     navigate(`/post/${id}`);
@@ -162,13 +187,18 @@ export default function Notifications() {
         </Typography>
       ) : (
         <Grid container spacing={2} justifyContent={"center"} marginTop={"3px"}>
-          <Typography
-            variant="h5"
-            className="notifications_title"
-            alignItems="center"
-          >
-            All Notifications
-          </Typography>
+          <div className="notification_header">
+            <Typography variant="h5" className="notifications_title">
+              All Notifications
+            </Typography>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleMarkAllAsRead}
+            >
+              Mark All as Read
+            </Button>
+          </div>
           {notifications.map((notification) => (
             <Grid item xs={12} key={notification.id}>
               <Card
@@ -176,12 +206,20 @@ export default function Notifications() {
                 sx={{ padding: 2 }}
                 className="notifications_content_container"
               >
-                <CardContent style={{ position: "relative" }}>
-                  <AuthorAvatar className="notifications_avatar" />
-                  <Typography variant="body2" color="textSecondary">
-                    {}
-                  </Typography>
-                  <Typography variant="h6" gutterBottom>
+                <CardContent
+                  style={{
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    paddingBottom: "16px",
+                  }}
+                >
+                  <AuthorAvatar className="notification_avatar" />
+                  <Typography
+                    variant="h6"
+                    gutterBottom
+                    className="notification_message"
+                  >
                     {notification.message +
                       " " +
                       "by " +
@@ -189,7 +227,11 @@ export default function Notifications() {
                       " " +
                       notification.sender.surname}
                   </Typography>
-                  <Typography variant="body2" color="textSecondary">
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    className="notification_date"
+                  >
                     Date:{" "}
                     {formatDate(notification.createdDate) +
                       ", " +
@@ -197,23 +239,12 @@ export default function Notifications() {
                   </Typography>
                   <Box
                     className="notification_span"
-                    component="div"
+                    component="span"
                     m={1}
-                    style={{
-                      position: "absolute",
-                      top: "3%",
-                      right: "6%",
-                      width: "10px",
-                      height: "10px",
-                      borderRadius: "50%",
+                    sx={{
                       backgroundColor: notification.readStatus
                         ? "green"
                         : "red",
-                      "@media (min-width: 431px) and (max-width: 768px)": {
-                        width: "8px",
-                        height: "8px",
-                        right: "8%",
-                      },
                     }}
                   />
                   <IconButton
