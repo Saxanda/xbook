@@ -14,6 +14,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import AuthorAvatar from "../../components/Post/sideComponents/AuthorAvatar";
+import API_BASE_URL from "../helpers/apiConfig";
 
 import "./Notifications.scss";
 
@@ -24,7 +25,6 @@ export default function Notifications() {
   const [trigger, setTrigger] = useState("true");
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const API_BASE_URL = "http://localhost:8080";
 
   //отримання токену
   const getToken = () => {
