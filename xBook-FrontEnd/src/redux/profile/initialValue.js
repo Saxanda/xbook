@@ -11,6 +11,11 @@ const initialValue = {
         obj: {},
         status: null,
         error: null,
+    },
+    userPosts: {
+        obj: {},
+        status: null,
+        error: null,
     }
 }
 
