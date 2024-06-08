@@ -42,6 +42,12 @@ export default function ProfilePage() {
     const inputBackgroundPhoto = useRef();
     const inputAvatarPhoto = useRef();
 
+    const [trigger, setTrigger ] = useState(false);
+
+    const handleTrigger = () => {
+        setTrigger(prevState => !prevState); 
+    };
+
     useEffect(() => {
         if (token) {
             const decodedToken = jwtDecode(token);
@@ -53,7 +59,7 @@ export default function ProfilePage() {
         if (id !== null) {
             getUser(id);
         }
-    }, [id, editUserStatus, deleteStatus, urlID, token, sended])
+    }, [id, editUserStatus, deleteStatus, urlID, token, sended, trigger])
 
     useEffect(() => {
         if (obj.user === "myUser") {
@@ -88,9 +94,9 @@ export default function ProfilePage() {
         dispatch(modalDeleteFriend(true));
     };
 
-    const clickSendRequest = () => {
-        dispatch(sendFriendRequest({friendId: urlID}));
-        setSended(true)
+    const clickSendRequest = async () => {
+        await dispatch(sendFriendRequest({friendId: urlID}));
+        await setSended(true)
     };
     
     const downloadInputBackgroundPhoto = async (e) => {
@@ -144,9 +150,9 @@ export default function ProfilePage() {
       clickLinkPosts();
     } else if (linkFriends !== "focus" && word === "friends") {
       clickLinkFriends();
-    } else if (linkRequests !== "focus" && word === "requests") {
+    } else if (linkRequests !== "focus" && word === "requests" && obj.user === "myUser") {
       clickLinkRequests();
-    } else if (word !== "friends" && linkFriends === "focus") {
+    } else if (word !== "friends" && linkFriends === "focus" || word !== "requests" && linkRequests === "focus") {
       clickLinkPosts();
     }
 
@@ -157,7 +163,7 @@ export default function ProfilePage() {
             <h1>Error: {error}</h1>
             :
             <>
-            <DeleteFriendModal />
+            {/* <DeleteFriendModal trigger={trigger} handleTrigger={handleTrigger} /> */}
             <ModalEditProfile />
             <div style={{backgroundColor: "#F0F2F5"}} >
                 <div className='profileImageWrapper'>
@@ -297,26 +303,37 @@ export default function ProfilePage() {
                               </div>
                           </div>
                       </div>
-                      <ul className='profileNav'>
-                          <li className={linkPosts === "unfocus" ? 'profileNav__link' : 'profileNav__link  profileNav__link--active'}  onClick={clickLinkPosts}>
-                              <Link className='profileNav__item' to="">
-                                  <Typography variant='subtitle1'>Posts</Typography>
-                              </Link>
-                          </li>
-                          <li className={linkFriends === "unfocus" ? 'profileNav__link' : 'profileNav__link  profileNav__link--active'} onClick={clickLinkFriends}>
-                              <Link className='profileNav__item' to="friends">
-                                  <Typography variant='subtitle1'>Friends</Typography>
-                              </Link>
-                          </li>
-                          {
-                              obj.user === "myUser" &&
-                              <li className={linkRequests === "unfocus" ? 'profileNav__link' : 'profileNav__link  profileNav__link--active'} onClick={clickLinkRequests}>
-                                  <Link className='profileNav__item' to="requests">
-                                      <Typography variant='subtitle1'>Requests</Typography>
-                                  </Link>
-                              </li>
-                          }
-                      </ul>
+                      <div className='profileNav'>
+                        <Link
+                          className={linkPosts === "unfocus" ? 'profileNav__link' : 'profileNav__link profileNav__link--active'}
+                          onClick={clickLinkPosts}
+                          to=""
+                        >
+                          <div className={linkPosts === "unfocus" ? "profileNav__wrapper" : "profileNav__wrapper profileNav__wrapper--active"} >
+                            <Typography className={linkPosts === "unfocus" ? 'profileNav__item' : 'profileNav__item profileNav__item--active'} variant='subtitle1'>Posts</Typography>
+                          </div>
+                        </Link>
+                        <Link
+                          className={linkFriends === "unfocus" ? 'profileNav__link' : 'profileNav__link profileNav__link--active'}
+                          onClick={clickLinkFriends}
+                          to="friends"
+                        >
+                          <div className={linkFriends === "unfocus" ? "profileNav__wrapper" : "profileNav__wrapper profileNav__wrapper--active"} >
+                            <Typography className={linkFriends === "unfocus" ? 'profileNav__item' : 'profileNav__item profileNav__item--active'} variant='subtitle1'>Friends</Typography>
+                          </div>
+                        </Link>
+                        {obj.user === "myUser" && (
+                          <Link
+                            className={linkRequests === "unfocus" ? 'profileNav__link' : 'profileNav__link profileNav__link--active'}
+                            onClick={clickLinkRequests}
+                            to="requests"
+                          >
+                            <div className={linkRequests === "unfocus" ? "profileNav__wrapper" : "profileNav__wrapper profileNav__wrapper--active"} >
+                              <Typography className={linkRequests === "unfocus" ? 'profileNav__item' : 'profileNav__item profileNav__item--active'} variant='subtitle1'>Requests</Typography>
+                            </div>
+                          </Link>
+                        )}
+                      </div>
                     </Box>
                     <div style={{backgroundColor: "#F0F2F5", height: "100%"}}>
                             <Outlet />

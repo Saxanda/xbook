@@ -55,6 +55,7 @@ export default function SignInForm() {
     validationSchema: validationSchema,
 
     onSubmit: async (values) => {
+      console.log("values: ", values);
       try {
         await axios.post(
           `${API_BASE_URL}/api/v1/auth/registration`,
