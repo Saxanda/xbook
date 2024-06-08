@@ -43,6 +43,8 @@ public class FriendService {
     public FriendshipStatus getFriendshipStatus(Long userId, Long friendId) {
         if (getOptionalFriend(userId, friendId).isPresent()) {
             return getOptionalFriend(userId, friendId).get().getStatus();
+        } else if(getOptionalFriend(friendId, userId).isPresent()) {
+            return getOptionalFriend(friendId, userId).get().getStatus();
         } else {
             return FriendshipStatus.NONE;
         }
