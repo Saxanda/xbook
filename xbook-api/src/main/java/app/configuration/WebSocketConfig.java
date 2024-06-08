@@ -23,14 +23,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic", "/user");
-//        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/topic");
         config.setApplicationDestinationPrefixes("/app");
         config.setUserDestinationPrefix("/user");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/websocket");
+        registry.addEndpoint("/websocket").setAllowedOrigins("*");
     }
 
     @Override
@@ -39,10 +39,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         WebSocketMessageBrokerConfigurer.super.configureClientInboundChannel(registration);
     }
 
-    @Bean
-    public WebSocketAuthInterceptor authInterceptor() {
-        return new WebSocketAuthInterceptor();
-    }
+   @Bean
+   public WebSocketAuthInterceptor authInterceptor() {
+       return new WebSocketAuthInterceptor();
+   }
 
     @Override
     public boolean configureMessageConverters(List<MessageConverter> messageConverters) {

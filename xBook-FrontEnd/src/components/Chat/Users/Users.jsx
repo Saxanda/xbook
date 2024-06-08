@@ -68,7 +68,7 @@ export default function Users({ onClicked, trigger, secondTrigger ,triggerChange
     };
     
     useEffect(() => { // chat list
-            console.log(localStorage.getItem("token") || sessionStorage.getItem("token"))
+            //console.log(localStorage.getItem("token") || sessionStorage.getItem("token"))
         const headers = { 
             'Access-Control-Allow-Origin': '*',
             "Content-Type": "application/json",

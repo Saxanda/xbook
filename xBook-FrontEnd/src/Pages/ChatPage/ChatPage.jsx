@@ -13,6 +13,7 @@ import { NavLink, Outlet, useParams, useLocation} from 'react-router-dom';
 
 import { Client } from '@stomp/stompjs';
 
+
 export default function ChatPage() {
     const [users, setUsers] = useState([]); 
     const [loading, setLoading] = useState(true);
@@ -23,60 +24,51 @@ export default function ChatPage() {
         const savedChatID = localStorage.getItem('lastActiveChatID');
         return savedChatID !== null ? parseInt(savedChatID) : 2;
     });
-    const [firstUserId, setFirstUserId] = useState((0));
     const [messages, setMessages] = useState([]);
     const [trigger, setTrigger] = useState(false);
     const [chatClear, setChatClear] = useState(false);
     const [deleteTrigger, setDeleteTrigger] = useState(false);
     const [token, setToken] = useState(localStorage.getItem("token") || sessionStorage.getItem("token"));
 
-    const dispatch = useDispatch();
     let urlID = useParams().id;
     urlID = parseInt(urlID);
 
-    useEffect(() => {
-        const stompClient = new Client({
-            brokerURL: 'ws://localhost:8080/websocket',
-            connectHeaders: {
-                Authorization: `Bearer ${token}`
-            },
-            debug: function (str) {
-                console.log(str);
-            },
-            reconnectDelay: 5000,
-            heartbeatIncoming: 4000,
-            heartbeatOutgoing: 4000
-        });
+
+    const stompClient = new Client({
+        brokerURL: 'ws://localhost:8080/websocket',
+        connectHeaders: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    stompClient.onConnect = (frame) => {
+        //console.log('Hello World: ' + frame);
     
-        stompClient.onConnect = (frame) => {
-            console.log('Connected: ' + frame);
-            stompClient.subscribe("/user/alice.smith@example.com/queue/messages", (message) => {
+        // Подписка на сообщения
+        stompClient.subscribe(
+            //console.log("subscribe"),
+    //        "/user/john.doe@example.com/queue/messages", (message) => {
+        "/user/alice.smith@example.com/queue/messages", (message) => {
+    //        "/user/alice.smith@example.com/queue/message-notification", (message) => {
+    //        "/user/alice.smith@example.com/queue/message-status", (message) => {
+    //        "/user/1/topic/notifications", (message) => {
                 console.log("Subscribe is WORKING!!!");
                 console.log(message);
                 console.log(message.body);
-            });
-        };
-    
-        stompClient.activate();
+    //            showGreeting(JSON.parse(message.body).content);
+            }
+        );
+    };
+
+    useEffect(() =>{
+        console.log("some hook");
     }, [])
 
-    
+    stompClient.activate();
 
-    function sendName() {
-        console.log("sendName function is working!");
-        const headers = {
-            Authorization: `Bearer ${token}`
-        };
-        stompClient.publish({
-            destination: "/app/chat",
-            body: JSON.stringify({
-                'chatId': 1,
-                'contentType': 'text',
-                'content': $("#name").val()
-            }),
-            headers: headers
-        });
-    }
+    const testWebSocketMessage = (text) => {
+        console.log(text);
+    };
 
     useEffect(() => { 
         const fetchMessages = async () => {
