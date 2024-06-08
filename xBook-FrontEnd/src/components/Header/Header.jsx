@@ -12,7 +12,6 @@ import {
   Typography,
   Menu,
   Container,
-  Avatar,
   Button,
   Tooltip,
   MenuItem,
@@ -20,10 +19,14 @@ import {
   Paper,
   MenuList,
 } from "@mui/material";
-
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import PeopleIcon from "@mui/icons-material/People";
 import SearchIcon from "@mui/icons-material/Search";
+import HomeIcon from "@mui/icons-material/Home";
+import BookmarksIcon from "@mui/icons-material/Bookmarks";
+import ChatIcon from "@mui/icons-material/Chat";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import {
   setAnchorElNav,
   setAnchorElUser,
@@ -34,12 +37,19 @@ import { jwtDecode } from "jwt-decode";
 import API_BASE_URL from "../../helpers/apiConfig";
 
 const pages = [
-  { name: "Home", path: "/" },
-  { name: "Bookmarks", path: "/bookmarks" },
-  { name: "Chats", path: "/chats" },
-  { name: "Notifications", path: "/notifications" },
+  { name: "Home", path: "/", icon: <HomeIcon sx={{ fontSize: 37 }} /> },
+  {
+    name: "Bookmarks",
+    path: "/bookmarks",
+    icon: <BookmarksIcon sx={{ fontSize: 30 }} />,
+  },
+  { name: "Chats", path: "/chats", icon: <ChatIcon sx={{ fontSize: 35 }} /> },
+  {
+    name: "Notifications",
+    path: "/notifications",
+    icon: <NotificationsIcon sx={{ fontSize: 35 }} />,
+  },
 ];
-
 
 export default function Header() {
   const dispatch = useDispatch();
@@ -53,8 +63,9 @@ export default function Header() {
   const anchorElUser = useSelector((state) => state.header.anchorElUser);
   const searchQuery = useSelector((state) => state.header.searchQuery);
 
-  let testUser = sessionStorage.getItem("token") || localStorage.getItem("token");
-  console.log(testUser)
+  let testUser =
+    sessionStorage.getItem("token") || localStorage.getItem("token");
+  console.log(testUser);
   const settings = [
     { name: "Profile", path: `/profile/${parseInt(jwtDecode(testUser).sub)}` },
     { name: "Logout", path: "/logout" },
@@ -95,10 +106,7 @@ export default function Header() {
     };
 
     axios
-      .get(
-        `${API_BASE_URL}/api/v1/users/search?input=${searchQuery}`,
-        config
-      )
+      .get(`${API_BASE_URL}/api/v1/users/search?input=${searchQuery}`, config)
       .then((response) => {
         setSearchResults(response.data);
         setOpen(true);
@@ -117,7 +125,7 @@ export default function Header() {
     sessionStorage.removeItem("token");
     dispatch(clearEmail());
     dispatch(clearHeaderState());
-   
+
     navigate("/login");
   };
 
@@ -139,17 +147,20 @@ export default function Header() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <PeopleIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <PeopleIcon
+            sx={{ fontSize: 30, display: { xs: "none", md: "flex" }, mr: 1 }}
+          />
           <Typography
             variant="h6"
             noWrap
             component={NavLink}
             to="/"
             sx={{
-              mr: 2,
+              mr: 33,
               display: { xs: "none", md: "flex" },
               fontFamily: "monospace",
               fontWeight: 700,
+              fontSize: "25px",
               letterSpacing: ".3rem",
               color: "inherit",
               textDecoration: "none",
@@ -198,7 +209,7 @@ export default function Header() {
                       width: "100%",
                     }}
                   >
-                    {page.name}
+                    {page.icon}
                   </NavLink>
                 </MenuItem>
               ))}
@@ -230,9 +241,14 @@ export default function Header() {
                 component={NavLink}
                 to={page.path}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{
+                  my: 2,
+                  color: "white",
+                  display: "block",
+                  paddingLeft: "60px",
+                }}
               >
-                {page.name}
+                {page.icon}
               </Button>
             ))}
           </Box>
@@ -274,7 +290,7 @@ export default function Header() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <AccountCircleIcon sx={{ color: "white" }} fontSize="large" />
               </IconButton>
             </Tooltip>
             <Menu
