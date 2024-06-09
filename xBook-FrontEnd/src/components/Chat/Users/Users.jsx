@@ -119,7 +119,7 @@ export default function Users({ onClicked, trigger, secondTrigger ,triggerChange
     const handleUserClick = (index, id) => { // when you click on a chat, save the new last user
         setLastActiveUser(index);
         onClicked(id);
-        console.log("id: " + id + " index: " + index);
+        //console.log("id: " + id + " index: " + index);
         localStorage.setItem('lastActiveUser', index);
         localStorage.setItem('lastActiveUserId', id);
         navigate(`/chats/${id}`);
