@@ -3,7 +3,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-import { useState } from 'react'
+import { useState } from "react";
 
 export default function WindowMessage({
   state,
@@ -34,31 +34,19 @@ export default function WindowMessage({
     <Box className={classNameDiv}>
       <Box className={classNameText}>
         <Box className="chat__message-text-inside">{text}</Box>
-        <Box>
+        <Box className="chat__message">
           {state === "input" && (
             <>
               <IconButton
                 className="chat__message_button"
                 onClick={handleClick}
               >
-                <MoreVertIcon />
-              </IconButton>
-              <IconButton
-                className="chat__message_button"
-                onClick={() => redactButton(id, text)}
-              >
-                <EditIcon className="chat__message-icon redact" />
-              </IconButton>
-              <IconButton
-                className="chat__message_button"
-                onClick={() => deleteButton(id)}
-              >
-                <DeleteIcon className="chat__message-icon delete" />
+                <MoreVertIcon sx={{ color: "white", border: "none" }} />
               </IconButton>
             </>
           )}
           <Box className="chat__message-time">{time}</Box>
-          {/* <Menu
+          <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleClose}
@@ -81,7 +69,7 @@ export default function WindowMessage({
               <DeleteIcon />
               Delete
             </MenuItem>
-          </Menu> */}
+          </Menu>
         </Box>
       </Box>
     </Box>

@@ -62,6 +62,24 @@ export default function ChatPage() {
   const handleIdChange = (index) => {
     setID(index);
     localStorage.setItem("lastActiveChatID", index);
+
+    // Subscribe to the new chat
+    if (stompClientRef.current && userEmail) {
+      const subscriptionPath = `/user/${userEmail}/queue/message-status`;
+      stompClientRef.current.subscribe(subscriptionPath, (message) => {
+        console.log("Subscription received:", message.body);
+      });
+
+      // Send request to update message status
+      stompClientRef.current.publish({
+        destination: `/app/update-message-status/${0}`,
+        body: JSON.stringify('READ'),
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("yes");
+    }
   };
 
   useEffect(() => {
@@ -207,7 +225,10 @@ export default function ChatPage() {
   };
 
   return (
-    <Box className="chat__container">
+    <Box
+                className="chat__container_message-input"
+                style={{ height: "50px" }}
+              >
       <Grid container className="chat__list">
         <Grid item xs={12} md={3} className="chat__users">
           <Users
@@ -242,7 +263,13 @@ export default function ChatPage() {
                 />
                 <IconButton
                   onClick={handleMessageSend}
-                  className="chat__message_button"
+                  className="chat__message_button-send"
+                  sx={{
+                    width: "50px",
+                    height: "50px",
+                    padding: 0,
+                    borderRadius: "4px",
+                  }}
                 >
                   <SendIcon className="chat__message_icon" />
                 </IconButton>

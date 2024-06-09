@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import WindowMessage from "../WindowMessage/WindowMessage";
 import axios from "axios";
+import { Box } from "@mui/material";
 
 export default function Window({
   data,
@@ -47,18 +48,18 @@ export default function Window({
   };
 
   return (
-    <div className="chat__window_container">
+    <Box className="chat__window_container">
       {chatClear ? (
-        <div className="chat__window-chat">
+        <Box className="chat__window-chat">
           <p>No chat chosen</p>
-        </div>
+        </Box>
       ) : (
-        <div ref={chatWindowRef} className="chat__window-chat">
+        <Box ref={chatWindowRef} className="chat__window-chat">
           {messages.length === 0 ? (
             <p>No messages yet</p>
           ) : (
             groupedMessages.map((group, index) => (
-              <div key={index} className={`chat__message-block ${group.type}`}>
+              <Box key={index} className={`chat__message-block ${group.type}`}>
                 {group.messages.map((message, idx) => {
                   const formattedDate = formatDate(message.createdDate);
                   const shouldDisplayDate = formattedDate !== prevDate;
@@ -80,12 +81,12 @@ export default function Window({
                     </React.Fragment>
                   );
                 })}
-              </div>
+              </Box>
             ))
           )}
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 }
 
