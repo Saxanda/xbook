@@ -94,7 +94,8 @@ export default function PostsFeed({ refresh, handlePostCreated, }) {
                 }
             });
             const bookmarkData = bookmarksData.content[0];
-            const response = await axios.delete(`${API_BASE_URL}/api/v1/bookmarks/${bookmarkData.bookmarkId}`, {
+
+            const response = await axios.delete(`${API_BASE_URL}/api/v1/bookmarks/${bookmarkData.postId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -106,7 +107,7 @@ export default function PostsFeed({ refresh, handlePostCreated, }) {
     };
 
     return (
-        <Grid container spacing={3}>
+        <Grid container spacing={3} >
             {postData.map((post, index) => (
                 <Grid item xs={12} key={post.id} ref={postData.length === index + 1 ? lastPostElementRef : null}>
                     <Post postData={post} refresh={handlePostCreated} addToBookmarks={addToBookmarks} removeFromBookmarks={removeFromBookmarks} />

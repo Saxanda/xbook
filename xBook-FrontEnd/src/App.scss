@@ -1,6 +1,7 @@
 .postComponent{
     max-width: 628px;
-    margin: 0 auto;
+    width: 100%;
+    // margin: 0 auto;
 }
 .postComponent_header{
     display: flex;
@@ -98,4 +99,35 @@
     padding: 0;
     height: 100vh;
     background: rgba(216, 234, 247, 0.5);
+}
+
+.createPost_modal {
+    padding: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    max-width: 90%;
+    background-color: rgba(255, 255, 255);
+    transition: background-color 0.3s;
+
+    &.isDraggingOver {
+        background-color: rgba(192, 192, 192);
+    }
+}
+.createPost_modal_header {
+    position: relative;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+
+    .closeButton {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 0;
+    }
 }

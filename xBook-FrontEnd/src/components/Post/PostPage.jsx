@@ -5,14 +5,14 @@ import Paper from '@mui/material/Paper';
 import { useParams } from 'react-router-dom';
 import PostComments from './PostComments';
 import { getOnePost } from './postApi';
-import { getPostComments } from './postApi';
+// import { getPostComments } from './postApi';
 
 export default function PostPage() {
     let { postId } = useParams();
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [comments, setComments] = useState([]);
+    // const [comments, setComments] = useState([]);
 
     const [refresh, setRefresh] = useState(false);
 
@@ -25,15 +25,14 @@ export default function PostPage() {
             try {
                 const postData = await getOnePost(postId);
                 setPost(postData);
-                const commentsData = await getPostComments(postId);
-                setComments(commentsData.content);
+                // const commentsData = await getPostComments(postId);
+                // setComments(commentsData.content);
             } catch (err) {
                 setError(err);
             } finally {
                 setLoading(false);
             }
         };
-
         fetchPost();
     }, [postId,refresh]);
 
@@ -52,7 +51,7 @@ export default function PostPage() {
                     <Post
                         isPage={true}
                         postData={post} 
-                        postComments={<PostComments comments={comments} postId={postId} refresh={handleCommentCreated}
+                        postComments={<PostComments  postId={postId} refresh={handleCommentCreated}
                         />} 
                     />
                 </Paper>
