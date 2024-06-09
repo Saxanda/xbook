@@ -51,11 +51,15 @@ public class XbookSecurityConfig {
                         .requestMatchers(
                                 AntPathRequestMatcher.antMatcher("/api/v1/auth/**")
                         ).permitAll()
+                        .requestMatchers(
+                                AntPathRequestMatcher.antMatcher("/websocket/**")
+                        ).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/**")).authenticated()
                         .anyRequest().permitAll());
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
+        
         return http.build();
     }
 
