@@ -12,8 +12,8 @@ import { getPhoto } from '../../features/getPhoto';
 import ModalEditProfile from '../../components/ModalEditProfile/ModalEditProfile';
 import DeleteFriendModal from '../../components/ModalDeleteFriend/DeleteFriendModal';
 import { userProfile, modalEditProfile, resetEditProfileState, editUser, getUserPosts } from '../../redux/profile/profileSlice';
-import { modalDeleteFriend } from '../../redux/friends/friendsSlice';
-import { getFriends, sendFriendRequest, friendData, requests } from '../../redux/friends/friendsThunks';
+import { modalDeleteFriendProfile } from '../../redux/friends/friendsSlice';
+import { getFriends, sendFriendRequest, friendData, requests, acceptFriendRequest, deleteFriend } from '../../redux/friends/friendsThunks';
 import './ProfilePage.scss';
 
 export default function ProfilePage() {
@@ -26,16 +26,20 @@ export default function ProfilePage() {
     const { obj, status, error } = useSelector((state) => state.profile.profileData);
     const editUserStatus = useSelector((state) => state.profile.editUserData);
     const deleteStatus = useSelector((state) => state.friends.deleteFriend);
+    const modalDeleteFriendProfState = useSelector((state) => state.friends.modalDeleteFriendProf)
+    
     const [linkPosts, setLinkPosts] = useState('focus');
     const [linkFriends, setLinkFriends] = useState('unfocus');
     const [linkRequests, setLinkRequests] = useState('unfocus');
     const location = useLocation();
     const indexSlash = location.pathname.lastIndexOf('/');
     const word = location.pathname.slice(indexSlash + 1);
-    const [sended, setSended] = useState(false);
+    const [sent, setSent] = useState(false);
+    const [accept, setAccepted] = useState(false);
     const inputBackgroundPhoto = useRef();
     const inputAvatarPhoto = useRef();
     const [isWideScreen, setIsWideScreen] = useState(window.innerWidth > 525);
+    const [profilePage, setProfilePage] = useState(false);
 
     useEffect(() => {
         if (token) {
@@ -48,7 +52,7 @@ export default function ProfilePage() {
         if (id !== null) {
             getUser(id);
         }
-    }, [id, editUserStatus, deleteStatus, urlID, token, sended]);
+    }, [id, editUserStatus, deleteStatus, urlID, token, sent, accept]);
 
     useEffect(() => {
         if (obj.user === 'myUser') {
@@ -88,14 +92,9 @@ export default function ProfilePage() {
         dispatch(modalEditProfile(true));
     };
 
-    const modalDeleteFriendOpen = () => {
-        dispatch(friendData({ id: urlID }));
-        dispatch(modalDeleteFriend(true));
-    };
-
     const clickSendRequest = async () => {
         await dispatch(sendFriendRequest({ friendId: urlID }));
-        await setSended(true);
+        await setSent(true);
     };
 
     const downloadInputBackgroundPhoto = async (e) => {
@@ -156,18 +155,47 @@ export default function ProfilePage() {
         clickLinkPosts();
     }
 
+    const handleConfirmation = async () => {
+      await dispatch(acceptFriendRequest({
+          userId: obj.id,
+          friendId: urlID,
+          token: token
+      }));
+      await setAccepted(true);
+    }
+
+    const modalDeleteFriendOpen = async () => {
+      await dispatch(friendData({ id: urlID }));
+      await dispatch(modalDeleteFriendProfile(true));
+      setProfilePage(true)
+  };
+
+    const modalDeleteFriendClose = () => {
+      dispatch(modalDeleteFriendProfile(false));
+      setProfilePage(false)
+    };
+
     return (
         <>
+        <DeleteFriendModal 
+        open={modalDeleteFriendProfState} 
+        onClose={modalDeleteFriendClose}
+        onDelete={() => dispatch(deleteFriend({ friendId: urlID }))}
+        friend={obj}
+        profilePage = {profilePage}
+        setProfilePage = {setProfilePage} 
+        />
             {status === 'rejected' ? (
                 <h1>Error: {error}</h1>
             ) : (
                 <>
                     <ModalEditProfile />
-                    <div style={{ backgroundColor: '#F0F2F5' }}>
+                    <div style={{ backgroundColor: '#F0F2F5', height: "height: 100vh" }}>
                         <div className="profileImageWrapper">
                             <div className="profileHeader__cover">
                                 <img
                                     className="profileHeader__photo"
+                                    accept="image/*"
                                     src={obj.photo ? obj.photo : '/profilePage/default_background.jpg'}
                                     alt="background photo"
                                 />
@@ -193,6 +221,7 @@ export default function ProfilePage() {
                                         {isWideScreen && 'UPLOAD'}
                                         <input
                                             type="file"
+                                            accept="image/*"
                                             style={{ display: 'none' }}
                                             ref={inputBackgroundPhoto}
                                             onChange={(e) => downloadInputBackgroundPhoto(e)}
@@ -260,7 +289,7 @@ export default function ProfilePage() {
                                             </Typography>
                                         </div>
                                         <div className="profileHeader__buttons">
-                                            {obj.user === 'myUser' ? (
+                                        {obj.user === 'myUser' ? (
                                                 <Button
                                                     variant="contained"
                                                     sx={{
@@ -303,14 +332,27 @@ export default function ProfilePage() {
                                                             variant="contained"
                                                             onClick={clickSendRequest}
                                                             startIcon={<PersonAddRoundedIcon />}
+                                                            sx={{
+                                                              borderRadius: '8px',
+                                                            }}
                                                         >
                                                             Send request
                                                         </Button>
-                                                    ) : obj.status === 'PENDING' ? (
+                                                    ) : obj.user === 'anotherUser' && obj.status === 'SENT' ? (
                                                         <Button variant="contained" disabled>
-                                                            Sent
+                                                            SENT
                                                         </Button>
-                                                    ) : null}
+                                                    ) : obj.user === 'anotherUser' && obj.status === 'PENDING' ? (
+                                                        <Button 
+                                                        variant="contained" 
+                                                        onClick={handleConfirmation}
+                                                        sx={{
+                                                          borderRadius: '8px',
+                                                        }}
+                                                        >
+                                                            Accept request
+                                                        </Button>
+                                                    ) : null }
                                                     <Button
                                                         color="secondary"
                                                         variant="contained"
