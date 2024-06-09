@@ -43,7 +43,7 @@ const BookmarksList = ({ bookmarks, deleteBookmark }) => {
     return (
         <div>
             {Array.isArray(bookmarks) && bookmarks.length === 0 && (
-                <h1 className='bookmarksTitle'>No saved objects</h1>
+                <h1 className='bookmarksTitle'>No saved bookmarks</h1>
             )}
             {Array.isArray(bookmarks) && uniqueBookmarks.map(bookmark => {
                 const post = posts.find(post => post.id === bookmark.postId);
