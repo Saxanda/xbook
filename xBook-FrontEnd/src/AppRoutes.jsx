@@ -3,15 +3,15 @@ import PrivateRoutes from "./helpers/PrivateRoutes";
 import LoginPage from "./Pages/LoginPage";
 import Home from "./Pages/Home";
 import BookmarksPage from "./Pages/BookmarksPage";
-import UpdatePasswordPage from './Pages/UpdatePasswordPage';
-import ForgotPage from './Pages/ForgotPage';
-import Chats from './Pages/ChatPage/ChatPage';
-import PostPage from './components/Post/PostPage';
-import ProfilePage from './Pages/ProfilePage/ProfilePage'
-import ProfilePagePosts from './components/ProfilePagePosts/ProfilePagePosts'
-import ProfilePageFriends from './components/ProfilePageFriends/ProfilePageFriends'
-import ProfileFriendRequests from './components/ProfileFriendRequests/ProfileFriendRequests'
-import Notifications from "./Pages/Notifications";
+import UpdatePasswordPage from "./Pages/UpdatePasswordPage";
+import ForgotPage from "./Pages/ForgotPage";
+import Chats from "./Pages/ChatPage/ChatPage";
+import PostPage from "./components/Post/PostPage";
+import ProfilePage from "./Pages/ProfilePage/ProfilePage";
+import ProfilePagePosts from "./components/ProfilePagePosts/ProfilePagePosts";
+import ProfilePageFriends from "./components/ProfilePageFriends/ProfilePageFriends";
+import ProfileFriendRequests from "./components/ProfileFriendRequests/ProfileFriendRequests";
+import Notifications from "./Pages/Notifications/Notifications";
 
 export default function AppRoutes() {
   return (
