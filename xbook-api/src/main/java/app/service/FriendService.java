@@ -50,8 +50,8 @@ public class FriendService {
         }
     }
 
-    public Friend updateFriend(Friend friend) {
-        friend.setStatus(FriendshipStatus.ACCEPTED);
+    public Friend updateFriend(Friend friend, FriendshipStatus friendshipStatus) {
+        friend.setStatus(friendshipStatus);
         return friendRepository.save(friend);
     }
 
@@ -76,18 +76,20 @@ public class FriendService {
         } else {
             User user = getUserById(userId);
             User friend = getUserById(friendId);
-            Friend newFriend = new Friend(user, friend, FriendshipStatus.PENDING);
-            return createFriend(newFriend);
+            Friend sentFriend = new Friend(user, friend, FriendshipStatus.SENT);
+            Friend pendingFriend = new Friend(friend, user, FriendshipStatus.PENDING);
+            createFriend(pendingFriend);
+            return createFriend(sentFriend);
         }
     }
 
     public Friend acceptFriendRequest(Long userId, Long friendId) {
-        if (existFriend(userId, friendId)) {
+        if (!existFriend(userId, friendId)) {
             throw new DataIntegrityViolationException("This friend already exists.");
         } else {
             User user = getUserById(userId);
             User friend = getUserById(friendId);
-            updateFriend(getFriend(friendId, userId));
+            updateFriend(getFriend(friendId, userId), FriendshipStatus.ACCEPTED);
             Friend newFriend = new Friend(user, friend, FriendshipStatus.ACCEPTED);
             return createFriend(newFriend);
         }

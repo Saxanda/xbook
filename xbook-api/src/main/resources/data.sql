@@ -22,8 +22,12 @@ VALUES ('William', 'Jones', 'william.jones@example.com', '$2a$10$R3p3g1sv9aWSP8h
 INSERT INTO users (name, surname, email, password, date_of_birth, gender, role, photo, avatar, address, is_activated)
 VALUES ('Sophia', 'Garcia', 'sophia.garcia@example.com', '$2a$10$w1rNnQawEUWbO8fGyAed1Olu/U.gOQCKkCFrVWs5VWZq5eizR2upu', '1998-01-30', 'female', 'USER', 'sophia.jpg', 'avatar.jpg', '678 Elm Street', TRUE);
 
-INSERT INTO friends (user_id, friend_id, status) VALUES (1, 3, 'PENDING');
-INSERT INTO friends (user_id, friend_id, status) VALUES (2, 3, 'PENDING');
+INSERT INTO friends (user_id, friend_id, status) VALUES (1, 3, 'SENT');
+INSERT INTO friends (user_id, friend_id, status) VALUES (3, 1, 'PENDING');
+
+INSERT INTO friends (user_id, friend_id, status) VALUES (2, 3, 'SENT');
+INSERT INTO friends (user_id, friend_id, status) VALUES (3, 2, 'PENDING');
+
 INSERT INTO friends (user_id, friend_id, status) VALUES (1, 2, 'ACCEPTED');
 INSERT INTO friends (user_id, friend_id, status) VALUES (2, 1, 'ACCEPTED');
 INSERT INTO friends (user_id, friend_id, status) VALUES (1, 4, 'ACCEPTED');
