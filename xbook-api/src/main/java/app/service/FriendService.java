@@ -90,13 +90,12 @@ public class FriendService {
             User user = getUserById(userId);
             User friend = getUserById(friendId);
             updateFriend(getFriend(friendId, userId), FriendshipStatus.ACCEPTED);
-            Friend newFriend = new Friend(user, friend, FriendshipStatus.ACCEPTED);
-            return createFriend(newFriend);
+            return updateFriend(getFriend(userId, friendId), FriendshipStatus.ACCEPTED);
         }
     }
 
     public void rejectFriendRequest(Long userId, Long friendId) {
-        deleteFriend(getFriend(friendId, userId));
+        terminateFriendship(userId, friendId);
     }
 
     public void terminateFriendship(Long userId, Long friendId) {
