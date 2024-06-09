@@ -11,7 +11,6 @@ export default function PasswordInput ({ password, handlePassword, onBlur, error
 
   return (
     <TextField
-      size="small"
       id="password"
       name="password"
       type={showPassword ? "text" : "password"}
