@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { Modal, Paper, Typography, IconButton,TextField,Button } from '@mui/material';
+import { Modal, Paper, Typography, IconButton,TextField,Button,Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { createPost } from './postApi';
 // import { getUserIsLogin } from './postApi';
@@ -40,20 +40,14 @@ export default function CreateRepostModal({ open, handleClose, postId, refresh }
         <Modal open={open} onClose={close}>
             <Paper
                 elevation={3}
-                style={{
-                    padding: '20px',
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: '400px',
-                    maxWidth: '90%'
-                }}
+                className='createPost_modal'
             >
-                <Typography variant="h5" gutterBottom>Create Repost</Typography>
-                <IconButton onClick={close} style={{ position: 'absolute', top: '10px', right: '10px', padding: '0' }}>
-                    <CloseIcon />
-                </IconButton>
+                <Box className="createPost_modal_header">
+                    <Typography variant="h5" gutterBottom>Create Repost</Typography>
+                    <IconButton onClick={close} className="closeButton">
+                        <CloseIcon />
+                    </IconButton>
+                </Box>
                 <AuthorInfo></AuthorInfo>
                 <form>
                     <TextField
@@ -66,7 +60,7 @@ export default function CreateRepostModal({ open, handleClose, postId, refresh }
                         onChange={handleTextChange}
                     ></TextField>
                     <Button
-                        variant="contained" color="primary" style={{ width: '100%' ,marginTop:"15px"}}
+                        variant="contained" color="inherit" style={{ width: '100%' ,marginTop:"15px"}}
                         onClick={publish}
                     >Post</Button>
                 </form>
