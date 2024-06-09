@@ -1,66 +1,97 @@
-import './ProfileFriendRequests.scss'
+import './ProfileFriendRequests.scss';
 import Typography from '@mui/material/Typography';
-import { Box, Pagination } from '@mui/material';
+import { Box } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import ProfileRequestCard from '../ProfileRequestCard/ProfileRequestCard';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { requests } from '../../redux/friends/friendsThunks';
 import { useParams } from 'react-router-dom';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function ProfileFriendRequests() {
     let urlID = useParams().id;
     urlID = parseInt(urlID);
 
+    const userId = useSelector(state => state.profile.profileData.obj.id);
+
     const dispatch = useDispatch();
 
+    const [requestsData, setRequestsData] = useState([]);
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+
     useEffect(() => {
-        dispatch(requests());
-    }, []);
+        const fetchInitialRequests = async () => {
+            try {
+                const response = await dispatch(requests({ userId: urlID, page: 0 }));
+                const data = response.payload;
+                setRequestsData(data.content);
+                setPage(1);
+                setHasMore(!data.last);
+            } catch (error) {
+                console.error('Error fetching requests:', error);
+            }
+        };
 
+        fetchInitialRequests();
+    }, [urlID]);
 
-    const content = useSelector(state => state.friends.requestsToMe.obj?.content);
-    const totalPages = useSelector(state => state.friends.requestsToMe.obj?.totalPages);
-    const pageNumber = useSelector(state => state.friends.requestsToMe.obj.pageable?.pageNumber);
+    const handlePagination = async () => {
+        if (!hasMore) return;
+        try {
+            const response = await dispatch(requests({ userId: urlID, page: page }));
+            const data = response.payload;
+            setRequestsData(prevRequests => [...prevRequests, ...data.content]);
+            setPage(prevPage => prevPage + 1);
+            setHasMore(!data.last);
+        } catch (error) {
+            console.error('Error fetching requests:', error);
+        }
+    };
 
-    const handlePaginationClick = (event, page) => {
-        dispatch(requests({ page: page - 1 }));
-    }
+    const handleActionComplete = (id) => {
+        setRequestsData(prevRequests => prevRequests.filter(friend => friend.id !== id));
+    };
 
     return (
         <div className='profileRequests'>
             <Box
-            sx={{
-                '@media (min-width: 699px)': {
-                    display: "flex",
-                    justifyContent: "space-between"
-                },
-            }}>
+                sx={{
+                    '@media (min-width: 699px)': {
+                        display: "flex",
+                        justifyContent: "space-between"
+                    },
+                }}
+            >
                 <Typography variant='h6' sx={{ fontWeight: 600 }}>Requests</Typography>
             </Box>
             {
-                content && content.length !== 0 ?
-            <>            
-                <ul className='requestsList'>
-                    {content.map(friend => (
-                        <li className='requestList__item' key={friend.id}>
-                            <ProfileRequestCard friend={friend} />
-                        </li>
-                    ))}
-                </ul> 
-                <Pagination 
-                count={totalPages} 
-                page={pageNumber + 1} 
-                color="primary" 
-                sx={{marginTop: "30px"}}
-                onChange={handlePaginationClick}
-                />    
-            </>
-            :
-            <Typography variant='h5'sx={{my: "100px", alignSelf: "center"}}>
-                <Box sx={{color: "text.secondary", textTransform: "uppercase"}}>No requests</Box>
-            </Typography>
+                requestsData.length > 0 ?
+                    <InfiniteScroll
+                        style={{ marginTop: "20px" }}
+                        dataLength={requestsData.length}
+                        next={handlePagination}
+                        hasMore={hasMore}
+                        loader={
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "10px 0 10px 0" }}>
+                                <CircularProgress />
+                            </div>
+                        }
+                    >
+                        <ul className='requestsList'>
+                            {requestsData.map(friend => (
+                                <li className='requestList__item' key={friend.id}>
+                                    <ProfileRequestCard friend={friend} onActionComplete={handleActionComplete} />
+                                </li>
+                            ))}
+                        </ul>
+                    </InfiniteScroll>
+                    :
+                    <Typography variant='h5' sx={{ my: "100px", alignSelf: "center" }}>
+                        <Box sx={{ color: "text.secondary", textTransform: "uppercase" }}>No requests</Box>
+                    </Typography>
             }
-            
         </div>
-    )
+    );
 }

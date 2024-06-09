@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import UsersItem from "../UserItem/UserItem";
-import axios from "axios";
+import axios from 'axios';
+import API_BASE_URL from '../../../helpers/apiConfig';
 import { useNavigate, useParams } from "react-router-dom";
 import { Button, TextField, Box } from "@mui/material";
 
@@ -29,6 +30,7 @@ export default function Users({
       localStorage.setItem("lastActiveChatID", -1);
     }
   }, [urlID]);
+
 
   const deleteChat = async (id) => {
     // удаление чата
@@ -159,7 +161,7 @@ export default function Users({
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/v1/chats/create/${inputText}`,
+        `${API_BASE_URL}/api/v1/chats/create/${inputText}`,
         {
           email: inputText,
         },

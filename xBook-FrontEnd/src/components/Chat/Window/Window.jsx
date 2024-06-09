@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import WindowMessage from "../WindowMessage/WindowMessage";
-import axios from "axios";
+import axios from 'axios';
+import API_BASE_URL from '../../../helpers/apiConfig';
 import { Box } from "@mui/material";
+
 
 export default function Window({
   data,
@@ -34,7 +36,7 @@ export default function Window({
   const deleteMessage = async (id) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/v1/messages/delete/${id}`,
+        `${API_BASE_URL}/api/v1/messages/delete/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -46,7 +48,6 @@ export default function Window({
       console.error("Error deleting message:", error);
     }
   };
-
   return (
     <Box className="chat__window_container">
       {chatClear ? (

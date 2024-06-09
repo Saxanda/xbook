@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { Button, Checkbox, FormControlLabel, Link, Box } from "@mui/material";
+import { Button, Link, Box } from "@mui/material";
 
 
 import { useDispatch } from "react-redux";
@@ -14,8 +14,8 @@ import { setEmail } from "../../redux/authSlice";
 import PasswordInput from "../Form/PasswordInput";
 import EmailInput from "../Form/EmailInput";
 import axios from "axios";
-import { jwtDecode } from 'jwt-decode'
 import "./Login.scss";
+import API_BASE_URL from "../../helpers/apiConfig";
 
 
 
@@ -49,7 +49,7 @@ export default function LoginForm() {
     onSubmit: async (values) => {
       try {
         const response = await axios.post(
-          "http://localhost:8080/api/v1/auth/login",
+          `${API_BASE_URL}/api/v1/auth/login`,
           {
             email: values.email,
             password: values.password,
@@ -61,12 +61,6 @@ export default function LoginForm() {
         );
 
         const {token,email}  = response.data;
-        // const decodedToken = jwtDecode(token);
-        // const userEmail = decodedToken.email;
-        // console.log('Decoded token:', decodedToken);
-        // console.log('User email:', userEmail);
-        // const user= jwtDecode(token);
-        //   console.log(user);
      
         dispatch(setEmail(email));
 
@@ -82,14 +76,6 @@ export default function LoginForm() {
       }
     },
   });
-
-
-  // const handleLogout = () => {
-  //   localStorage.removeItem('token');
-  //   sessionStorage.removeItem('token');
-  //   dispatch(clearAuthData());
-
-  // };
 
 
   return (
@@ -119,13 +105,7 @@ export default function LoginForm() {
         />
         Remember Me
       </label>
-      {/* <FormControlLabel
-        control={<Checkbox value="remember" color="primary"  
-        checked={formik.values.rememberMe}
-        onChange={handleRememberMeChange}
-        />}
-        label="Remember me"
-      /> */}
+   
       {error && <Box sx={{ color: "red" }}>{error}</Box>}
 
       <Button color="primary" variant="contained" fullWidth type="submit">
