@@ -31,35 +31,20 @@
     
         &__item{
             display: flex;
-            margin-top: 16px;
+            margin-top: 8px;
         }
     }
 
-    .userFriends{
-        padding: 20px 16px;
-        background-color: white;
-        border-radius: 8px;
-        width: -webkit-fill-available;
-    
-        &__info{
-            display: flex;
-            justify-content: space-between;
+    &__section{
+        display: flex;
+        flex-direction: column;
+
+        @media (min-width: 431px){
+            padding: 0 16px;
         }
-    
-        &__list{
-            list-style: none;
+
+        @media (min-width: 820px){
             padding: 0;
-            margin: 8px 0 0 0;
-            display: grid;
-            gap: 8px;
-            grid-template-columns: repeat(3, 1fr);
-        }
-    
-        &__item{
-            display: flex;
-            flex-direction: column;
-            flex-wrap: wrap;
-            // align-items: center;
         }
     }
 }
