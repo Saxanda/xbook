@@ -37,10 +37,6 @@ export default function ProfilePage() {
     const inputAvatarPhoto = useRef();
     const [isWideScreen, setIsWideScreen] = useState(window.innerWidth > 525);
 
-    // const handleTrigger = () => {
-    //     setTrigger((prevState) => !prevState);
-    // };
-
     useEffect(() => {
         if (token) {
             const decodedToken = jwtDecode(token);
