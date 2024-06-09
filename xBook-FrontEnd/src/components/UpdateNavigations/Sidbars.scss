@@ -13,3 +13,11 @@
 .home_sidebar_add{
     width: 60%;
 }
+
+@media screen and (max-width: 899px) {
+   
+
+    .shome_sidebar_container{
+      display: none;
+     } 
+    }

@@ -1,7 +1,8 @@
 .Bookmarks{
     display: flex;
     justify-content: center;
-    width: 49%; 
+    width: 46%; 
+    padding-top: 50px;
     margin-right:230px ;
     overflow-y: auto;
     &::-webkit-scrollbar {
@@ -13,9 +14,6 @@
 }
 
 
-.BookmarksSidebar{
-    padding-top: 30px;
-}
 
 .container{
     justify-content: center;
@@ -26,7 +24,13 @@
 @media screen and (max-width: 899px) {
    
     .Bookmarks{
-       margin-right:0px ;
+       margin: 0 auto;
        width: 100%; 
+      
+       
      } 
+
+     .navigationSideBarBookmarks{
+        display: none;
+     }
 }

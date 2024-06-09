@@ -93,7 +93,7 @@ export default function PostsFeed({ refresh, handlePostCreated, }) {
                 }
             });
             const bookmarkData = bookmarksData.content[0];
-            const response = await axios.delete(`http://localhost:8080/api/v1/bookmarks/${bookmarkData.bookmarkId}`, {
+            const response = await axios.delete(`http://localhost:8080/api/v1/bookmarks/${bookmarkData.postId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

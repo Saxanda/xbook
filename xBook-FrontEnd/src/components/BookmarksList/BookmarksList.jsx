@@ -42,7 +42,9 @@ const BookmarksList = ({ bookmarks, deleteBookmark }) => {
 
     return (
         <div>
-            <h1 className='bookmarksTitle'>All bookmarks</h1>
+            {Array.isArray(bookmarks) && bookmarks.length === 0 && (
+                <h1 className='bookmarksTitle'>No saved objects</h1>
+            )}
             {Array.isArray(bookmarks) && uniqueBookmarks.map(bookmark => {
                 const post = posts.find(post => post.id === bookmark.postId);
                 return (
@@ -53,7 +55,7 @@ const BookmarksList = ({ bookmarks, deleteBookmark }) => {
                                 postComments={null}
                                 refresh={() => {}}
                                 addToBookmarks={() => {}}
-                                removeFromBookmarks={() => { deleteBookmark(bookmark.bookmarkId) }}
+                                removeFromBookmarks={() => { deleteBookmark(bookmark.postId) }}
                             />
                         ) : (
                             <></> 
