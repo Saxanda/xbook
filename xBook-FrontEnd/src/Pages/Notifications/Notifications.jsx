@@ -18,15 +18,18 @@ import API_BASE_URL from "../../helpers/apiConfig";
 
 import "./Notifications.scss";
 
+import { Client } from '@stomp/stompjs';
+
 export default function Notifications() {
   const navigate = useNavigate();
-
+  const [userEmail, setUserEmail] = useState('');
   const [notifications, setNotifications] = useState([]);
-  const [trigger, setTrigger] = useState("true");
+  const [trigger, setTrigger] = useState(true);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(localStorage.getItem("token") || sessionStorage.getItem("token"));
 
-  //отримання токену
+  // Получение токена
   const getToken = () => {
     let token = sessionStorage.getItem("token");
     if (!token) {
@@ -35,18 +38,99 @@ export default function Notifications() {
     return token;
   };
 
-  //отримання userID з токену
+  // Получение userID из токена
   let userId = parseInt(
     jwtDecode(sessionStorage.getItem("token") || localStorage.getItem("token"))
       .sub
   );
 
-  // Функція для обробки кнопки "Mark as Read"
+  useEffect(() => {
+    const fetchUserEmail = async () => {
+      const response = await axios.get(`http://localhost:8080/api/v1/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUserEmail(response.data.email);
+    };
+
+    fetchUserEmail();
+  }, [token]);
+
+  useEffect(() => {
+    if (userEmail) {
+      const stompClient = connectWebSocket();
+      
+    }
+  }, [userEmail, token]);
+
+  const connectWebSocket = () => {
+    const stompClient = new Client({
+      brokerURL: 'ws://localhost:8080/websocket',
+      connectHeaders: {
+        Authorization: `Bearer ${token}`
+      },
+      reconnectDelay: 5000,
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000
+    });
+
+    const socketPublisher = () => {
+      const headers = {
+        //    Token of user 'john.doe@example.com'
+                Authorization: `Bearer ${token}`
+            };
+      stompClient.publish({
+        destination: "/app/chat",
+//        destination: "/app/update-message-status/3",
+//        destination: "/app/update-message-status/3",
+        body: JSON.stringify({
+            'chatId': 1,
+            'contentType': 'text',
+            'content': '',
+        }),
+//        body: JSON.stringify('READ'),
+        headers: headers
+    });
+    };
+
+    stompClient.onConnect = (frame) => {
+      console.log('Connected to WebSocket server:', frame);
+      if (userEmail) {
+        const subscriptionPath = `/user/${userEmail}/queue/messages`;
+        console.log('Subscribing to:', subscriptionPath);
+        stompClient.subscribe(subscriptionPath, (message) => {
+          console.log("Subscription received:", message.body);
+        });
+      } else {
+        console.warn('User email is not set, cannot subscribe.');
+      }
+    };
+
+    stompClient.onStompError = (frame) => {
+      console.error('Broker reported error:', frame.headers['message']);
+      console.error('Additional details:', frame.body);
+    };
+
+    stompClient.onWebSocketClose = (frame) => {
+      console.log('WebSocket connection closed:', frame);
+    };
+
+    stompClient.onWebSocketError = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    stompClient.activate();
+    //socketPublisher();
+
+    return stompClient;
+  };
+
+  // Функция для обработки кнопки "Mark as Read"
   const handleReadButton = async (id) => {
     console.log(getToken());
     try {
       const AUTH_TOKEN = getToken();
-      // const response =
       await axios.put(
         `${API_BASE_URL}/api/v1/notifications/${id}/read`,
         {},
@@ -65,7 +149,7 @@ export default function Notifications() {
     }
   };
 
-  // позначення всіх повідомленьяк прочитаних
+  // Пометка всех уведомлений как прочитанных
   const handleMarkAllAsRead = async () => {
     try {
       const AUTH_TOKEN = getToken();
@@ -90,17 +174,17 @@ export default function Notifications() {
     }
   };
 
-  // Функція навігації до посту
+  // Функция навигации к посту
   const handleToPage = (id) => {
     navigate(`/post/${id}`);
   };
 
-  // Триггер для оновлення стану
+  // Триггер для обновления состояния
   const triggerChange = () => {
     setTrigger((prevTrigger) => !prevTrigger);
   };
 
-  // Функція для отримання сповіщень
+  // Функция для получения уведомлений
   const getNotifications = async () => {
     try {
       const AUTH_TOKEN = getToken();
@@ -115,13 +199,13 @@ export default function Notifications() {
         }
       );
       console.log(response.data.content);
-      setNotifications(response.data.content); // Update the state with fetched data
+      setNotifications(response.data.content); // Обновление состояния с полученными данными
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  // Функція для отримання постів
+  // Функция для получения постов
   const getPosts = async () => {
     try {
       const AUTH_TOKEN = getToken();
@@ -135,7 +219,6 @@ export default function Notifications() {
           },
         }
       );
-      //console.log(response.data.content[1])
       setPosts(response.data.content);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -143,7 +226,7 @@ export default function Notifications() {
     }
   };
 
-  // для кнопки дій з повідомленням
+  // Для кнопки действий с уведомлением
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedNotification, setSelectedNotification] = useState(null);
 
@@ -174,7 +257,6 @@ export default function Notifications() {
     <Box
       sx={{
         padding: 2,
-        // width: "100%",
         maxWidth: "628px",
         margin: "0 auto",
       }}

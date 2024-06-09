@@ -1,7 +1,7 @@
 const stompClient = new StompJs.Client({
     brokerURL: 'ws://localhost:8080/websocket',
     connectHeaders: {
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE2OTIyODA2LCJleHAiOjE3MTc1Mjc2MDZ9.Y7SRlQ0sOMo5FuUF8lJ7h0TyHFN94NRDNFWM_M0Xnt8'
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE3ODY3NTUzLCJleHAiOjE3MTg0NzIzNTN9.nol3a48eamSl8z-_EMCv0ADPJwQaJV5BHHHNPw16tmM'
     }
 });
 
@@ -58,7 +58,7 @@ function sendName() {
     console.log("sendName function is working!");
     const headers = {
 //    Token of user 'john.doe@example.com'
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE2OTIyODA2LCJleHAiOjE3MTc1Mjc2MDZ9.Y7SRlQ0sOMo5FuUF8lJ7h0TyHFN94NRDNFWM_M0Xnt8'
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzE3ODY3NTUzLCJleHAiOjE3MTg0NzIzNTN9.nol3a48eamSl8z-_EMCv0ADPJwQaJV5BHHHNPw16tmM'
     };
     stompClient.publish({
         destination: "/app/chat",
