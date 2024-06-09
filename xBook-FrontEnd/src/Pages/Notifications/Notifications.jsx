@@ -14,7 +14,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import AuthorAvatar from "../../components/Post/sideComponents/AuthorAvatar";
-import API_BASE_URL from "../helpers/apiConfig";
+import API_BASE_URL from "../../helpers/apiConfig";
 
 import "./Notifications.scss";
 
