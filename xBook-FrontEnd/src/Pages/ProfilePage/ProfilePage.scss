@@ -1,7 +1,6 @@
 .profileImageWrapper{
     max-width: 940px;
     margin: 0 auto;
-    // border: 5px solid red;
 }
 
 .profilePageWrapper{
@@ -78,7 +77,7 @@
     }
     
     &__profile{
-        padding-bottom: 10px;
+        padding-bottom: 20px;
         display: flex;
         justify-content: center;
         border-bottom: 1px solid #9e9e9f;
@@ -86,6 +85,7 @@
         
         @media (min-width: 876px){
             display: block;
+            padding-bottom: 10px;
         }
     }
 
@@ -116,8 +116,9 @@
         margin-top: 10px;
 
         @media (min-width: 876px){
-            align-items: flex-end;
-            margin-top: 0;
+            padding-top: 15px;
+            // align-items: flex-end;
+            margin: 0 15px 0 0;
         }
     }
 }
@@ -129,20 +130,47 @@
     display: flex;
     justify-content: center;
 
-    // @media (min-width: 876px) {
-    //     justify-content: normal;
-    // }
-
     &__link {
-        padding: 12px;
+        padding: 2px;
         font-weight: 600;
         border-bottom: 3px solid white;
+        text-decoration: none;
+        transition: background-color 0.3s, border-radius 0.3s;
+
+        &.profileNav__link--active {
+            background-color: transparent;
+            color: #0866FF;
+            border-bottom: 3px solid #0866FF;
+
+            &:hover {
+                background-color: transparent;
+            }
+        }
     }
 
     &__link--active {
         color: #0866FF;
         border-bottom: 3px solid #0866FF;
-        // background-color: #F0F2F5;
+        text-decoration: none;
+        background-color: transparent;
+    }
+
+    &__wrapper{
+        padding: 12px; 
+        border-radius: 5px;
+
+        &:hover {
+            background-color: #E4E6EB;
+        }
+
+        &.profileNav__wrapper--active{
+            background-color: transparent;
+            
+            &:hover {
+                background-color: transparent;
+            }
+        }
+
     }
 
     &__item {
@@ -156,5 +184,11 @@
         font-weight: 600;
         font-size: 15px;
         color: #65676B;
+        transition: color 0.3s;
+        border-radius: 5px;
+
+        &--active {
+            color: #0866FF;
+        }
     }
 }
