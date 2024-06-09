@@ -1,18 +1,19 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import API_BASE_URL from "../../helpers/apiConfig";
 
-const BASE_URL = 'http://localhost:8080/';
-const TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token");
+
+const getToken = () => localStorage.getItem("token") || sessionStorage.getItem("token");
+
 
 export const getFriends = createAsyncThunk(
     "friends/getFriends",
-    async ({ page = 0, size = 2, userId,}, { rejectWithValue }) => {
-        console.log(TOKEN);
+    async ({ page = 0, size = 4, userId }, { rejectWithValue }) => {
         const params = new URLSearchParams({ page, size });
         try {
-            const response = await axios.get(`${BASE_URL}api/v1/friends/${userId}?${params}`, {
+            const response = await axios.get(`${API_BASE_URL}/api/v1/friends/${userId}?${params}`, {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                 },
             });
             return response.data;
@@ -20,15 +21,15 @@ export const getFriends = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     }
-)
+);
 
 export const deleteFriend = createAsyncThunk(
     "friends/deleteFriend",
-    async ({ friendId}, { rejectWithValue }) => {
+    async ({ friendId }, { rejectWithValue }) => {
         try {
-            const response = await axios.delete(`${BASE_URL}api/v1/friends/delete-friend/${friendId}`, {
+            const response = await axios.delete(`${API_BASE_URL}/api/v1/friends/delete-friend/${friendId}`, {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                 },
             });
             return response.data;
@@ -36,15 +37,15 @@ export const deleteFriend = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     }
-)
+);
 
 export const sendFriendRequest = createAsyncThunk(
     "friends/sendFriendRequest",
-    async ({friendId}, { rejectWithValue }) => {
+    async ({ friendId }, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${BASE_URL}api/v1/friends/add-friend/${friendId}`, {friendId}, {
+            const response = await axios.post(`${API_BASE_URL}/api/v1/friends/add-friend/${friendId}`, {friendId}, {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                 },
             });
             return response.data;
@@ -52,15 +53,15 @@ export const sendFriendRequest = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     }
-)
+);
 
 export const acceptFriendRequest = createAsyncThunk(
     "friends/acceptFriendRequest",
-    async ({userId, friendId}, { rejectWithValue }) => {
+    async ({ userId, friendId }, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${BASE_URL}api/v1/friends/accept-friend/${friendId}`, {userId, friendId}, {
+            const response = await axios.post(`${API_BASE_URL}/api/v1/friends/accept-friend/${friendId}`, {userId, friendId}, {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                 },
             });
             return response.data;
@@ -68,15 +69,15 @@ export const acceptFriendRequest = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     }
-)
+);
 
 export const rejectFriendRequest = createAsyncThunk(
     "friends/rejectFriendRequest",
-    async ({ friendId}, { rejectWithValue }) => {
+    async ({ friendId }, { rejectWithValue }) => {
         try {
-            const response = await axios.delete(`${BASE_URL}api/v1/friends/reject-friend/${friendId}`, {
+            const response = await axios.delete(`${API_BASE_URL}/api/v1/friends/reject-friend/${friendId}`, {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                 }
             });
             return response.data;
@@ -84,15 +85,15 @@ export const rejectFriendRequest = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     }
-)
+);
 
 export const friendData = createAsyncThunk(
     'friends/friend',
     async ({ id }, { rejectWithValue }) => {
         try {
-            const response = await axios.get(`${BASE_URL}api/v1/users/${id}`, {
+            const response = await axios.get(`${API_BASE_URL}/api/v1/users/${id}`, {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                 },
             });
             return response.data;
@@ -104,12 +105,12 @@ export const friendData = createAsyncThunk(
 
 export const requests = createAsyncThunk(
     'friends/requests',
-    async ({ page = 0, size = 2}, { rejectWithValue }) => {
+    async ({ page = 0, size = 3 }, { rejectWithValue }) => {
         const params = new URLSearchParams({ page, size });
         try {
-            const response = await axios.get(`${BASE_URL}api/v1/friends/requests?${params}`, {
+            const response = await axios.get(`${API_BASE_URL}/api/v1/friends/requests?${params}`, {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                 },
             });
             return response.data;
@@ -117,4 +118,4 @@ export const requests = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     }
-)
+);
