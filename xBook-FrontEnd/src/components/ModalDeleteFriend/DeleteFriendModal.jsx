@@ -1,35 +1,20 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
-import { modalDeleteFriend } from '../../redux/friends/friendsSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteFriend, getFriends } from '../../redux/friends/friendsThunks';
-import { useEffect } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { useDispatch } from 'react-redux';
 
-export default function DeleteFriendModal() {
+export default function DeleteFriendModal({ open, onClose, onDelete, friend }) {
     const dispatch = useDispatch();
 
-    const modalDeleteFriendState = useSelector((state) => state.friends.modalDeleteFriend) 
-    const friend = useSelector((state) => state.friends.friend.obj);
-    const userId = useSelector((state) => state.profile.profileData.obj.id);
-    
-    const modalDeleteFriendClose = async ()=>{
-        await dispatch(modalDeleteFriend(false));
+    const modalDeleteFriendClose = async () => {
+        onClose();
     };
 
-    useEffect(() => {
-      return ()=>{
-        dispatch(modalDeleteFriend(false));
-      };
-    }, []);
-
-    const deleteFriendFunc = async ()=>{
-      await dispatch(deleteFriend({friendId:friend.id}));
-      await dispatch(modalDeleteFriend(false));
-      await dispatch(getFriends({userId}));
+    const deleteFriendFunc = async () => {
+        await onDelete();
     };
 
     return (
         <Dialog
-            open={modalDeleteFriendState}
+            open={open}
             onClose={modalDeleteFriendClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
@@ -44,20 +29,20 @@ export default function DeleteFriendModal() {
             </DialogContent>
             <DialogActions>
                 <Button 
-                variant='contained'
-                onClick={modalDeleteFriendClose}
+                    variant='contained'
+                    onClick={modalDeleteFriendClose}
                 >
                     No
                 </Button>
                 <Button 
-                color='error'
-                variant='contained'
-                onClick={deleteFriendFunc} 
-                autoFocus
+                    color='error'
+                    variant='contained'
+                    onClick={deleteFriendFunc} 
+                    autoFocus
                 >
                     Yes
                 </Button>
             </DialogActions>
         </Dialog>
-    )
+    );
 }

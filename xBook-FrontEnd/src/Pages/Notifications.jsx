@@ -5,6 +5,7 @@ import Post from '../components/Post/Post';
 import { getOnePost } from '../components/Post/postApi';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
+import API_BASE_URL from '../helpers/apiConfig';
 
 export default function Notifications() {
     const navigate = useNavigate()
@@ -12,7 +13,6 @@ export default function Notifications() {
     const [notifications, setNotifications] = useState([]);
     const [trigger, setTrigger] = useState("true")
     const [ posts, setPosts ] = useState([])
-    const API_BASE_URL = 'http://localhost:8080';
     const getToken = () => {
         let token = sessionStorage.getItem('token');
         if (!token) {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import UsersItem from "../UserItem/UserItem";
 import axios from 'axios';
+import API_BASE_URL from '../../../helpers/apiConfig';
 
 export default function Users({ onClicked, trigger, secondTrigger ,triggerChange, changeUserArray, token }) {
     const [users, setUsers] = useState([]);
@@ -15,7 +16,7 @@ export default function Users({ onClicked, trigger, secondTrigger ,triggerChange
     const deleteChat = async (id) => { // удаление чата
         if(users.length <=1) setLastActiveUser(-1)
         try {
-            const response = await axios.delete(`http://localhost:8080/api/chats/delete/${id}`, {
+            const response = await axios.delete(`${API_BASE_URL}/api/chats/delete/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -67,7 +68,7 @@ export default function Users({ onClicked, trigger, secondTrigger ,triggerChange
         };
         const fetchChats = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/chats', {
+                const response = await axios.get(`${API_BASE_URL}/api/chats`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -132,7 +133,7 @@ export default function Users({ onClicked, trigger, secondTrigger ,triggerChange
         
         try {
             const response = await axios.post(
-                `http://localhost:8080/api/chats/create/${inputText}`,
+                `${API_BASE_URL}/api/chats/create/${inputText}`,
                 {
                     email: inputText,
                 },

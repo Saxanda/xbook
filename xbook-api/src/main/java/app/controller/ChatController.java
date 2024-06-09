@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/chats")
+@RequestMapping("api/v1/chats")
 @RequiredArgsConstructor
 public class ChatController {
     private final ChatService chatService;

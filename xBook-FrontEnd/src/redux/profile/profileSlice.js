@@ -1,34 +1,51 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import initialValue from "./initialValue";
+import builders from "../builder";
 import axios from 'axios';
+import API_BASE_URL from "../../helpers/apiConfig";
 
-const TOKEN = localStorage.getItem("token") || sessionStorage.getItem("token");
-const BASE_URL = 'http://localhost:8080/';
+const getToken = () => localStorage.getItem("token") || sessionStorage.getItem("token");
 
 export const userProfile = createAsyncThunk(
     "profile/userProfile",
-    async ({id,user}, {rejectWithValue}) => {
+    async ({id, user}, {rejectWithValue}) => {
         try {
-            const response = await axios.get(`${BASE_URL}api/v1/users/${id}`, {
+            const response = await axios.get(`${API_BASE_URL}/api/v1/users/${id}`, {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
                 },
             });
-            console.log("USERPROFILE THUNK: ",response);
-            return {...response.data, user:user};
+            return {...response.data, user: user};
         } catch (error) {
             return rejectWithValue(error.response.data);
         }
     }
-)
+);
 
 export const editUser = createAsyncThunk(
     "profile/editUser",
-    async ({ id, userObj}, { rejectWithValue }) => {
+    async ({id, userObj}, {rejectWithValue}) => {
         try {
-            const response = await axios.patch(`${BASE_URL}api/v1/users/${id}`, userObj, {
+            const response = await axios.patch(`${API_BASE_URL}/api/v1/users/${id}`, userObj, {
                 headers: {
-                    Authorization: `Bearer ${TOKEN}`,
+                    Authorization: `Bearer ${getToken()}`,
+                },
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const getUserPosts = createAsyncThunk(
+    "profile/getUserPosts",
+    async ({page = 0, size = 1, userId}, {rejectWithValue}) => {
+        const params = new URLSearchParams({page, size});
+        try {
+            const response = await axios.get(`${API_BASE_URL}/api/v1/posts/get/${userId}?${params}`, {
+                headers: {
+                    Authorization: `Bearer ${getToken()}`,
                 },
             });
             return response.data;
@@ -45,39 +62,14 @@ const profileSlice = createSlice({
         modalEditProfile: (state, action) => {
             state.modalEditProfile.state = action.payload;
         },
-        resetEditProfileState: (state) =>{
+        resetEditProfileState: (state) => {
             state.editUserData = initialValue.editUserData;
         }
     },
-    extraReducers : (builder) => {
-        builder
-            .addCase(userProfile.pending, state => {
-                state.profileData.status = "pending"
-                state.profileData.error = null;
-            })
-            .addCase(userProfile.fulfilled, (state, action) => {
-                state.profileData.status = "fullfield";
-                state.profileData.obj = action.payload;
-                state.profileData.error = null;
-            })
-            .addCase(userProfile.rejected, (state, action) => {
-                state.profileData.status = "rejected"
-                state.profileData.error = action.payload;
-            })
-        builder
-            .addCase(editUser.pending, state => {
-                state.editUserData.status = "pending"
-                state.editUserData.error = null;
-            })
-            .addCase(editUser.fulfilled, (state, action) => {
-                state.editUserData.status = "fullfield";
-                state.editUserData.obj = action.payload;
-                state.editUserData.error = null;
-            })
-            .addCase(editUser.rejected, (state, action) => {
-                state.editUserData.status = "rejected"
-                state.editUserData.error = action.payload;
-            })
+    extraReducers: (builder) => {
+        builders(builder, userProfile, 'profileData');
+        builders(builder, editUser, 'editUserData');
+        builders(builder, getUserPosts, 'userPosts');
     }
 });
 

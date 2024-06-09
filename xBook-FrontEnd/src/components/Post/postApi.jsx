@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
+import API_BASE_URL from '../../helpers/apiConfig';
 
 
-const API_BASE_URL = 'http://localhost:8080';
+
 const getToken = () => {
     let token = sessionStorage.getItem('token');
     if (!token) {
@@ -140,7 +141,7 @@ export const deleteLike = async(postId) =>{
     }
 }
 //-------------coment---------------------
-export const getPostComments = async (postId) => {
+export const getPostComments = async (postId, page = 0, size = 5, sortBy = 'createdDate', sortDir = 'desc') => {
     try {
         const AUTH_TOKEN = getToken();
         const response = await axios.get(
@@ -150,6 +151,12 @@ export const getPostComments = async (postId) => {
                     "Content-Type": "application/json",
                     'Authorization': `Bearer ${AUTH_TOKEN}`,
                     'accept': '*/*'
+                },
+                params: {
+                    page,
+                    size,
+                    sortBy,
+                    sortDir
                 }
             }
         );

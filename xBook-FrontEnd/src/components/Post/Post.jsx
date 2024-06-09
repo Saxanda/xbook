@@ -54,8 +54,8 @@ Post.propTypes = {
     postComments: PropTypes.node,
     refresh: PropTypes.func,
     isPage: PropTypes.bool,
-    addToBookmarks: PropTypes.func.isRequired,
-    removeFromBookmarks: PropTypes.func.isRequired,
+    addToBookmarks: PropTypes.func,
+    removeFromBookmarks: PropTypes.func,
     deleteBookmark: PropTypes.func,
     bookmarkId: PropTypes.string, 
 };
