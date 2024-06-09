@@ -5,6 +5,7 @@ import { Notifications, Chat, Bookmarks, Search, People } from '@mui/icons-mater
 import AuthorProfileNav from "./AuthorProfileNav";
 import { getFriends } from '../Post/postApi';
 import SideBarFriendItem from './SideBarFriendItem';
+import { getUserIsLogin } from '../Post/postApi';
 
 import './Sidbars.scss';
 
@@ -13,12 +14,15 @@ import { useNavigate } from 'react-router-dom';
 
 export default function NavigationSideBar(){
     const navigate = useNavigate();
+    const [userId, setUserId] = useState(null)
 
     const [friends, setFriends] = useState([]);
     useEffect(() => {
         const fetchFriends = async () => {
             try {
                 const friendsData = await getFriends();
+                const user = await getUserIsLogin();
+                setUserId(user.id)
                 setFriends(friendsData.content);
             } catch (error) {
                 console.error('Error fetching :', error);
@@ -80,7 +84,7 @@ export default function NavigationSideBar(){
                         </List>
                 </Box>
                 
-                <Button variant="outlined" fullWidth className="view_all_friends" mt={2}>
+                <Button onClick={() => navigate(`/profile/${userId}/friends`)} variant="outlined" fullWidth className="view_all_friends" mt={2}> 
                     View All Friends
                 </Button>
             </Box>
