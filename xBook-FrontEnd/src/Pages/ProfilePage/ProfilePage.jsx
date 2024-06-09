@@ -14,10 +14,12 @@ import DeleteFriendModal from '../../components/ModalDeleteFriend/DeleteFriendMo
 import { userProfile, modalEditProfile, resetEditProfileState, editUser, getUserPosts } from '../../redux/profile/profileSlice';
 import { modalDeleteFriendProfile } from '../../redux/friends/friendsSlice';
 import { getFriends, sendFriendRequest, friendData, requests, acceptFriendRequest, deleteFriend } from '../../redux/friends/friendsThunks';
+import { useNavigate } from 'react-router-dom';
 import './ProfilePage.scss';
 
 export default function ProfilePage() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [token, setToken] = useState(localStorage.getItem('token') || sessionStorage.getItem('token'));
     const [id, setID] = useState(null);
     let urlID = useParams().id;
@@ -173,6 +175,10 @@ export default function ProfilePage() {
     const modalDeleteFriendClose = () => {
       dispatch(modalDeleteFriendProfile(false));
       setProfilePage(false)
+    };
+
+    const createNewChat = () => {
+      navigate(`/chats/${urlID}`);
     };
 
     return (
@@ -356,6 +362,7 @@ export default function ProfilePage() {
                                                     <Button
                                                         color="secondary"
                                                         variant="contained"
+                                                        onClick={createNewChat}
                                                         startIcon={<SendRoundedIcon />}
                                                         sx={{
                                                             borderRadius: '8px',
