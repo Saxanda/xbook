@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Modal, Paper, Typography, TextField, IconButton } from '@mui/material';
+import { Button, Modal, Paper, Typography, TextField, IconButton, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import PhotoIcon from '@mui/icons-material/Photo';
 import PostMediaGrid from './PostMediaGrid';
@@ -91,19 +91,17 @@ export default function CreatePostModal({ open, handleClose,onPostCreated }) {
         <Modal open={open} onClose={close}>
             <Paper
                 elevation={3}
-                style={{
-                    padding: '20px', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '400px', maxWidth: '90%',
-                    backgroundColor: isDraggingOver ? 'rgba(192, 192, 192)' : 'rgba(255, 255, 255)',
-                    transition: 'background-color 0.3s'
-                }}
+                className={`createPost_modal ${isDraggingOver ? 'isDraggingOver' : ''}`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
             >
-                <Typography variant="h5" gutterBottom>Create post</Typography>
-                <IconButton onClick={close} style={{ position: 'absolute', top: '10px', right: '10px', padding: '0' }}>
-                    <CloseIcon />
-                </IconButton>
+                <Box className="createPost_modal_header">
+                    <Typography variant="h5" gutterBottom>Create post</Typography>
+                    <IconButton onClick={close} className="closeButton">
+                        <CloseIcon />
+                    </IconButton>
+                </Box>
                 <AuthorInfo></AuthorInfo>
                 <form>
                     <TextField
@@ -128,7 +126,7 @@ export default function CreatePostModal({ open, handleClose,onPostCreated }) {
                         <PostMediaGrid media={imgURLs}></PostMediaGrid>
                     </div>
                     <Button
-                        variant="contained" color="primary" style={{ width: '100%' }}
+                        variant="contained" color="inherit" style={{ width: '100%' }}
                         onClick={publish}
                     >Post</Button>
                 </form>

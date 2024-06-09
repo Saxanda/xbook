@@ -106,7 +106,7 @@ export default function PostsFeed({ refresh, handlePostCreated, }) {
     };
 
     return (
-        <Grid container spacing={3}>
+        <Grid container spacing={3} >
             {postData.map((post, index) => (
                 <Grid item xs={12} key={post.id} ref={postData.length === index + 1 ? lastPostElementRef : null}>
                     <Post postData={post} refresh={handlePostCreated} addToBookmarks={addToBookmarks} removeFromBookmarks={removeFromBookmarks} />

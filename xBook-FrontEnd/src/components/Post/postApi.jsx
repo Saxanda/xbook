@@ -141,7 +141,7 @@ export const deleteLike = async(postId) =>{
     }
 }
 //-------------coment---------------------
-export const getPostComments = async (postId) => {
+export const getPostComments = async (postId, page = 0, size = 5, sortBy = 'createdDate', sortDir = 'desc') => {
     try {
         const AUTH_TOKEN = getToken();
         const response = await axios.get(
@@ -151,6 +151,12 @@ export const getPostComments = async (postId) => {
                     "Content-Type": "application/json",
                     'Authorization': `Bearer ${AUTH_TOKEN}`,
                     'accept': '*/*'
+                },
+                params: {
+                    page,
+                    size,
+                    sortBy,
+                    sortDir
                 }
             }
         );
