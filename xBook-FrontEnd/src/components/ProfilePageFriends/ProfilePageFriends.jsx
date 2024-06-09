@@ -8,6 +8,7 @@ import { getFriends, deleteFriend, friendData } from '../../redux/friends/friend
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import DeleteFriendModal from '../ModalDeleteFriend/DeleteFriendModal';
+import { modalDeleteFriend } from '../../redux/friends/friendsSlice';
 
 export default function ProfilePageFriends() {
     let urlID = useParams().id;
@@ -15,13 +16,13 @@ export default function ProfilePageFriends() {
 
     const dispatch = useDispatch();
 
-    const friendsList = useSelector(state => state.friends.getFriends.obj.content);
+    const modalDeleteFriendState = useSelector((state) => state.friends.modalDeleteFriend) 
 
     const [friendsData, setFriendsData] = useState([]);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
-    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [friendToDelete, setFriendToDelete] = useState(null);
+    const [friendsPage, setFriendsPage] = useState(false);
 
     useEffect(() => {
         const fetchInitialFriends = async () => {
@@ -54,22 +55,25 @@ export default function ProfilePageFriends() {
 
     const handleDeleteFriend = async (friendId) => {
         try {
+            console.log("ON DELETE");
             await dispatch(deleteFriend({ friendId }));
-            setFriendsData(prevFriends => prevFriends.filter(friend => friend.id !== friendId));
-            setDeleteModalOpen(false);
+            await setFriendsData(prevFriends => prevFriends.filter(friend => friend.id !== friendId));
+            await dispatch(modalDeleteFriend(false))
         } catch (error) {
             console.error('Error deleting friend:', error);
         }
     };
 
-    const openDeleteModal = (friend) => {
-        setFriendToDelete(friend);
-        dispatch(friendData({ id: friend.id }));
-        setDeleteModalOpen(true);
+    const openDeleteModal = async (friend) => {
+        await setFriendToDelete(friend);
+        await dispatch(friendData({ id: friend.id }));
+        await setFriendsPage(true)
+        await dispatch(modalDeleteFriend(true))
     };
 
-    const closeDeleteModal = () => {
-        setDeleteModalOpen(false);
+    const closeDeleteModal = async () => {
+        await dispatch(modalDeleteFriend(false))
+        await setFriendsPage(false)
     };
 
     return (
@@ -125,10 +129,12 @@ export default function ProfilePageFriends() {
             }
             {friendToDelete && (
                 <DeleteFriendModal
-                    open={deleteModalOpen}
+                    open={modalDeleteFriendState }
                     onClose={closeDeleteModal}
                     onDelete={() => handleDeleteFriend(friendToDelete.id)}
                     friend={friendToDelete}
+                    friendsPage={friendsPage}
+                    setFriendsPage={setFriendsPage}
                 />
             )}
         </div>
