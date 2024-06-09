@@ -5,6 +5,7 @@
     padding: 16px;
     display: flex;
     flex-direction: column;
+    height: 100vh;
 
     .requestsList{
         display: grid;
@@ -16,21 +17,18 @@
         gap: 20px;
 
         
-        @media (min-width: 470px){
+        @media (min-width: 515px){
             grid-template-columns: repeat(2, 1fr);
         }
 
-        @media (min-width: 699px){
+        @media (min-width: 768px){
             grid-template-columns: repeat(3, 1fr);
-        }
-
-        @media (min-width: 876px){
-            grid-template-columns: repeat(4, 1fr);
         }
 
         .requestList__item{
             display: flex;
             justify-content: center;
+            padding-bottom: 3px;
         }
     }
 }

@@ -8,7 +8,7 @@ const getToken = () => localStorage.getItem("token") || sessionStorage.getItem("
 
 export const getFriends = createAsyncThunk(
     "friends/getFriends",
-    async ({ page = 0, size = 2, userId }, { rejectWithValue }) => {
+    async ({ page = 0, size = 4, userId }, { rejectWithValue }) => {
         const params = new URLSearchParams({ page, size });
         try {
             const response = await axios.get(`${API_BASE_URL}/api/v1/friends/${userId}?${params}`, {
@@ -105,7 +105,7 @@ export const friendData = createAsyncThunk(
 
 export const requests = createAsyncThunk(
     'friends/requests',
-    async ({ page = 0, size = 2 }, { rejectWithValue }) => {
+    async ({ page = 0, size = 3 }, { rejectWithValue }) => {
         const params = new URLSearchParams({ page, size });
         try {
             const response = await axios.get(`${API_BASE_URL}/api/v1/friends/requests?${params}`, {

@@ -1,12 +1,14 @@
 package app.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.io.IOException;
 
 @Controller
 public class SpaController {
     @RequestMapping(value = {
-            "/",
             "/login",
             "/forgot-page",
             "/forgot-password",
@@ -16,7 +18,12 @@ public class SpaController {
             "/notifications",
             "/profile/**",
     })
-    public String redirect() {
+    public String redirect(){
         return "forward:/index.html";
+    }
+
+    @RequestMapping("/")
+    public void login(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/login");
     }
 }

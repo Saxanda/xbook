@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 
 export default function PostMediaGrid({ media }) {
     if(media[0] === null){
-        return (null)
+        return <div style={{ maxWidth: '100%', width:"100%" }}></div>;
     }
     else if (media.length === 1) {
         // Якщо лише одна картинка, вона займає весь контейнер та центрується

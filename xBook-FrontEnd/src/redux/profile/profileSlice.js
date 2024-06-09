@@ -2,8 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import initialValue from "./initialValue";
 import builders from "../builder";
 import axios from 'axios';
-
-const BASE_URL = 'http://localhost:8080/';
+import API_BASE_URL from "../../helpers/apiConfig";
 
 const getToken = () => localStorage.getItem("token") || sessionStorage.getItem("token");
 
@@ -11,7 +10,7 @@ export const userProfile = createAsyncThunk(
     "profile/userProfile",
     async ({id, user}, {rejectWithValue}) => {
         try {
-            const response = await axios.get(`${BASE_URL}api/v1/users/${id}`, {
+            const response = await axios.get(`${API_BASE_URL}/api/v1/users/${id}`, {
                 headers: {
                     Authorization: `Bearer ${getToken()}`,
                 },
@@ -27,7 +26,7 @@ export const editUser = createAsyncThunk(
     "profile/editUser",
     async ({id, userObj}, {rejectWithValue}) => {
         try {
-            const response = await axios.patch(`${BASE_URL}api/v1/users/${id}`, userObj, {
+            const response = await axios.patch(`${API_BASE_URL}/api/v1/users/${id}`, userObj, {
                 headers: {
                     Authorization: `Bearer ${getToken()}`,
                 },
@@ -44,7 +43,7 @@ export const getUserPosts = createAsyncThunk(
     async ({page = 0, size = 1, userId}, {rejectWithValue}) => {
         const params = new URLSearchParams({page, size});
         try {
-            const response = await axios.get(`${BASE_URL}api/v1/posts/get/${userId}?${params}`, {
+            const response = await axios.get(`${API_BASE_URL}/api/v1/posts/get/${userId}?${params}`, {
                 headers: {
                     Authorization: `Bearer ${getToken()}`,
                 },
