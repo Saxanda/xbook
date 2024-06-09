@@ -70,7 +70,7 @@ export default function ProfileRequestCard({ friend, onActionComplete }) {
                     <ul className='requestInfo__list'>
                         {friend.dob &&
                             <li className='requestInfo__item'>
-                                <CakeIcon color='action' sx={{ marginRight: "12px", padding: "6px 0 6px 0" }} />
+                                <CakeIcon color='primary' sx={{ marginRight: "12px", padding: "6px 0 6px 0" }} />
                                 <Typography variant='subtitle2'sx={{padding: "6px 0 6px 0", alignSelf: "flex-end"}}>
                                     {friend.dob}
                                 </Typography>
@@ -79,11 +79,11 @@ export default function ProfileRequestCard({ friend, onActionComplete }) {
                         {friend.gender &&
                             <li className='requestInfo__item'>
                                 {friend.gender === "man" || friend.gender === "male" ?
-                                    <MaleIcon color='action' sx={{ marginRight: "12px", padding: "6px 0 6px 0" }} />
+                                    <MaleIcon color='primary' sx={{ marginRight: "12px", padding: "6px 0 6px 0" }} />
                                     : friend.gender === "woman" || friend.gender === "female" ?
-                                        <FemaleIcon color='action' sx={{ marginRight: "12px", padding: "6px 0 6px 0" }} />
+                                        <FemaleIcon color='primary' sx={{ marginRight: "12px", padding: "6px 0 6px 0" }} />
                                         :
-                                        <TransgenderIcon color='action' sx={{ marginRight: "12px", padding: "6px 0 6px 0" }} />
+                                        <TransgenderIcon color='primary' sx={{ marginRight: "12px", padding: "6px 0 6px 0" }} />
                                 }
                                 <Typography variant='subtitle2'sx={{padding: "6px 0 6px 0"}}>
                                     {friend.gender}

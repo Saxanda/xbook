@@ -3,7 +3,6 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import CottageIcon from '@mui/icons-material/Cottage';
 import CakeIcon from '@mui/icons-material/Cake';
-import Button from '@mui/material/Button';
 import EmailIcon from '@mui/icons-material/Email';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
@@ -75,17 +74,6 @@ export default function ProfilePagePosts() {
                                     </li>
                                 }
                             </ul>
-                            {obj.user === "myUser" &&
-                                <Button
-                                    variant="contained"
-                                    color='info'
-                                    onClick={modalEditProfileOpen}
-                                    sx={{
-                                        width: "100%",
-                                        marginTop: "16px"
-                                    }}
-                                >Edit Bio</Button>
-                            }
                         </div>
                     </Paper>
                 </div>
