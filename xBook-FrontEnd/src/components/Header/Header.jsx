@@ -14,10 +14,16 @@ import {
   Container,
   Button,
   Tooltip,
+  Drawer,
   MenuItem,
   InputBase,
   Paper,
   MenuList,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -59,14 +65,17 @@ export default function Header() {
   const [searchResults, setSearchResults] = useState({});
   const [open, setOpen] = useState(false);
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const anchorElNav = useSelector((state) => state.header.anchorElNav);
   const anchorElUser = useSelector((state) => state.header.anchorElUser);
   const searchQuery = useSelector((state) => state.header.searchQuery);
 
+  let testUser =
+    sessionStorage.getItem("token") || localStorage.getItem("token");
+  //console.log(testUser);
 
-  let testUser = sessionStorage.getItem("token") || localStorage.getItem("token");
-  // console.log(testUser)
-  
+ 
   const settings = [
     { name: "Profile", path: `/profile/${parseInt(jwtDecode(testUser).sub)}` },
     { name: "Logout", path: "/logout" },
@@ -157,7 +166,7 @@ export default function Header() {
             component={NavLink}
             to="/"
             sx={{
-              mr: 33,
+              mr: 2,
               display: { xs: "none", md: "flex" },
               fontFamily: "monospace",
               fontWeight: 700,
@@ -235,7 +244,12 @@ export default function Header() {
           >
             XBOOK
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex", justifyContent: "center" },
+            }}
+          >
             {pages.map((page) => (
               <Button
                 key={page.name}
@@ -246,7 +260,7 @@ export default function Header() {
                   my: 2,
                   color: "white",
                   display: "block",
-                  paddingLeft: "60px",
+                  paddingLeft: { xs: "10px", md: "60px" },
                 }}
               >
                 {page.icon}
@@ -259,7 +273,8 @@ export default function Header() {
               borderRadius: 3,
               backgroundColor: "rgba(240, 240, 240, 0.7)",
               backdropFilter: "blur(5px)",
-              marginRight: 10,
+              marginRight: { xs: 1, md: 10 },
+              display: { xs: searchOpen ? "flex" : "none", md: "flex" },
             }}
           >
             <div
@@ -288,9 +303,28 @@ export default function Header() {
               />
             </div>
           </Box>
-          <Box sx={{ flexGrow: 0 }}>
+          <Box
+            sx={{
+              flexGrow: 0,
+              display: "flex",
+              alignItems: "center",
+              marginLeft: { xs: "auto", md: 0 },
+            }}
+          >
+            <IconButton
+              size="large"
+              aria-label="search"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              color="inherit"
+              onClick={() => setSearchOpen(!searchOpen)}
+              sx={{ display: { xs: "flex", md: "none" } }}
+            >
+              <SearchIcon />
+            </IconButton>
+
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 1 }}>
                 <AccountCircleIcon sx={{ color: "white" }} fontSize="large" />
               </IconButton>
             </Tooltip>
@@ -342,8 +376,8 @@ export default function Header() {
           style={{
             position: "absolute",
             top: 70,
-            right: 100,
-            width: "20%",
+            right: 10,
+            width: "90%",
             zIndex: 1,
           }}
         >
@@ -366,6 +400,61 @@ export default function Header() {
           </MenuList>
         </Paper>
       )}
+
+      {searchOpen && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 70,
+            left: 10,
+            right: 10,
+            backgroundColor: "white",
+            zIndex: 1,
+            borderRadius: 1,
+            boxShadow: 3,
+            p: 2,
+            display: { xs: "flex", md: "none" },
+          }}
+        >
+          <InputBase
+            placeholder="Search…"
+            inputProps={{ "aria-label": "search" }}
+            value={searchQuery}
+            onChange={handleSearchChange}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch();
+                dispatch(setSearchQuery(""));
+                setSearchOpen(false);
+              }
+            }}
+            fullWidth
+          />
+          <IconButton onClick={() => setSearchOpen(false)}>
+            <SearchIcon />
+          </IconButton>
+        </Box>
+      )}
+
+      <Drawer anchor="left" open={drawerOpen} onClose={handleCloseNavMenu}>
+        <Box
+          sx={{ width: 250 }}
+          role="presentation"
+          onClick={handleCloseNavMenu}
+          onKeyDown={handleCloseNavMenu}
+        >
+          <List>
+            {pages.map((page) => (
+              <ListItem key={page.name} disablePadding>
+                <ListItemButton component={NavLink} to={page.path}>
+                  <ListItemIcon>{page.icon}</ListItemIcon>
+                  <ListItemText primary={page.name} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Drawer>
     </AppBar>
   );
 }
