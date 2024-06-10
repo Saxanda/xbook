@@ -40,7 +40,7 @@ export const editUser = createAsyncThunk(
 
 export const getUserPosts = createAsyncThunk(
     "profile/getUserPosts",
-    async ({page = 0, size = 1, userId}, {rejectWithValue}) => {
+    async ({page = 0, size = 5, userId}, {rejectWithValue}) => {
         const params = new URLSearchParams({page, size});
         try {
             const response = await axios.get(`${API_BASE_URL}/api/v1/posts/get/${userId}?${params}`, {
@@ -48,6 +48,7 @@ export const getUserPosts = createAsyncThunk(
                     Authorization: `Bearer ${getToken()}`,
                 },
             });
+            console.log("GETTING USER POSTS: ", response.data);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
