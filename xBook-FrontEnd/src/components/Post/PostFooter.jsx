@@ -19,7 +19,6 @@ export default function PostFooter({ likes, id, originalPost, comments, reposts,
     const [liked, setLiked] = useState(isLiked);
     const [likeCount,setLikeCount] = useState(likes);
 
-
     const handleLikeButtonClick = async () => {
         try {
             if (!liked) {
