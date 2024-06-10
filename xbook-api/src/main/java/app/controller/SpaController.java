@@ -46,7 +46,6 @@ public class SpaController {
             "/notifications",
             "/profile/**",
             "/friends",
-            "/confirm-email/**",
             "/requests"
     })
     public String redirect(){
