@@ -29,10 +29,10 @@ const ForgotPasswordForm = () => {
     <div className="password-reset-container">
       {stage === 1 && (
         <form onSubmit={handleFirstSubmit}>
-          <h2>Forgot your password</h2>
-          <p>To recover your password, enter your email address</p>
-          <div>
-            <input className='firgotInput'
+          <h2 className='titleForgot'>Forgot your password</h2>
+          <p className='textForgot'>To recover your password, enter your email address</p>
+          <div >
+            <input className='forgotInput' 
               type="email"
               name="email"  
               value={email}
@@ -42,16 +42,16 @@ const ForgotPasswordForm = () => {
             />
           </div>
           <div className='password-reset-button'>
-            <button type="submit">Send</button>
-            <button type="button" onClick={() => window.history.back()}>Cancel</button>
+            <button className='buttonForgot' type="submit">Send</button>
+            <button className='buttonForgot' type="button" onClick={() => window.history.back()}>Cancel</button>
           </div>
         </form>
       )}
       {stage === 2 && (
         <div className='massage' >
-          <h1>A password reset link has been sent by email.</h1>
+          <h1 className='titleForgotTwo'>A password reset link has been sent by email.</h1>
           <div className='password-reset-button'>
-            <button type="button" onClick={() => window.history.back()}>Continue</button>
+            <button className='buttonForgot' type="button" onClick={() => window.history.back()}>Continue</button>
           </div>
         </div>
       )}

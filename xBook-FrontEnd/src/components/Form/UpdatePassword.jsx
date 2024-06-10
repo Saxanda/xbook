@@ -28,10 +28,10 @@ const UpdatePasswordForm = ({ resetToken, redirectToLogin }) => {
   return (
     <div className="password-reset-container">
       <form onSubmit={handleSecondSubmit}>
-        <h2>Change Password</h2>
-        <p>Enter a new password</p>
+        <h2 className='titleForgot'>Change Password</h2>
+        <p className='textForgot'>Enter a new password</p>
         <div>
-          <input className='firgotInput'
+          <input className='forgotInput'
             type="password"
             name="newPassword"
             value={newPassword}
@@ -42,7 +42,7 @@ const UpdatePasswordForm = ({ resetToken, redirectToLogin }) => {
         </div>
         {error && <p style={{ color: 'black', fontSize: '15px' }}>{error}</p>}
         <div className='password-reset-button'>
-          <button type="submit">Change password</button>
+          <button className='buttonForgot' type="submit">Change password</button>
         </div>
       </form>
       {message && <p>{message}</p>}

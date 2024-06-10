@@ -1,5 +1,6 @@
 const initialValue = {
     modalDeleteFriend: false,
+    modalDeleteFriendProf: false,
     getFriends:{
         obj: {},
         status: null,

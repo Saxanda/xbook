@@ -7,12 +7,16 @@ import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 import API_BASE_URL from '../helpers/apiConfig';
 
+import { Client } from '@stomp/stompjs';
+
 export default function Notifications() {
     const navigate = useNavigate()
 
+    const [userEmail, setUserEmail] = useState('');
     const [notifications, setNotifications] = useState([]);
     const [trigger, setTrigger] = useState("true")
     const [ posts, setPosts ] = useState([])
+    const [token, setToken] = useState(localStorage.getItem("token") || sessionStorage.getItem("token"));
     const getToken = () => {
         let token = sessionStorage.getItem('token');
         if (!token) {
@@ -21,9 +25,65 @@ export default function Notifications() {
         return token;
     };
 
-
+    
     let userId = parseInt(jwtDecode(sessionStorage.getItem("token") || localStorage.getItem("token")).sub)
     
+    useEffect(() => {
+      const userEmailTaker = async () => {
+          const response = await axios.get(`http://localhost:8080/api/v1/users/${userId}`, {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+          });
+          setUserEmail(response.data.email);
+      };
+          userEmailTaker();
+  }, [token]);
+
+    const connectWebSocket = () => {
+      const stompClient = new Client({
+          brokerURL: 'ws://localhost:8080/websocket',
+          connectHeaders: {
+              Authorization: `Bearer ${token}`
+          },
+          reconnectDelay: 5000,
+          heartbeatIncoming: 4000,
+          heartbeatOutgoing: 4000
+      });
+
+      stompClient.onConnect = (frame) => {
+          console.log('Connected to WebSocket server:', frame);
+          if (userEmail) {
+              const subscriptionPath = `/user/${userEmail}/queue/messages`;
+              console.log('Subscribing to:', subscriptionPath);
+              stompClient.subscribe(subscriptionPath, (message) => {
+                  console.log("Subscription received:", message.body);
+              });
+          } else {
+              console.warn('User email is not set, cannot subscribe.');
+          }
+      };
+
+      stompClient.onStompError = (frame) => {
+          console.error('Broker reported error:', frame.headers['message']);
+          console.error('Additional details:', frame.body);
+      };
+
+      stompClient.onWebSocketClose = (frame) => {
+          console.log('WebSocket connection closed:', frame);
+      };
+
+      stompClient.onWebSocketError = (error) => {
+          console.error('WebSocket error:', error);
+      };
+
+      stompClient.activate();
+
+      return stompClient;
+  };
+
+  const stompClient = connectWebSocket();
+
     const handleReadButton = async (id) => {
         console.log(getToken())
         try {

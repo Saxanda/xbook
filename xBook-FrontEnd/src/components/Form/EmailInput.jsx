@@ -24,7 +24,7 @@ export default function EmailInput({
           endAdornment: (
             <InputAdornment position="end">
               <AlternateEmailIcon
-                sx={{ color: "action.active", mr: 1, my: 0.5 
+                sx={{ color: "action.active", 
               }}
               />
             </InputAdornment>
