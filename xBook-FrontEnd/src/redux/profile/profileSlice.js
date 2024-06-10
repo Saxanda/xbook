@@ -48,7 +48,6 @@ export const getUserPosts = createAsyncThunk(
                     Authorization: `Bearer ${getToken()}`,
                 },
             });
-            console.log("GETTING USER POSTS: ", response.data);
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response.data);
