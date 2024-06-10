@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { Client } from "@stomp/stompjs";
 import { Box, Grid, TextField, IconButton } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
+import CloseIcon from "@mui/icons-material/Close"; // Імпорт іконки хрестика
 
 export default function ChatPage() {
   const [users, setUsers] = useState([]);
@@ -27,6 +28,7 @@ export default function ChatPage() {
     localStorage.getItem("token") || sessionStorage.getItem("token")
   );
   const [someState, setSomeState] = useState("");
+  const [page, setPage] = useState(0);
   let urlID = useParams().id;
   urlID = parseInt(urlID);
 
@@ -37,14 +39,14 @@ export default function ChatPage() {
       if (users.length > 0 && id !== -1) {
         try {
           const response = await axios.get(
-            `http://localhost:8080/api/v1/chats/messages/${urlID}?page=0&size=100`,
+            `http://localhost:8080/api/v1/chats/messages/${urlID}?page=${page}&size=100`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             }
           );
-          setMessages(response.data.content);
+          setMessages((prevMessages) => [...prevMessages, ...response.data.content]);
           setLoading(false);
           setChatClear(false);
         } catch (error) {
@@ -57,23 +59,21 @@ export default function ChatPage() {
     };
 
     fetchMessages();
-  }, [token, id, trigger, deleteTrigger, users, someState]);
+  }, [token, id, trigger, deleteTrigger, users, someState, page]);
 
   const handleIdChange = (index) => {
     setID(index);
     localStorage.setItem("lastActiveChatID", index);
 
-    // Subscribe to the new chat
     if (stompClientRef.current && userEmail) {
       const subscriptionPath = `/user/${userEmail}/queue/message-status`;
       stompClientRef.current.subscribe(subscriptionPath, (message) => {
         console.log("Subscription received:", message.body);
       });
 
-      // Send request to update message status
       stompClientRef.current.publish({
         destination: `/app/update-message-status/${0}`,
-        body: JSON.stringify('READ'),
+        body: JSON.stringify("READ"),
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -97,32 +97,12 @@ export default function ChatPage() {
 
       stompClient.onConnect = (frame) => {
         console.log("Connected to WebSocket server:", frame);
-        setUserEmail(localStorage.getItem("chosenUserEmail"))
+        setUserEmail(localStorage.getItem("chosenUserEmail"));
         console.log(localStorage.getItem("chosenUserEmail"));
         if (userEmail) {
           const subscriptionPath = `/user/${userEmail}/queue/messages`;
           console.log("Subscribing to:", subscriptionPath);
           stompClient.subscribe(subscriptionPath, (message) => {
-            // const newMessage = {
-            //     id: message.body.id,
-            //     createdDate: message.body.createdDate,
-            //     contentType: message.body.contentType,
-            //     content: message.body.content,
-            //     edited: message.body.edited,
-            //     sender: {
-            //       avatar: message.body.sender.avatar,
-            //       email: message.body.sender.email,
-            //       name: message.body.sender.name,
-            //       surname: message.body.sender.surname,
-            //       status: message.body.status
-            //     },
-            //     chat: {
-            //         id: message.body.chat.id,
-            //         chatParticipant: {
-            //             avatar: message.body.chat
-            //         }
-            //     }
-            //   };
             console.log("Subscription received:", message.body);
             let newMessage = JSON.parse(message.body);
             newMessage.chat.chatParticipant.name = newMessage.sender.name;
@@ -145,7 +125,6 @@ export default function ChatPage() {
       stompClient.onWebSocketError = (error) => {
         console.error("WebSocket error:", error);
       };
-
 
       stompClientRef.current = stompClient;
     };
@@ -231,6 +210,11 @@ export default function ChatPage() {
     setMessageId(id);
   };
 
+  const unChangeMessage = () => {
+    setIsRedact(false);
+    setInputText('');
+  };
+
   const triggerChange = () => {
     setTrigger((prevTrigger) => !prevTrigger);
   };
@@ -247,6 +231,13 @@ export default function ChatPage() {
 
   const handleInputChange = (event) => {
     setInputText(event.target.value);
+  };
+
+  const handleScroll = (event) => {
+    const { scrollTop, clientHeight, scrollHeight } = event.currentTarget;
+    if (scrollHeight - scrollTop === clientHeight) {
+      setPage((prevPage) => prevPage + 1);
+    }
   };
 
   return (
@@ -267,7 +258,7 @@ export default function ChatPage() {
         </Grid>
         <Grid item xs={12} md={9}>
           {messages && (
-            <Box className="chat__window">
+            <Box className="chat__window" onScroll={handleScroll}>
               <Window
                 data={messages}
                 token={token}
@@ -295,6 +286,21 @@ export default function ChatPage() {
                 >
                   <SendIcon className="chat__message_icon" />
                 </IconButton>
+                {isRedact && (
+                  <IconButton
+                    onClick={unChangeMessage}
+                    className="chat__message_button-cancel"
+                    sx={{
+                      width: "50px",
+                      height: "50px",
+                      padding: 0,
+                      borderRadius: "4px",
+                      marginLeft: "8px"
+                    }}
+                  >
+                    <CloseIcon className="chat__message_icon" />
+                  </IconButton>
+                )}
               </Box>
             </Box>
           )}
