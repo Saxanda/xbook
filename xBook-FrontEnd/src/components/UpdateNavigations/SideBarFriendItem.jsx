@@ -13,7 +13,7 @@ export default function SideBarFriendItem({friendData}){
         <Paper className="friend-item" onClick={handleFriendClick}>
             <Box display="flex" alignItems="center" p={2}>
                 <Avatar alt={`${friendData.name[0]} ${friendData.surname[0]}`} src={friendData.avatar} />
-                <Typography variant="body1">{friendData.name} {friendData.surname}</Typography>
+                <Typography variant="body1" style={{paddingLeft : "10px"}}>{friendData.name} {friendData.surname}</Typography>
             </Box>
         </Paper>
     );

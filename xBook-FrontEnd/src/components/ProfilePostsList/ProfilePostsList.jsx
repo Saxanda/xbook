@@ -8,6 +8,7 @@ import { getUserPosts } from '../../redux/profile/profileSlice';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../../helpers/apiConfig';
 
 export default function ProfilePostsLists({ refresh, handlePostCreated }) {
 
@@ -19,7 +20,8 @@ export default function ProfilePostsLists({ refresh, handlePostCreated }) {
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
 
-    const totalPosts = useSelector(state => state.profile.userPosts.obj?.totalElements);
+    // const totalPosts = useSelector(state => state.profile.userPosts.obj?.totalElements);
+
     const userId = useSelector(state => state.profile.profileData.obj.id)
 
     useEffect(() => {
@@ -58,7 +60,7 @@ export default function ProfilePostsLists({ refresh, handlePostCreated }) {
     const addToBookmarks = async (postId) => {
         try {
             const token = getAuthToken();
-            const response = await axios.post(`http://localhost:8080/api/v1/bookmarks`, {
+            const response = await axios.post(`${API_BASE_URL}/api/v1/bookmarks`, {
                 postId: postId, userId
             }, {
                 headers: {
@@ -74,13 +76,14 @@ export default function ProfilePostsLists({ refresh, handlePostCreated }) {
     const removeFromBookmarks = async (postId) => {
         try {
             const token = getAuthToken();
-            const { data: bookmarksData } = await axios.get(`http://localhost:8080/api/v1/bookmarks/post/${postId}`, {
+            const { data: bookmarksData } = await axios.get(`${API_BASE_URL}/api/v1/bookmarks/post/${postId}`, {
                            headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
             const bookmarkData = bookmarksData.content[0];
-            const response = await axios.delete(`http://localhost:8080/api/v1/bookmarks/${bookmarkData.bookmarkId}`, {
+
+            const response = await axios.delete(`${API_BASE_URL}/api/v1/bookmarks/${bookmarkData.postId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -104,6 +107,7 @@ export default function ProfilePostsLists({ refresh, handlePostCreated }) {
                             <CircularProgress />
                         </div>
                     }
+                    // scrollableTarget='scrollableProfilePosts'
                 >
                     <ul className='postsList'>
                         {postsData.map(post => (

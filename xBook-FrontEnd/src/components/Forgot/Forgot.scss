@@ -57,6 +57,7 @@
     display: flex;
     border-bottom: 1px solid rgb(183, 183, 183);
     padding-top: 15px;
+    font-size: 30px;
     padding-bottom: 15px;
    padding-right: 15px;
     align-items: center;
@@ -64,8 +65,12 @@
     padding-left: 15px;
 }  
 
+.titleForgotTwo{
+  font-size: 18px;
+}
+
 .textForgot {
-    font-size: 20px;
+    font-size: 18px;
     text-align: start;
     padding-left: 15px;
     padding-right: 15px;

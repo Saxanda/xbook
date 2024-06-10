@@ -2,6 +2,7 @@
 .profilePosts{
     display: grid;
     flex-direction: column;
+    // height: 100vh;
 
     @media (min-width: 820px){
         grid-template-columns: 360px 1fr;
@@ -37,7 +38,10 @@
 
     &__section{
         display: flex;
+        align-items: center;
         flex-direction: column;
+        height: 100vh;
+        padding: 0 10px;
 
         @media (min-width: 431px){
             padding: 0 16px;

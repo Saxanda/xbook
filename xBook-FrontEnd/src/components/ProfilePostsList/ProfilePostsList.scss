@@ -1,8 +1,22 @@
 .postsList{
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    row-gap: 16px;
+    width: 100%;
+    max-width: 628px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     list-style: none;
     padding: 0px;
     margin: 0px;
+
+    overflow-y: auto;
+    max-height: calc(100vh - 119px);
+    
+    flex-grow: 1;
+
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+}
+
+.postsList::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
