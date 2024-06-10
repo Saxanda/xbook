@@ -46,7 +46,7 @@ export default function Notifications() {
 
   useEffect(() => {
     const fetchUserEmail = async () => {
-      const response = await axios.get(`http://localhost:8080/api/v1/users/${userId}`, {
+      const response = await axios.get(`${API_BASE_URL}/api/v1/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -66,7 +66,7 @@ export default function Notifications() {
 
   const connectWebSocket = () => {
     const stompClient = new Client({
-      brokerURL: 'ws://localhost:8080/websocket',
+      brokerURL: 'ws://API_BASE_URL/websocket',
       connectHeaders: {
         Authorization: `Bearer ${token}`
       },

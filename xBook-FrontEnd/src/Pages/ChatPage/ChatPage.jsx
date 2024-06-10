@@ -8,6 +8,7 @@ import { Client } from "@stomp/stompjs";
 import { Box, Grid, TextField, IconButton } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CloseIcon from "@mui/icons-material/Close"; // Імпорт іконки хрестика
+import API_BASE_URL from "../../helpers/apiConfig";
 
 export default function ChatPage() {
   const [users, setUsers] = useState([]);
@@ -39,7 +40,7 @@ export default function ChatPage() {
       if (users.length > 0 && id !== -1) {
         try {
           const response = await axios.get(
-            `http://localhost:8080/api/v1/chats/messages/${urlID}?page=${page}&size=100`,
+            `${API_BASE_URL}/api/v1/chats/messages/${urlID}?page=${page}&size=100`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -84,7 +85,7 @@ export default function ChatPage() {
   useEffect(() => {
     const connectWebSocket = () => {
       const stompClient = new Client({
-        brokerURL: "ws://localhost:8080/websocket",
+        brokerURL: `ws://${API_BASE_URL}/websocket`,
         connectHeaders: {
           Authorization: `Bearer ${token}`,
         },
@@ -141,7 +142,7 @@ export default function ChatPage() {
   useEffect(() => {
     const userEmailTaker = async () => {
       const response = await axios.get(
-        `http://localhost:8080/api/v1/users/${id}`,
+        `${API_BASE_URL}/api/v1/users/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -162,7 +163,7 @@ export default function ChatPage() {
       if (inputText !== "") {
         try {
           const response = await axios.post(
-            `http://localhost:8080/api/v1/messages/update/${messageId}`,
+            `${API_BASE_URL}/api/v1/messages/update/${messageId}`,
             {
               content: inputText,
             },
