@@ -37,7 +37,7 @@ export default function ChatPage() {
       if (users.length > 0 && id !== -1) {
         try {
           const response = await axios.get(
-            `http://localhost:8080/api/v1/chats/messages/${urlID}?page=0&size=20`,
+            `http://localhost:8080/api/v1/chats/messages/${urlID}?page=0&size=100`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -78,7 +78,6 @@ export default function ChatPage() {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("yes");
     }
   };
 
@@ -94,14 +93,40 @@ export default function ChatPage() {
         heartbeatOutgoing: 4000,
       });
 
+      stompClient.activate();
+
       stompClient.onConnect = (frame) => {
         console.log("Connected to WebSocket server:", frame);
+        setUserEmail(localStorage.getItem("chosenUserEmail"))
+        console.log(localStorage.getItem("chosenUserEmail"));
         if (userEmail) {
           const subscriptionPath = `/user/${userEmail}/queue/messages`;
           console.log("Subscribing to:", subscriptionPath);
           stompClient.subscribe(subscriptionPath, (message) => {
+            // const newMessage = {
+            //     id: message.body.id,
+            //     createdDate: message.body.createdDate,
+            //     contentType: message.body.contentType,
+            //     content: message.body.content,
+            //     edited: message.body.edited,
+            //     sender: {
+            //       avatar: message.body.sender.avatar,
+            //       email: message.body.sender.email,
+            //       name: message.body.sender.name,
+            //       surname: message.body.sender.surname,
+            //       status: message.body.status
+            //     },
+            //     chat: {
+            //         id: message.body.chat.id,
+            //         chatParticipant: {
+            //             avatar: message.body.chat
+            //         }
+            //     }
+            //   };
             console.log("Subscription received:", message.body);
-            setSomeState(message);
+            let newMessage = JSON.parse(message.body);
+            newMessage.chat.chatParticipant.name = newMessage.sender.name;
+            setMessages((prevMessages) => [...prevMessages, newMessage]);
           });
         } else {
           console.warn("User email is not set, cannot subscribe.");
@@ -121,7 +146,6 @@ export default function ChatPage() {
         console.error("WebSocket error:", error);
       };
 
-      stompClient.activate();
 
       stompClientRef.current = stompClient;
     };
@@ -133,7 +157,7 @@ export default function ChatPage() {
         stompClientRef.current.deactivate();
       }
     };
-  }, [token, userEmail]);
+  }, [token, userEmail, urlID]);
 
   useEffect(() => {
     const userEmailTaker = async () => {
@@ -148,8 +172,9 @@ export default function ChatPage() {
       setUserEmail(response.data.email);
     };
 
-    if (id !== -1) {
+    if (id !== -1 && localStorage.getItem("chosenUserEmail") == null) {
       userEmailTaker();
+      console.log(localStorage.getItem("chosenUserEmail"));
     }
   }, [id, token]);
 
@@ -182,7 +207,7 @@ export default function ChatPage() {
             Authorization: `Bearer ${token}`,
           };
           stompClientRef.current.publish({
-            destination: "/app/chat",
+            destination: `/app/chat`,
             body: JSON.stringify({
               chatId: id,
               contentType: "text",
@@ -225,10 +250,7 @@ export default function ChatPage() {
   };
 
   return (
-    <Box
-                className="chat__container_message-input"
-                style={{ height: "50px" }}
-              >
+    <Box className="chat__container_message-input" style={{ height: "50px" }}>
       <Grid container className="chat__list">
         <Grid item xs={12} md={3} className="chat__users">
           <Users

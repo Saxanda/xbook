@@ -8,64 +8,192 @@ import { Button, TextField, Box } from "@mui/material";
 export default function Users({
   onClicked,
   trigger,
-  secondTrigger,
   triggerChange,
   changeUserArray,
   token,
-  urlID,
 }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [lastActiveUser, setLastActiveUser] = useState(0);
+  const [lastActiveUser, setLastActiveUser] = useState(-1);
   const [emailVer, setEmailVer] = useState(false);
-
-  const [emptyChat, setEmptyChat] = useState(false);
-
   const [inputText, setInputText] = useState("");
+  const [dataLoaded, setDataLoaded] = useState(false); // New state to track data loading
   const navigate = useNavigate();
+  const { id: urlID } = useParams();
+
   useEffect(() => {
-    if (urlID === -1) {
+    if (urlID === "-1") {
       setLastActiveUser(-1);
       localStorage.setItem("lastActiveUser", -1);
       localStorage.setItem("lastActiveChatID", -1);
     }
   }, [urlID]);
 
-
-  const deleteChat = async (id) => {
-    // удаление чата
-    if (users.length <= 1) setLastActiveUser(-1);
-    try {
-      const response = await axios.delete(
-        `http://localhost:8080/api/v1/chats/delete/${id}`,
-        {
+  useEffect(() => {
+    const fetchUserEmail = async (id) => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/v1/users/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
-      );
-      console.log(
-        "lastActive: " + localStorage.getItem("lastActiveUserId") + " id: " + id
-      );
-      if (localStorage.getItem("lastActiveUserId") == id) {
-        handleIdChange();
-        triggerChange();
-      } else {
-        //console.log(localStorage.getItem("lastActiveUserId"));
-        //console.log(id);
-        triggerChange();
+        });
+        return response.data.email;
+      } catch (error) {
+        console.error("Error fetching user email:", error);
+        return null;
       }
-    } catch (error) {
-      console.error("Error deleting message:", error);
+    };
+
+    const fetchChats = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/v1/chats", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        return response.data.content;
+      } catch (error) {
+        console.error("Error fetching chats:", error);
+        return [];
+      }
+    };
+
+    const addUserToChat = async (email) => {
+      try {
+        const response = await axios.post(`${API_BASE_URL}/api/v1/chats/create/${email}`, {
+          email: email,
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        return response.data;
+      } catch (error) {
+        console.error("Error creating chat:", error);
+        return null;
+      }
+    };
+
+    const initializeChat = async () => {
+      setLoading(true);
+      try {
+        const chats = await fetchChats();
+        setUsers(chats);
+        changeUserArray(chats);
+        // Set dataLoaded to true when data is loaded
+        setDataLoaded(true);
+
+        const chatIndex = chats.findIndex(chat => chat.id === parseInt(urlID));
+        if (chatIndex !== -1 && dataLoaded) {
+          handleUserClick(chatIndex, chats[chatIndex].id);
+        } else {
+          if (urlID !== "-1") {
+            const userEmail = await fetchUserEmail(urlID);
+            console.log(userEmail);
+            if (userEmail) {
+              const existingChatIndex = chats.findIndex(chat => chat.chatParticipant.email === userEmail);
+              if (existingChatIndex !== -1) {
+                console.log("existing chat chosen, email founded:" + userEmail + "urlId: " + urlID + "existingChatIndex:" + existingChatIndex + "id: " + chats[existingChatIndex].id);
+                handleUserClick(existingChatIndex, chats[existingChatIndex].id);
+              } else {
+                const newChat = await addUserToChat(userEmail);
+                if (newChat) {
+                  const updatedChats = [...chats, newChat];
+                  setUsers(updatedChats);
+                  changeUserArray(updatedChats);
+                  handleUserClick(updatedChats.length - 1, newChat.id);
+                }
+              }
+            } else {
+              setLastActiveUser(-1);
+              localStorage.setItem("lastActiveUser", -1);
+              localStorage.setItem("lastActiveChatID", -1);
+            }
+          } else {
+            setLastActiveUser(-1);
+            localStorage.setItem("lastActiveUser", -1);
+            localStorage.setItem("lastActiveChatID", -1);
+          }
+        }
+      } catch (error) {
+        console.error("Error initializing chat:", error);
+      }
+      setLoading(false);
+    };
+
+    if (urlID) {
+      initializeChat();
+    }
+  }, [urlID, token, trigger]);
+
+  useEffect(() => {
+    const savedLastActiveUser = localStorage.getItem("lastActiveUser");
+    if (savedLastActiveUser !== null && parseInt(savedLastActiveUser) !== -1) {
+      setLastActiveUser(parseInt(savedLastActiveUser));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (dataLoaded) {
+    const fetchUserEmail = async (id) => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/v1/users/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        return response.data.email;
+      } catch (error) {
+        console.error("Error fetching user email:", error);
+        return null;
+      }
+    };
+
+   
+      const userEmail = fetchUserEmail(urlID);
+      const existingChatIndex = users.findIndex(chat => chat.chatParticipant.email === userEmail);
+              if (existingChatIndex !== -1) {
+                handleUserClick(existingChatIndex, users[existingChatIndex].id);
+              }
+    }
+  }, [dataLoaded, users, urlID]);
+
+  const handleUserClick = (index, id, isDeleteAction = false) => {
+    if (!isDeleteAction) {
+      setLastActiveUser(index);
+      onClicked(id);
+      localStorage.setItem("chosenUserEmail",(users[index].chatParticipant.email));
+      //const chosenUserEmail = users[index].chatParticipant.email;
+      localStorage.setItem("lastActiveUser", index);
+      localStorage.setItem("lastActiveUserId", id);
+      //localStorage.setItem("chosenUserEmail", chosenUserEmail);
+      navigate(`/chats/${id}`);
+    } else {
+      setLastActiveUser(-1);
+      localStorage.setItem("lastActiveUser", -1);
+      localStorage.setItem("lastActiveUserId", -1);
+      navigate(`/chats/no-chat-chosen`);
+    }
+  };
+
+  useEffect(() =>{
+    //localStorage.setItem("chosenUserEmail", users[lastActiveUser].chatParticipant.email);
+  }, [lastActiveUser])
+
+  const handleInputChange = (event) => {
+    setInputText(event.target.value);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleChatAdd();
     }
   };
 
   const handleIdChange = () => {
-    //changing active chat after deleting chat
     let lastIndex = parseInt(lastActiveUser);
-    console.log(users.length);
     let tempId;
-    if (users.length == 1) lastIndex = null;
+    if (users.length === 1) lastIndex = null;
     if (lastIndex !== null) {
       if (lastIndex < users.length - 1) {
         tempId = users[lastIndex + 1].id;
@@ -80,116 +208,60 @@ export default function Users({
     handleUserClick(lastIndex, tempId);
   };
 
-  useEffect(() => {
-    // chat list
-    //console.log(localStorage.getItem("token") || sessionStorage.getItem("token"))
-    const headers = {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      accept: "*/*",
-    };
-    const fetchChats = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/api/v1/chats", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setUsers(response.data.content);
-        changeUserArray(response.data.content);
-        setLoading(false);
-        if (emptyChat) {
-          const tempId = response.data.content[0].id;
-          handleUserClick(0, tempId);
-          localStorage.setItem("lastActiveUserId", tempId);
-          setEmptyChat(false);
-        }
-      } catch (error) {
-        console.error("Error fetching chats:", error);
-        setLoading(false);
+  const deleteChat = async (id) => {
+    if (users.length <= 1) setLastActiveUser(-1);
+    try {
+      await axios.delete(`http://localhost:8080/api/v1/chats/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (localStorage.getItem("lastActiveUserId") == id) {
+        handleIdChange();
+        triggerChange();
+      } else {
+        triggerChange();
       }
-    };
-
-    fetchChats();
-  }, [token, trigger, secondTrigger]);
-
-  useEffect(() => {
-    // saving which user was the last chat with
-    const savedLastActiveUser = localStorage.getItem("lastActiveUser");
-    if (savedLastActiveUser !== null) {
-      setLastActiveUser(parseInt(savedLastActiveUser));
+      handleUserClick(lastActiveUser, id, true);
+    } catch (error) {
+      console.error("Error deleting message:", error);
     }
-  }, []);
+  };
 
-  const [isFirstLoad, setIsFirstLoad] = useState(true);
-  useEffect(() => {
-    // Saves the first chat when the page first loads
-    if (!isFirstLoad) {
-      setLastActiveUser(0);
+  const handleChatAdd = async () => {
+    const chatExists = users.some(user => user.chatParticipant.email === inputText);
+    if (chatExists) {
+      setEmailVer(true);
+      console.error("Chat with this email already exists");
+      return;
     }
-    setIsFirstLoad(false);
-  }, [trigger]);
 
-  const handleUserClick = (index, id) => {
-    // when you click on a chat, save the new last user
-    setLastActiveUser(index);
-    onClicked(id);
-    //console.log("id: " + id + " index: " + index);
-    localStorage.setItem("lastActiveUser", index);
-    localStorage.setItem("lastActiveUserId", id);
-    navigate(`/chats/${id}`);
+    try {
+      const response = await axios.post(`${API_BASE_URL}/api/v1/chats/create/${inputText}`, {
+        email: inputText,
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setInputText("");
+      triggerChange();
+      setEmailVer(false);
+      const newChat = response.data;
+      const updatedChats = [...users, newChat];
+      setUsers(updatedChats);
+      changeUserArray(updatedChats);
+      setLastActiveUser(updatedChats.length - 1);
+      navigate(`/chats/${newChat.id}`);
+    } catch (error) {
+      setEmailVer(true);
+      console.error("Error adding chat:", error);
+    }
   };
 
   if (loading) {
     return <div>Loading...</div>;
   }
-
-  const handleInputChange = (event) => {
-    setInputText(event.target.value);
-  };
-
-  const handleKeyDown = (event) => {
-    // on press enter add chat
-    if (event.key === "Enter") {
-      handleChatAdd();
-    }
-  };
-
-  const handleChatAdd = async () => {
-    // chat add
-
-    try {
-      const response = await axios.post(
-        `${API_BASE_URL}/api/v1/chats/create/${inputText}`,
-        {
-          email: inputText,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setInputText("");
-      triggerChange();
-      setEmailVer(false);
-      if (lastActiveUser != 0 && lastActiveUser != -1) {
-        localStorage.setItem(
-          "lastActiveUser",
-          parseInt(localStorage.getItem("lastActiveUser")) + 1
-        );
-      } else {
-        localStorage.setItem("lastActiveUser", 0);
-        setEmptyChat(true);
-      }
-
-      setLastActiveUser(parseInt(localStorage.getItem("lastActiveUser")));
-    } catch (error) {
-      setEmailVer(true);
-      console.error("Error sending message:", error);
-    }
-  };
 
   return (
     <Box className="chat__users_container">
@@ -214,25 +286,19 @@ export default function Users({
               fullWidth
               placeholder="Enter email"
               error={emailVer}
-              helperText={emailVer ? "Wrong email" : ""}
+              helperText={emailVer ? "Chat with this email already exists" : ""}
               margin="normal"
             />
           </Box>
           {users.map((user, index) => (
             <Box
-              className={`chat__users-list_item item-${index + 1} ${
-                lastActiveUser === index ? "active" : ""
-              }`}
-              key={index}
+              className={`chat__users-list_item item-${index + 1} ${lastActiveUser === index ? "activeUser" : ""}`}
+              key={user.id}
             >
               <UsersItem
                 image={user.chatParticipant.avatar}
                 name={`${user.chatParticipant.name} ${user.chatParticipant.surname}`}
-                lastMessage={
-                  user.lastMessage
-                    ? user.lastMessage.content
-                    : "No messages yet"
-                }
+                lastMessage={user.lastMessage ? user.lastMessage.content : "No messages yet"}
                 id={user.id}
                 index={index}
                 handleUserClick={handleUserClick}
