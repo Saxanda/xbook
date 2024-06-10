@@ -32,7 +32,7 @@ export default function Users({
   useEffect(() => {
     const fetchUserEmail = async (id) => {
       try {
-        const response = await axios.get(`API_BASE_URL/api/v1/users/${id}`, {
+        const response = await axios.get(`${API_BASE_URL}/api/v1/users/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -46,7 +46,7 @@ export default function Users({
 
     const fetchChats = async () => {
       try {
-        const response = await axios.get("${API_BASE_URL}/api/v1/chats", {
+        const response = await axios.get(`${API_BASE_URL}/api/v1/chats`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -211,7 +211,7 @@ export default function Users({
   const deleteChat = async (id) => {
     if (users.length <= 1) setLastActiveUser(-1);
     try {
-      await axios.delete(`http://localhost:8080/api/v1/chats/delete/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/v1/chats/delete/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
