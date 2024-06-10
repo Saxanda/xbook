@@ -53,7 +53,7 @@ export default function Window({
   let userId = parseInt(jwtDecode(token).sub)
   const fetchUserEmail = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/v1/users/${userId}`, {
+      const response = await axios.get(`${API_BASE_URL}/api/v1/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
