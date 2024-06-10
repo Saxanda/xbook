@@ -116,7 +116,7 @@ export default function Window({
                   const formattedDate = formatDate(message.createdDate);
                   const shouldDisplayDate = formattedDate !== prevDate;
                   prevDate = formattedDate;
-
+  
                   return (
                     <React.Fragment key={idx}>
                       {shouldDisplayDate && (
@@ -144,7 +144,6 @@ export default function Window({
 
 function typeChecker(message) {
   let type = "none";
-  console.log(message.sender.name)
   if (message.chat.chatParticipant.name !== message.sender.name) type = "input";
   else type = "output";
   return type;

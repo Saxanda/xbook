@@ -132,8 +132,8 @@ export default function SignInForm() {
             onBlur={formik.handleBlur}
             error={formik.touched.gender && Boolean(formik.errors.gender)}
           >
-            <MenuItem value={"man"}>Men</MenuItem>
-            <MenuItem value={"woman"}>Woman</MenuItem>
+            <MenuItem value={"male"}>Male</MenuItem>
+            <MenuItem value={"female"}>Female</MenuItem>
             <MenuItem value={"other"}>Other</MenuItem>
           </Select>
 

@@ -151,8 +151,8 @@
 }
 
 .chat__message-time {
-  padding-left: 10px;
   font-size: 12px;
+  padding-top: 5px;
 }
 
 .chat__message-block {
@@ -184,6 +184,12 @@
   background-color: inherit;
 }
 
+.chat__message{
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+}
+
 .output {
   background-color: rgb(121, 122, 149);
 }
@@ -198,16 +204,18 @@
   padding: 10px 15px 10px 10px;
   margin-top: 5px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  color: white;
+
 }
 
 .chat__message-text-inside {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   font-size: large;
+  padding-right: 5px;
 }
 
 .chat__message-text.output {
-  padding-left: 35px;
 }
 
 .chat__message-date {
@@ -255,3 +263,7 @@
   width: 0%;
   overflow-y: hidden;
 }
+
+
+
+
