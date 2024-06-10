@@ -96,7 +96,7 @@ export default function CreatePostModal({ open, handleClose,onPostCreated }) {
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
             >
-                <Box className="createPost_modal_header">
+                <Box  className="createPost_modal_header">
                     <Typography variant="h5" gutterBottom>Create post</Typography>
                     <IconButton onClick={close} className="closeButton">
                         <CloseIcon />
