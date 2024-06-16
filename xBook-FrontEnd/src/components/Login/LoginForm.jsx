@@ -120,6 +120,17 @@ export default function LoginForm() {
       >
         Forgot your password?
       </Link>
+        
+        <Link
+            href=""
+            underline="hover"
+            onClick={() => {
+                navigate("/oauth2/authorization/google");
+            }}
+        >
+            Log in via Google
+        </Link>
+        
     </form>
   );
 }
