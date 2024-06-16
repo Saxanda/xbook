@@ -17,9 +17,8 @@ import java.util.function.Function;
 
 @Log4j2
 @Service
-@PropertySource("classpath:jwt.properties")
 public class JwtTokenService {
-    @Value("${jwt.secret}")
+    @Value("${JWT_SECRET}")
     private String secret;
 
     private static Long day = 24 * 60 * 60 * 1000L;

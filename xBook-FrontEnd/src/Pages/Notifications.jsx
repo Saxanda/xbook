@@ -17,6 +17,9 @@ export default function Notifications() {
     const [trigger, setTrigger] = useState("true")
     const [ posts, setPosts ] = useState([])
     const [token, setToken] = useState(localStorage.getItem("token") || sessionStorage.getItem("token"));
+    
+    console.log(sessionStorage.getItem("token") || localStorage.getItem("token"))
+    
     const getToken = () => {
         let token = sessionStorage.getItem('token');
         if (!token) {
@@ -27,7 +30,9 @@ export default function Notifications() {
 
     
     let userId = parseInt(jwtDecode(sessionStorage.getItem("token") || localStorage.getItem("token")).sub)
-    
+
+    console.log(sessionStorage.getItem("token") || localStorage.getItem("token"))
+
     useEffect(() => {
       const userEmailTaker = async () => {
           const response = await axios.get(`${API_BASE_URL}/api/v1/users/${userId}`, {
@@ -42,7 +47,7 @@ export default function Notifications() {
 
     const connectWebSocket = () => {
       const stompClient = new Client({
-          brokerURL: `ws://${API_BASE_URL}/websocket`,
+          brokerURL: `ws://localhost:8080/websocket`,
           connectHeaders: {
               Authorization: `Bearer ${token}`
           },
