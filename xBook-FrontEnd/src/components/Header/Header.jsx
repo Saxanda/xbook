@@ -60,6 +60,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [userName, setUserName] = useState("");
   const [userSurname, setUserSurname] = useState("");
+  const [isTokenPresent, setIsTokenPresent] = useState(false);
 
   const anchorElNav = useSelector((state) => state.header.anchorElNav);
   const anchorElUser = useSelector((state) => state.header.anchorElUser);
@@ -68,7 +69,7 @@ export default function Header() {
   let testUser =
     sessionStorage.getItem("token") || localStorage.getItem("token");
   console.log(testUser);
-  
+
   const settings = [
     { name: "Profile", path: `/profile/${parseInt(jwtDecode(testUser).sub)}` },
     { name: "Logout", path: "/logout" },
@@ -139,6 +140,7 @@ export default function Header() {
       const decodedToken = jwtDecode(token);
       setUserName(decodedToken.name);
       setUserSurname(decodedToken.surname);
+      setIsTokenPresent(true);
     }
   }, []);
 
@@ -155,6 +157,8 @@ export default function Header() {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  if (!isTokenPresent) return null;
 
   return (
     <AppBar position="static">

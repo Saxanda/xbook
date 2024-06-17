@@ -6,7 +6,6 @@ export default function PrivateRoutes() {
     localStorage.getItem("token") || sessionStorage.getItem("token");
   return (
     <>
-      <Header />
       {token ? <Outlet /> : <Navigate to="/login" />}
     </>
   );
