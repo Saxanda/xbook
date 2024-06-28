@@ -50,7 +50,6 @@ public class UserController {
         return ResponseEntity.ok(userResponse);
     }
 
-    // Update user details by ID
     @PutMapping("/{id}")
     public ResponseEntity<UserDetailsResponse> updateUserById(@PathVariable Long id, @Validated @RequestBody UpdateUserRequest request) {
         User updatedUser = userService.updateUser(id, request);
@@ -60,7 +59,6 @@ public class UserController {
         return ResponseEntity.ok(userMapper.userDetailsResponse(updatedUser));
     }
 
-    // Search users by name or surname
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public List<UserDetailsResponse> searchUsersByInput(@RequestParam(required = false) String input) {

@@ -40,14 +40,14 @@ export default function ChatPage() {
       if (users.length > 0 && id !== -1) {
         try {
           const response = await axios.get(
-            `${API_BASE_URL}/api/v1/chats/messages/${urlID}?page=${page}&size=100`,
+            `${API_BASE_URL}/api/v1/chats/messages/${urlID}?page=0&size=100`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             }
           );
-          setMessages((prevMessages) => [...prevMessages, ...response.data.content]);
+          setMessages(response.data.content);
           setLoading(false);
           setChatClear(false);
         } catch (error) {
