@@ -10,7 +10,7 @@ spring:
       max-file-size: 10MB
 
   profiles:
-    active: local
+    active: prod
 
   springdoc:
     swagger-ui:
