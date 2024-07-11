@@ -29,7 +29,7 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
 
     @Override
     public Message<?> preSend(@NotNull Message<?> message, @NotNull MessageChannel channel) {
-        System.out.println("\nMessage<?> preSend WORKS!!!");
+//        System.out.println("\nMessage<?> preSend WORKS!!!");
 
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         assert accessor != null;
@@ -47,7 +47,7 @@ public class WebSocketAuthInterceptor implements ChannelInterceptor {
     }
 
     private Optional<Principal> authenticateUser(String token){
-        System.out.println("\nOptional<Principal> authenticateUser WORKS!!!");
+//        System.out.println("\nOptional<Principal> authenticateUser WORKS!!!");
         Optional<Integer> maybeUserId = jwtService.parseToken(token);
 
         maybeUserId.flatMap(id -> userService.findById(Long.valueOf(id))

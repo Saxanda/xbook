@@ -85,7 +85,7 @@ export default function ChatPage() {
   useEffect(() => {
     const connectWebSocket = () => {
       const stompClient = new Client({
-        brokerURL: `ws://localhost:8080/websocket`,
+        brokerURL: `ws://${API_BASE_URL}/websocket`,
         connectHeaders: {
           Authorization: `Bearer ${token}`,
         },
